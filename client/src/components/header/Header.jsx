@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 
 export default function Header() {
@@ -5,11 +6,13 @@ export default function Header() {
         <header className={styles.header}>
             <div className={styles.logo}>
                 <div className={styles.media}>
-                    <img
-                        className={styles.img}
-                        src="public/footer_logo_white_cropped-min.png"
-                        alt=""
-                    />
+                    <Link to="/">
+                        <img
+                            className={styles.img}
+                            src="/footer_logo_white_cropped-min.png"
+                            alt="Logo"
+                        />
+                    </Link>
                 </div>
                 <span className={styles.course}>НАГ Васил Априлов</span>
             </div>
@@ -17,105 +20,135 @@ export default function Header() {
             <nav className={styles.nav}>
                 <ul className={styles.ul}>
                     <li className={styles.list}>
-                        <a className={styles.a} href="#">
+                        <Link className={styles.link} to="/">
                             Home
-                        </a>
+                        </Link>
                     </li>
                     <li className={styles.list}>
-                        <a className={styles.a} href="#">
+                        <Link className={styles.link} to="/blog">
                             Blog
-                        </a>
+                        </Link>
                     </li>
                     <li className={styles.list}>
-                        <a className={styles.a} href="#">
+                        <Link className={styles.link} to="/archive">
                             Archive
-                        </a>
+                        </Link>
                         <ul className={styles.ul}>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/jan-2024"
+                                >
                                     Jan 2024
-                                </a>
+                                </Link>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/feb-2024"
+                                >
                                     Feb 2024
-                                </a>
+                                </Link>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/mar-2024"
+                                >
                                     Mar 2024
-                                </a>
+                                </Link>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/apr-2024"
+                                >
                                     Apr 2024
-                                </a>
+                                </Link>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/may-2024"
+                                >
                                     May 2024
-                                </a>
+                                </Link>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/jun-2024"
+                                >
                                     Jun 2024
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </li>
                     <li className={styles.list}>
-                        <a className={styles.a} href="#">
+                        <Link className={styles.link} to="/about">
                             About
-                        </a>
+                        </Link>
                         <ul className={styles.ul}>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link className={styles.link} to="/about/me">
                                     About me
-                                </a>
+                                </Link>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link className={styles.link} to="/about/all">
                                     About All
-                                </a>
+                                </Link>
                                 <ul className={styles.ul}>
-                                    <li className={styles.list} i>
-                                        <a className={styles.a} href="#">
+                                    <li className={styles.list}>
+                                        <Link
+                                            className={styles.link}
+                                            to="/about/me2"
+                                        >
                                             About me 2
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li className={styles.list}>
-                                        <a className={styles.a} href="#">
+                                        <Link
+                                            className={styles.link}
+                                            to="/about/all2"
+                                        >
                                             About All 2
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li className={styles.list}>
-                                        <a className={styles.a} href="#">
+                                        <Link
+                                            className={styles.link}
+                                            to="/about/more2"
+                                        >
                                             About more 2
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li className={styles.list}>
-                                        <a className={styles.a} href="#">
+                                        <Link
+                                            className={styles.link}
+                                            to="/about/last2"
+                                        >
                                             About last one 2
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link className={styles.link} to="/about/more">
                                     About more
-                                </a>
+                                </Link>
                             </li>
                             <li className={styles.list}>
-                                <a className={styles.a} href="#">
+                                <Link className={styles.link} to="/about/last">
                                     About last one
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </li>
                     <li className={styles.list}>
-                        <a className={styles.a} href="#">
+                        <Link className={styles.link} to="/contacts">
                             Contacts
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </nav>
