@@ -4,7 +4,6 @@
     width: 92%;
     height: 4rem;
     display: flex;
-    /* padding: 0 10%; */
     margin: 1rem auto 0;
     display: flex;
     align-items: center;
@@ -12,6 +11,8 @@
     justify-content: space-between;
     background: #f7f7f7;
     color: #369;
+    padding: 2.5rem 0 4rem;
+    border-bottom: 1px solid #369;
 }
   
 .logo {
@@ -25,6 +26,10 @@
 .logo .media {
     height: 4rem;
     background-color: #369;
+}
+
+.logo .media:hover {
+    transform: scale(1.1);
 }
 
 .logo .media .img {
@@ -83,7 +88,7 @@
 .nav .ul .list:hover > .link,
 .nav .ul .list .link:hover {
     background-color: lightblue;
-    color: #000;
+    color: #369;
 }
 
 .nav .ul .ul {
@@ -112,8 +117,4 @@
     .logo .course {
         display: none;
     }
-    /* .logo .description {
-      font-size: 1rem;
-      margin-left: 0px;
-    } */
 }

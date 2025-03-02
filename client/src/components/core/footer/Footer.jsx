@@ -70,7 +70,7 @@ export default function Footer() {
                 >
                     SoftUni
                 </a>{" "}
-                .
+                . Author: Tsvetan Tsaryanski.
             </p>
         </footer>
     );
