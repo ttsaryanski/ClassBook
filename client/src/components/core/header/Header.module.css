@@ -28,7 +28,6 @@
 
 .logo .media {
     height: 4rem;
-    color: #369;
     background-color: #369;
 }
 
@@ -40,7 +39,7 @@
 /* Nav styles */
 
 .nav {
-    z-index: 10;
+    z-index: 30;
 }
 
 .nav .ul {

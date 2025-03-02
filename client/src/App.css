@@ -63,7 +63,7 @@ ul {
 }
 
 .btn {
-  background: #2a87a5;
+  background: #369;
   border: none;
   color: white;
   cursor: pointer;
@@ -123,6 +123,13 @@ ul {
 }
 
 @media (max-width: 768px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
   .main {
     margin: 1rem auto;
     min-height: calc(100vh - 9rem);
@@ -134,7 +141,7 @@ ul {
   width: 100%;
   background-color: #fff;
   border-radius: 5px;
-  box-shadow: 1px 2px 5px #ccc;
+  /* box-shadow: 1px 2px 5px #ccc; */
 }
 
 .users-container {
@@ -164,7 +171,7 @@ ul {
   z-index: 1;
 }
 .table thead tr {
-  background-color: #2a87a5;
+  background-color: #369;
   color: white;
 }
 .table th {
@@ -284,7 +291,7 @@ ul {
   }
 }
 
-/* Loading pinner  */
+/* Loading spinner  */
 .spinner {
   position: absolute;
   top: calc(50% - 32px);
@@ -466,7 +473,7 @@ ul {
 }
 
 .btn:hover {
-  opacity: 0.9;
+  /* opacity: 0.9; */
   box-shadow: 1px 2px 8px black;
 }
 
@@ -503,7 +510,7 @@ ul {
 .btn {
   padding: 5px;
   color: white;
-  opacity: 0.7;
+  /* opacity: 0.7; */
   width: 30px;
   height: 30px;
 }
@@ -512,7 +519,7 @@ ul {
 }
 
 .btn:hover {
-  opacity: 1;
+  /* opacity: 1; */
 }
 
 .delete-btn {
@@ -529,6 +536,13 @@ ul {
   height: auto;
   width: auto;
   margin-left: 2px;
+  background-color: #369;
+  /* opacity: 1; */
+}
+
+.btn-add:hover {
+  /* opacity: 0.9; */
+  box-shadow: 1px 2px 8px black;
 }
 
 /* Paggination  */

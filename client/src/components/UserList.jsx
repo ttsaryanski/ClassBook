@@ -133,7 +133,7 @@ export default function UserList() {
                 <ShowDeleteUser onDelete={deleteUser} onClose={closeDelete} />
             )}
 
-            <Search />
+            {/* <Search /> */}
 
             <div className="table-wrapper">
                 {isLoading && <Spinner />}
