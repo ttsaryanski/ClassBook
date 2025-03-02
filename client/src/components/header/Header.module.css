@@ -1,0 +1,119 @@
+/* Header styles */
+.header {
+    width: 92%;
+    height: 4rem;
+    display: flex;
+    /* padding: 0 10%; */
+    margin: 1rem auto 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+    background: #f7f7f7;
+    color: #369;
+}
+  
+.logo {
+    font-size: 1.2rem;
+    color: #369;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+  
+.logo .description {
+    margin-left: 10px;
+}
+
+.logo .media {
+    height: 4rem;
+    color: #369;
+    background-color: #369;
+}
+
+.logo .media .img {
+    width: auto;
+    height: 100%;
+}
+
+/* Nav styles */
+
+.nav {
+    z-index: 10;
+}
+
+.nav .ul {
+    display: flex;
+    gap: 1em;
+    font-size: 14px;
+}
+
+.nav .ul .list, 
+.nav .ul .list .a {
+    display: block;
+}
+
+.nav .ul .list {
+    position: relative;
+}
+
+.nav .ul .list:hover > .ul {
+    min-width: 20ch;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    gap: 0.5em;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border-radius: 0.3em;
+    box-shadow: 0 0 1em 0 rgb(0, 0, 0, 0.2);
+    padding: 0.5em;
+}
+
+.nav .ul .list .a {
+    padding: 0.7em 1.5em;
+    background: #369;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0.3em;
+}
+
+.nav .ul .list:hover > .a,
+.nav .ul .list .a:hover {
+    background-color: lightblue;
+    color: #000;
+}
+
+.nav .ul .ul {
+    display: none;
+}
+
+.nav .ul .ul .list:hover > .ul {
+    left: initial;
+    right: 100%;
+    top: -0.5em;
+}
+  
+@media (max-width: 768px) {
+    .header {
+      padding: 0 5%;
+      height: 4rem;
+    }
+    .header .logo {
+      font-size: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .logo .course {
+        display: none;
+    }
+    /* .logo .description {
+      font-size: 1rem;
+      margin-left: 0px;
+    } */
+}
