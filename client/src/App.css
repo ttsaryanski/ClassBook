@@ -850,20 +850,6 @@ ul {
   background-color: rgb(231, 108, 108);
 }
 
-/* Footer styles */
-.footer {
-  text-align: center;
-  width: 100%;
-  height: 3rem;
-  padding: 10px;
-  color: white;
-  background: #24292f;
-}
-
-.footer p {
-  font-size: 1.2rem;
-}
-
 /* Loading spinner */
 
 .loading-container {
@@ -915,13 +901,6 @@ ul {
   }
   100% {
     transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 768px) {
-  /* Footer  */
-  .footer p {
-    font-size: 0.9rem;
   }
 }
 
