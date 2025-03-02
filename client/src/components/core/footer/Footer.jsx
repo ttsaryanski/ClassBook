@@ -23,7 +23,7 @@ export default function Footer() {
                                 href="https://github.com/ttsaryanski"
                                 target="_blank"
                             >
-                                <i class="fa-brands fa-square-github"></i>
+                                <i className="fa-brands fa-square-github"></i>
                             </a>
                         </li>
                         <li className={styles.list}>
@@ -32,7 +32,7 @@ export default function Footer() {
                                 href="https://linkedin.com/in/tsvetan-tsaryanski-765775327"
                                 target="_blank"
                             >
-                                <i class="fa-brands fa-linkedin"></i>
+                                <i className="fa-brands fa-linkedin"></i>
                             </a>
                         </li>
                         <li className={styles.list}>
@@ -40,7 +40,7 @@ export default function Footer() {
                                 className={styles.link}
                                 href="mailto:ttsaryanski@gmail.com"
                             >
-                                <i class="fa-solid fa-square-envelope"></i>
+                                <i className="fa-solid fa-square-envelope"></i>
                             </a>
                         </li>
                     </ul>
@@ -63,9 +63,13 @@ export default function Footer() {
 
             <p className={styles.par}>
                 This application is an exam project for the React course at{" "}
-                <a href="https://softuni.bg" target="_blank">
+                <a
+                    className={styles.link}
+                    href="https://softuni.bg"
+                    target="_blank"
+                >
                     SoftUni
-                </a>
+                </a>{" "}
                 .
             </p>
         </footer>

@@ -75,6 +75,16 @@
     line-height: 0;
 }
 
+.footer > .par .link {
+    display: inline-block;
+}
+
+.footer .ul .list .link:hover,
+.footer .media .img:hover,
+.footer > .par .link:hover {
+    transform: scale(1.1);
+}
+
 .footer > .par {
     font-size: 2em;
 }

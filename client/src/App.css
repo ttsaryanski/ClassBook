@@ -518,10 +518,6 @@ ul {
   margin: 0;
 }
 
-.btn:hover {
-  /* opacity: 1; */
-}
-
 .delete-btn {
   background-color: #d9534f;
 }
