@@ -85,26 +85,26 @@ export default function Header() {
                         </ul>
                     </li>
                     <li className={styles.list}>
-                        <Link className={styles.link} to="/about">
-                            About
+                        <Link className={styles.link}>
+                            <i className="fa-solid fa-right-to-bracket"></i>
                         </Link>
                         <ul className={styles.ul}>
                             <li className={styles.list}>
-                                <Link className={styles.link} to="/about/me">
-                                    About me
+                                <Link className={styles.link} to="/login">
+                                    Login
                                 </Link>
                             </li>
                             <li className={styles.list}>
-                                <Link className={styles.link} to="/about/all">
-                                    About All
+                                <Link className={styles.link} to="/register">
+                                    Register
                                 </Link>
-                                <ul className={styles.ul}>
+                                {/* <ul className={styles.ul}>
                                     <li className={styles.list}>
                                         <Link
                                             className={styles.link}
-                                            to="/about/me2"
+                                            to="/logout"
                                         >
-                                            About me 2
+                                            Logout
                                         </Link>
                                     </li>
                                     <li className={styles.list}>
@@ -131,18 +131,18 @@ export default function Header() {
                                             About last one 2
                                         </Link>
                                     </li>
-                                </ul>
+                                </ul> */}
                             </li>
                             <li className={styles.list}>
-                                <Link className={styles.link} to="/about/more">
-                                    About more
+                                <Link className={styles.link} to="/logout">
+                                    Logout
                                 </Link>
                             </li>
-                            <li className={styles.list}>
+                            {/* <li className={styles.list}>
                                 <Link className={styles.link} to="/about/last">
                                     About last one
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </li>
                     <li className={styles.list}>
