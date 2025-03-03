@@ -31,7 +31,8 @@
 }
 
 .button:hover {
-    transform: scale(1.02);
+    background-color: lightblue;
+    color: #369;
 }
 
 .label {

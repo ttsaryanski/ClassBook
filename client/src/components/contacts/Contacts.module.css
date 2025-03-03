@@ -11,6 +11,9 @@
 .contact_section .container {
     max-width: 1200px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .contact_section .row {
@@ -21,9 +24,20 @@
     gap: 30px;
 }
 
-.contact_section .col_md_6 {
+.contact_section .col_md_6,
+.row .col_md_6 {
     flex: 1;
     min-width: 45%;
+}
+
+.contact_info {
+    color: #369;
+    font-size: 1.5em;
+    text-align: left;
+}
+
+.media_body {
+    margin-left: 1rem;
 }
 
 .form .input_container {
@@ -40,7 +54,7 @@
     background-color: #ffffff;
     outline: none;
     color: #333;
-    box-shadow: 0 0 7px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 7px rgba(51, 102, 153, 0.5);
 }
   
 .contact_section .input::-webkit-input-placeholder {
@@ -100,6 +114,12 @@
     font-weight: bold;
     text-transform: uppercase;
     color: #369;
+}
+
+.contacts_form {
+    width: 50%;
+    margin-top: 4em;
+    align-self: center;
 }
 
 @media (max-width: 768px) {
