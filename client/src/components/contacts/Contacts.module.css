@@ -36,8 +36,14 @@
     text-align: left;
 }
 
+.contact_info .icon {
+    align-self: flex-start;
+    padding-top: 0.3rem;
+    font-size: 1.5em;
+}
+
 .media_body {
-    margin-left: 1rem;
+    margin-left: 2rem;
 }
 
 .form .input_container {
@@ -85,11 +91,17 @@
     background-color: #369;
     color: white;
     border-radius: 0.3rem;
+    text-decoration: none;
+}
+
+.contact_section .button .link {
+    text-decoration: none;
 }
   
 .contact_section .button:hover {
     background-color: lightblue;
     color: #369;
+    cursor: pointer;
 }
   
 .contact_section .map_container {

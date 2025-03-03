@@ -1,5 +1,6 @@
 import styles from "./Contacts.module.css";
 import Map from "../../components/shared/Map";
+import { Link } from "react-router-dom";
 
 export default function Contacts() {
     return (
@@ -19,7 +20,9 @@ export default function Contacts() {
                         >
                             <div className="contact-item media">
                                 {" "}
-                                <i className="fa fa-map-marker-alt media-left media-right-margin"></i>
+                                <i
+                                    className={`${styles.icon} fa fa-map-marker-alt media-left media-right-margin`}
+                                ></i>
                                 <div
                                     className={`${styles.media_body} media-body`}
                                 >
@@ -31,38 +34,37 @@ export default function Contacts() {
                             </div>
                             <div className="contact-item media">
                                 {" "}
-                                <i className="fa fa-mobile media-left media-right-margin"></i>
+                                <i
+                                    className={`${styles.icon} fa fa-mobile media-left media-right-margin`}
+                                ></i>
                                 <div
                                     className={`${styles.media_body} media-body`}
                                 >
                                     <p className="text-uppercase">Phone</p>
                                     <p className="text-uppercase">
-                                        <a className="" href="tel:+15173977100">
-                                            (359) 000 00 00 00
-                                        </a>{" "}
+                                        (359) 000 00 00 00
                                     </p>
                                 </div>
                             </div>
                             <div className="contact-item media">
                                 {" "}
-                                <i className="fa fa-envelope media-left media-right-margin"></i>
+                                <i
+                                    className={`${styles.icon} fa fa-envelope media-left media-right-margin`}
+                                ></i>
                                 <div
                                     className={`${styles.media_body} media-body`}
                                 >
                                     <p className="text-uppercase">E-mail</p>
                                     <p className="text-uppercase">
-                                        <a
-                                            className=""
-                                            href="mailto:abcdefg@gmail.com"
-                                        >
-                                            email@gmail.com
-                                        </a>{" "}
+                                        email@gmail.com
                                     </p>
                                 </div>
                             </div>
                             <div className="contact-item media">
                                 {" "}
-                                <i className="fa fa-clock media-left media-right-margin"></i>
+                                <i
+                                    className={`${styles.icon} fa fa-clock media-left media-right-margin`}
+                                ></i>
                                 <div
                                     className={`${styles.media_body} media-body`}
                                 >
@@ -120,9 +122,13 @@ export default function Contacts() {
                                 placeholder="Message"
                             />
                         </div>
-                        <div className={styles.d_flex}>
-                            <button className={styles.button}>SEND</button>
-                        </div>
+
+                        <Link
+                            to={"/page404"}
+                            className={`${styles.button} ${styles.link}`}
+                        >
+                            SEND
+                        </Link>
                     </form>
                 </div>
             </div>

@@ -5,9 +5,10 @@ import Header from "./components/core/header/Header";
 import UserList from "./components/UserList";
 import Footer from "./components/core/footer/Footer";
 import Contacts from "./components/contacts/Contacts";
-import Home from "./components/Home/Home";
+import Home from "./components/home/Home";
 import Login from "./components/auth/Login/Login";
 import Register from "./components/auth/Register/Register";
+import Page404 from "./components/page 404/Page404";
 
 function App() {
     return (
@@ -25,6 +26,8 @@ function App() {
                     <Route path="/auth/register" element={<Register />} />
 
                     <Route path="/contacts" element={<Contacts />} />
+
+                    <Route path="/page404" element={<Page404 />} />
                 </Routes>
             </main>
             <Footer />
