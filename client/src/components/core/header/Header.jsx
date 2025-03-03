@@ -26,12 +26,12 @@ export default function Header() {
                     </li>
                     <li className={styles.list}>
                         <Link className={styles.link} to="/blog">
-                            Blog
+                            Teachers
                         </Link>
                     </li>
                     <li className={styles.list}>
                         <Link className={styles.link} to="/archive">
-                            Archive
+                            Students
                         </Link>
                         <ul className={styles.ul}>
                             <li className={styles.list}>
