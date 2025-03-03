@@ -90,12 +90,15 @@ export default function Header() {
                         </Link>
                         <ul className={styles.ul}>
                             <li className={styles.list}>
-                                <Link className={styles.link} to="/login">
+                                <Link className={styles.link} to="/auth/login">
                                     Login
                                 </Link>
                             </li>
                             <li className={styles.list}>
-                                <Link className={styles.link} to="/register">
+                                <Link
+                                    className={styles.link}
+                                    to="/auth/register"
+                                >
                                     Register
                                 </Link>
                                 {/* <ul className={styles.ul}>
