@@ -2,19 +2,20 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 export default function Map() {
-    const position = [42.6361839, 23.3697986];
+    const position = [42.869703, 25.317];
+    const marker = [42.870665, 25.3167];
 
     return (
         <MapContainer
             center={position}
-            zoom={17} // Увеличение за по-добра видимост
+            zoom={17}
             style={{ height: "400px", width: "100%" }}
         >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={position}>
+            <Marker position={marker}>
                 <Popup>
-                    Software University
-                    <br /> София, България
+                    НАГ Васил Априлов
+                    <br /> Габрово, България
                 </Popup>
             </Marker>
         </MapContainer>
