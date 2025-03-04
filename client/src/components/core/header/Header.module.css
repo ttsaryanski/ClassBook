@@ -77,6 +77,11 @@
     padding: 0.5em;
 }
 
+.nav .ul .last:hover > .ul {
+    left: auto;
+    right: 0;
+}
+
 .nav .ul .list .link {
     padding: 0.7em 1.5em;
     background: #369;
@@ -95,11 +100,11 @@
     display: none;
 }
 
-.nav .ul .ul .list:hover > .ul {
+/* .nav .ul .ul .list:hover > .ul {
     left: initial;
     right: 100%;
     top: -0.5em;
-}
+} */
   
 @media (max-width: 768px) {
     .header {

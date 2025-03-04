@@ -85,6 +85,11 @@ export default function Header() {
                         </ul>
                     </li>
                     <li className={styles.list}>
+                        <Link className={styles.link} to="/contacts">
+                            Contacts
+                        </Link>
+                    </li>
+                    <li className={`${styles.list} ${styles.last}`}>
                         <Link className={styles.link}>
                             <i className="fa-solid fa-right-to-bracket"></i>
                         </Link>
@@ -147,11 +152,6 @@ export default function Header() {
                                 </Link>
                             </li> */}
                         </ul>
-                    </li>
-                    <li className={styles.list}>
-                        <Link className={styles.link} to="/contacts">
-                            Contacts
-                        </Link>
                     </li>
                 </ul>
             </nav>
