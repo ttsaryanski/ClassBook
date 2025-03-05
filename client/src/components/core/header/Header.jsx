@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 
 export default function Header() {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <header className={styles.header}>
             <div className={styles.logo}>
@@ -17,7 +20,14 @@ export default function Header() {
                 <span className={styles.course}>НАГ Васил Априлов</span>
             </div>
 
-            <nav className={styles.nav}>
+            <button
+                className={styles.burger}
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                &#9776;
+            </button>
+
+            <nav className={`${styles.nav} ${isOpen ? styles.open : ""}`}>
                 <ul className={styles.ul}>
                     <li className={styles.list}>
                         <Link className={styles.link} to="/">

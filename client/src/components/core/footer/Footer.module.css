@@ -93,6 +93,14 @@
 
 @media (max-width: 768px) {
     /* Footer  */
+    .links {
+        flex-direction: column;
+    }
+
+    .contacts {
+        padding-right: 0;
+        border-right: none;
+    }
 
     .footer .par {
         font-size: 0.9rem;

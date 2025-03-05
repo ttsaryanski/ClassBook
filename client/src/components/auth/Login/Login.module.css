@@ -75,3 +75,7 @@
     background-color: #369;
     padding: 0.1rem;
 }
+
+@media (max-width: 768px) {
+    .login {width: auto;}
+}

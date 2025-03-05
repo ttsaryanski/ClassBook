@@ -4,11 +4,10 @@
     width: 92%;
     height: 4rem;
     display: flex;
-    margin: 1rem auto 0;
-    display: flex;
-    align-items: center;
+    margin: 1rem auto;
     gap: 1rem;
     justify-content: space-between;
+    align-items: center;
     background: #f7f7f7;
     color: #369;
     padding: 2.5rem 0 4rem;
@@ -77,6 +76,7 @@
     border-radius: 0.3em;
     box-shadow: 0 0 1em 0 rgb(0, 0, 0, 0.2);
     padding: 0.5em;
+    z-index: 40;
 }
 
 .nav .ul .last:hover > .ul {
@@ -107,12 +107,25 @@
     right: 100%;
     top: -0.5em;
 } */
+
+.burger {
+    display: none;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #369;
+}
   
 @media (max-width: 768px) {
     .header {
       padding: 0 5%;
       height: 4rem;
+      align-items: center;
+      padding-bottom: 1em;
+      /* border-bottom: none; */
     }
+
     .header .logo {
       font-size: 1.2rem;
       display: flex;
@@ -120,8 +133,56 @@
       justify-content: center;
       text-align: center;
     }
-
+    
     .logo .course {
         display: none;
+    }
+
+    .burger {
+        display: block;
+        background-color: #369;
+        color: #fff;
+        border-radius: 0.1em;
+        padding: 0.1rem 0.2rem;
+        align-items: center;
+    }
+
+    .nav {
+        display: none;
+        position: absolute;
+        top: 4rem;
+        left: 0;
+        width: 100%;
+        background: #f7f7f7;
+        flex-direction: column;
+        text-align: center;
+        box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .nav.open {
+        display: flex;
+        align-items: flex-end;
+        background-color: transparent;
+        box-shadow: none;
+        padding-right: 0.8em;
+        margin-top: 0.5em;
+    }
+
+    .nav .ul {
+        /* width: 20ch; */
+        flex-direction: column;
+        gap: 0.5em;
+        padding: 0.5em;
+        background-color: #fff;
+        border-radius: 0.3em;
+    }
+
+    /* .nav .ul .list {
+        position: relative;
+    } */
+
+    .nav .ul .list:hover > .ul {
+        top: 0;
+        left:-164%;
     }
 }
