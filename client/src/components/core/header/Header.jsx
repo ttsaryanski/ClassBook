@@ -28,6 +28,32 @@ export default function Header() {
                         <Link className={styles.link} to="/blog">
                             Teachers
                         </Link>
+                        <ul className={styles.ul}>
+                            <li className={styles.list}>
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/jan-2024"
+                                >
+                                    Class Room 1
+                                </Link>
+                            </li>
+                            <li className={styles.list}>
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/feb-2024"
+                                >
+                                    Class Room 2
+                                </Link>
+                            </li>
+                            <li className={styles.list}>
+                                <Link
+                                    className={styles.link}
+                                    to="/archive/mar-2024"
+                                >
+                                    Class Room 3
+                                </Link>
+                            </li>
+                        </ul>
                     </li>
                     <li className={styles.list}>
                         <Link className={styles.link} to="/archive">
@@ -39,7 +65,7 @@ export default function Header() {
                                     className={styles.link}
                                     to="/archive/jan-2024"
                                 >
-                                    Jan 2024
+                                    Class Room 1
                                 </Link>
                             </li>
                             <li className={styles.list}>
@@ -47,7 +73,7 @@ export default function Header() {
                                     className={styles.link}
                                     to="/archive/feb-2024"
                                 >
-                                    Feb 2024
+                                    Class Room 2
                                 </Link>
                             </li>
                             <li className={styles.list}>
@@ -55,31 +81,7 @@ export default function Header() {
                                     className={styles.link}
                                     to="/archive/mar-2024"
                                 >
-                                    Mar 2024
-                                </Link>
-                            </li>
-                            <li className={styles.list}>
-                                <Link
-                                    className={styles.link}
-                                    to="/archive/apr-2024"
-                                >
-                                    Apr 2024
-                                </Link>
-                            </li>
-                            <li className={styles.list}>
-                                <Link
-                                    className={styles.link}
-                                    to="/archive/may-2024"
-                                >
-                                    May 2024
-                                </Link>
-                            </li>
-                            <li className={styles.list}>
-                                <Link
-                                    className={styles.link}
-                                    to="/archive/jun-2024"
-                                >
-                                    Jun 2024
+                                    Class Room 3
                                 </Link>
                             </li>
                         </ul>

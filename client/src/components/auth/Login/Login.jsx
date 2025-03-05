@@ -5,13 +5,17 @@ import styles from "./Login.module.css";
 export default function Login() {
     return (
         <div className={styles.login}>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+            <div
+                className={`${styles.login_flex} flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8`}
+            >
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img
-                        alt="Your Company"
-                        src="/footer_logo_white_cropped-min.png"
-                        className={`${styles.img} mx-auto h-10 w-auto`}
-                    />
+                    <div className={styles.media}>
+                        <img
+                            alt="Your Company"
+                            src="/footer_logo_white_cropped-min.png"
+                            className={`${styles.img} mx-auto h-10 w-auto`}
+                        />
+                    </div>
                     <h2
                         className={`${styles.h2} mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900`}
                     >

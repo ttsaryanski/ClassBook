@@ -1,16 +1,31 @@
 .login {
-    width: 40ch;
+    width: 60ch;
+    padding: 2em;
+    box-shadow: 0 0 7px rgba(51, 102, 153, 0.5);
+    border-radius: 0.3em;
+    align-items: center;
 }
 
-.form {
-    font-size: 1.2em;
+.login .login_flex {
+    flex: 1 1 100%;
+    align-items: center;
+}
+
+
+.login .media {
+    border-radius: 0.3em;
+    overflow: hidden;
+    margin-bottom: 1rem;
 }
 
 .img {
     background-color: #369;
-    margin-bottom: 1rem;
     width: 5em;
     height: auto;
+}
+
+.form {
+    font-size: 1.2em;
 }
 
 .h2 {
@@ -28,6 +43,7 @@
     background-color: #369;
     padding: 0.5rem 1.4rem;
     font-size: 1.2em;
+    border-radius: 0.3em;
 }
 
 .button:hover {
