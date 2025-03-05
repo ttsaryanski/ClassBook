@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { dataService } from "../services/dataService";
 
-import Pagination from "./Pagination";
+import Pagination from "./shared//Pagination";
 import Search from "./Search";
 import UserItem from "./UserItem";
 import Spinner from "./Spinner";

@@ -36,15 +36,10 @@ export default function Header() {
                         </Link>
                     </li>
                     <li className={styles.list}>
-                        <Link className={styles.link} to="/blog">
-                            Teachers
-                        </Link>
+                        <Link className={styles.link}>Teachers</Link>
                         <ul className={styles.ul}>
                             <li className={styles.list}>
-                                <Link
-                                    className={styles.link}
-                                    to="/archive/jan-2024"
-                                >
+                                <Link className={styles.link} to="/class_1">
                                     Class Room 1
                                 </Link>
                             </li>
@@ -67,9 +62,7 @@ export default function Header() {
                         </ul>
                     </li>
                     <li className={styles.list}>
-                        <Link className={styles.link} to="/archive">
-                            Students
-                        </Link>
+                        <Link className={styles.link}>Students</Link>
                         <ul className={styles.ul}>
                             <li className={styles.list}>
                                 <Link

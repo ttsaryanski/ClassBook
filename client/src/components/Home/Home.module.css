@@ -25,3 +25,9 @@
 .row .link {
     background-color: #369;
 }
+
+@media (max-width: 768px) {
+    .row .link {
+        top: 50%;
+    }
+}
