@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 
 import "./App.css";
 
@@ -28,7 +28,7 @@ function App() {
 
                     <Route path="/contacts" element={<Contacts />} />
 
-                    <Route path="/page404" element={<Page404 />} />
+                    <Route path="*" element={<Page404 />} />
                 </Routes>
             </main>
             <Footer />

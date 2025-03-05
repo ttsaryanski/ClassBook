@@ -1,6 +1,8 @@
-import styles from "./Contacts.module.css";
+import { Link } from "react-router";
+
 import Map from "../../components/shared/Map";
-import { Link } from "react-router-dom";
+
+import styles from "./Contacts.module.css";
 
 export default function Contacts() {
     return (
@@ -124,7 +126,7 @@ export default function Contacts() {
                         </div>
 
                         <Link
-                            to={"/page404"}
+                            to={"/underconstruction"}
                             className={`${styles.button} ${styles.link}`}
                         >
                             SEND
