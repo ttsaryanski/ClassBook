@@ -22,15 +22,16 @@ function App() {
 
                     <Route path="/class_1" element={<UserList />} />
 
+                    <Route path="/contacts" element={<Contacts />} />
+
                     <Route path="/auth/login" element={<Login />} />
 
                     <Route path="/auth/register" element={<Register />} />
 
-                    <Route path="/contacts" element={<Contacts />} />
-
                     <Route path="*" element={<Page404 />} />
                 </Routes>
             </main>
+
             <Footer />
         </div>
     );
