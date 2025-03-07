@@ -10,6 +10,7 @@ import Home from "./components/home/Home";
 import Login from "./components/auth/Login/Login";
 import Register from "./components/auth/Register/Register";
 import Page404 from "./components/page 404/Page404";
+import UnderConstruction from "./components/underConstruction/UnderConstruction";
 
 function App() {
     return (
@@ -27,6 +28,11 @@ function App() {
                     <Route path="/auth/login" element={<Login />} />
 
                     <Route path="/auth/register" element={<Register />} />
+
+                    <Route
+                        path="/underconstruction"
+                        element={<UnderConstruction />}
+                    />
 
                     <Route path="*" element={<Page404 />} />
                 </Routes>
