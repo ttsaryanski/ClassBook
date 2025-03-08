@@ -115,7 +115,7 @@ ul {
   z-index: 20;
 }
 
-.modal {
+.modall {
   width: 45rem;
   position: absolute;
   max-height: 90vh;
@@ -129,7 +129,7 @@ ul {
 }
 
 @media (min-width: 930px) {
-  .modal {
+  .modall {
     width: 45rem;
     left: calc(50% - 20rem);
     border-radius: 14px;

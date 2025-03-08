@@ -25,7 +25,7 @@ export default function CreateView({ userId, onClose, onSave, onEdit }) {
     return (
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
-            <div className="modal">
+            <div className="modall">
                 <div className="user-container">
                     <header className="headers">
                         <h2>{userId ? "Edit" : "Add"} User</h2>

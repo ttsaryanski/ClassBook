@@ -22,7 +22,7 @@ export default function UserDetails({ userId, onClose }) {
     return (
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
-            <div className="modal">
+            <div className="modall">
                 <div className="detail-container">
                     <header className="headers">
                         <h2>User Detail</h2>

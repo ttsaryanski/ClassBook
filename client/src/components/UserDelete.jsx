@@ -2,7 +2,7 @@ export default function ShowDeleteUser({ onDelete, onClose }) {
     return (
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
-            <div className="modal">
+            <div className="modall">
                 <div className="confirm-container">
                     <header className="headers">
                         <h2>Are you sure you want to delete this account?</h2>
