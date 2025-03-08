@@ -2,41 +2,63 @@ import bcrypt from "bcrypt";
 
 import User from "../models/User.js";
 import File from "../models/File.js";
+import Setting from "../models/Setting.js";
 
 import jwt from "../lib/jwt.js";
 import InvalidToken from "../models/InvalidToken.js";
 
-const register = async (username, email, password, profilePicture) => {
-  const user = await User.findOne({ $or: [{ username }, { email }] });
-
-  if (user) {
-    throw new Error("This username or email already registered!");
-  }
-
-  const createdUser = await User.create({
-    username,
+const register = async (
+    firstName,
+    lastName,
     email,
+    secretKey,
     password,
-    profilePicture: profilePicture || null,
-  });
+    profilePicture
+) => {
+    const user = await User.findOne({ email });
 
-  return createAccessToken(createdUser);
+    if (user) {
+        throw new Error("This email already registered!");
+    }
+
+    let role = "";
+
+    const settings = await Setting.findOne();
+
+    if (secretKey === settings.teacherKey) {
+        role = "teacher";
+    } else if (secretKey === settings.directorKey) {
+        role = "director";
+    } else {
+        role = "student";
+    }
+
+    const createdUser = await User.create({
+        firstName,
+        lastName,
+        email,
+        role,
+        password,
+        profilePicture: profilePicture || null,
+    });
+
+    return createAccessToken(createdUser);
 };
 
 const login = async (email, password) => {
-  const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    throw new Error("User does not exist!");
-  }
+    if (!user) {
+        throw new Error("User does not exist!");
+    }
 
-  const isValid = await bcrypt.compare(password, user.password);
+    const isValid = await bcrypt.compare(password, user.password);
 
-  if (!isValid) {
-    throw new Error("Password does not match!");
-  }
+    if (!isValid) {
+        throw new Error("Password does not match!");
+    }
 
-  return createAccessToken(user);
+    return createAccessToken(user);
 };
 
 const logout = (token) => InvalidToken.create({ token });
@@ -46,26 +68,28 @@ const getUserById = (id) => User.findById(id);
 const saveUserFile = (fileName, fileUrl) => File.create({ fileName, fileUrl });
 
 async function createAccessToken(user) {
-  const payload = {
-    _id: user._id,
-    username: user.username,
-    email: user.email,
-  };
+    const payload = {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+    };
 
-  const token = await jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+    const token = await jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+    });
 
-  return {
-    user,
-    accessToken: token,
-  };
+    return {
+        user,
+        accessToken: token,
+    };
 }
 
 export default {
-  register,
-  login,
-  logout,
-  getUserById,
-  saveUserFile,
+    register,
+    login,
+    logout,
+    getUserById,
+    saveUserFile,
 };

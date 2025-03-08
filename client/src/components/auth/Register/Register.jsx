@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+
+import { userService } from "../../../services/authService";
 
 import styles from "./Register.module.css";
 
 export default function Register() {
+    const navigate = useNavigate();
+
     const [pending, setPending] = useState(false);
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [sicretKey, setSicretKey] = useState("");
+    const [secretKey, setSecretKey] = useState(null);
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
 
@@ -20,6 +24,15 @@ export default function Register() {
         password: "",
         rePassword: "",
     });
+
+    const clearForm = () => {
+        setFirstName(""),
+            setLastName(""),
+            setEmail(""),
+            setSecretKey(null),
+            setPassword(""),
+            setRePassword("");
+    };
 
     const validateFirstName = (value) => {
         if (value.length < 3) {
@@ -58,9 +71,24 @@ export default function Register() {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        //setPending(true);
+        setPending(true);
 
-        console.log(firstName, lastName, email, sicretKey, password);
+        try {
+            const newUser = await userService.register({
+                firstName,
+                lastName,
+                email,
+                secretKey,
+                password,
+            });
+
+            setPending(false);
+            clearForm();
+            navigate("/");
+        } catch (error) {
+            console.log(error.msg);
+            setPending(false);
+        }
     };
 
     const firstNameChangeHandler = (e) => {
@@ -81,9 +109,9 @@ export default function Register() {
         setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
     };
 
-    const sicretKeyChangeHandler = (e) => {
+    const secretKeyChangeHandler = (e) => {
         const value = e.target.value;
-        setSicretKey(value);
+        setSecretKey(value);
     };
 
     const passwordChangeHandler = (e) => {
@@ -222,11 +250,11 @@ export default function Register() {
                             </label>
                             <div className="mt-2">
                                 <input
-                                    type="text"
+                                    type="password"
                                     id="sicret"
                                     name="sicret"
-                                    defaultValue={sicretKey}
-                                    onChange={sicretKeyChangeHandler}
+                                    defaultValue={secretKey}
+                                    onChange={secretKeyChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
                             </div>
