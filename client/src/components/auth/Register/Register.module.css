@@ -38,6 +38,16 @@
     margin-bottom: 1.5rem;
 }
 
+.form .required::after {
+    content: '*';
+    color: #db0000;
+    margin-left: 0.3rem;
+}
+
+.form .span {
+    color: #369;
+}
+
 .button {
     background-color: #369;
     padding: 0.5rem 1.4rem;

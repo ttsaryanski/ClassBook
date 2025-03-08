@@ -1,8 +1,117 @@
+import { useState } from "react";
 import { Link } from "react-router";
 
 import styles from "./Register.module.css";
 
 export default function Register() {
+    const [pending, setPending] = useState(false);
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [sicretKey, setSicretKey] = useState("");
+    const [password, setPassword] = useState("");
+    const [rePassword, setRePassword] = useState("");
+
+    const [errors, setErrors] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        rePassword: "",
+    });
+
+    const validateFirstName = (value) => {
+        if (value.length < 3) {
+            return "Firstname must be at least 3 characters long.";
+        }
+        return "";
+    };
+
+    const validateLastName = (value) => {
+        if (value.length < 3) {
+            return "Lastname must be at least 3 characters long.";
+        }
+        return "";
+    };
+    const validateEmail = (value) => {
+        const emailRegex =
+            /^[A-Za-z0-9._%+-]{3,}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        return emailRegex.test(value) ? "" : "Invalid email format.";
+    };
+
+    const validatePassword = (value) => {
+        if (value.length < 6) {
+            return "Password must be at least 6 characters long.";
+        }
+        return "";
+    };
+
+    const validateRePassword = (value, password) => {
+        if (value !== password) {
+            return "Password missmatch!";
+        }
+
+        return "";
+    };
+
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        //setPending(true);
+
+        console.log(firstName, lastName, email, sicretKey, password);
+    };
+
+    const firstNameChangeHandler = (e) => {
+        const value = e.target.value;
+        setFirstName(value);
+        setErrors((prev) => ({ ...prev, firstName: validateFirstName(value) }));
+    };
+
+    const lastNameChangeHandler = (e) => {
+        const value = e.target.value;
+        setLastName(value);
+        setErrors((prev) => ({ ...prev, lastName: validateLastName(value) }));
+    };
+
+    const emailChangeHandler = (e) => {
+        const value = e.target.value;
+        setEmail(value);
+        setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
+    };
+
+    const sicretKeyChangeHandler = (e) => {
+        const value = e.target.value;
+        setSicretKey(value);
+    };
+
+    const passwordChangeHandler = (e) => {
+        const value = e.target.value;
+        setPassword(value);
+        setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
+    };
+
+    const rePasswordChangeHandler = (e) => {
+        const value = e.target.value;
+        setRePassword(value);
+        setErrors((prev) => ({
+            ...prev,
+            rePassword: validateRePassword(value, password),
+        }));
+    };
+
+    const isFormValid =
+        !errors.firstName &&
+        !errors.lastName &&
+        !errors.email &&
+        !errors.password &&
+        !errors.rePassword &&
+        firstName &&
+        lastName &&
+        email &&
+        password &&
+        rePassword;
+
     return (
         <div className={styles.register}>
             <div
@@ -25,52 +134,63 @@ export default function Register() {
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form
-                        action="#"
-                        method="POST"
+                        onSubmit={submitHandler}
                         className={`${styles.form} space-y-6}`}
                     >
                         <div className={styles.form_row}>
                             <label
                                 htmlFor="firstName"
-                                className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                             >
                                 First name
                             </label>
                             <div className="mt-2">
                                 <input
+                                    type="text"
                                     id="firstName"
                                     name="firstName"
-                                    type="text"
+                                    defaultValue={firstName}
                                     required
-                                    autoComplete="first-name"
+                                    onChange={firstNameChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
+                                {errors.firstName && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.firstName}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         <div className={styles.form_row}>
                             <label
                                 htmlFor="lastName"
-                                className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                             >
                                 Last name
                             </label>
                             <div className="mt-2">
                                 <input
+                                    type="text"
                                     id="lastName"
                                     name="lastName"
-                                    type="text"
+                                    defaultValue={lastName}
                                     required
-                                    autoComplete="last-name"
+                                    onChange={lastNameChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
+                                {errors.lastName && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.lastName}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         <div className={styles.form_row}>
                             <label
                                 htmlFor="email"
-                                className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                             >
                                 Email address
                             </label>
@@ -79,31 +199,65 @@ export default function Register() {
                                     id="email"
                                     name="email"
                                     type="email"
+                                    defaultValue={email}
                                     required
-                                    autoComplete="email"
+                                    onChange={emailChangeHandler}
+                                    className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
+                                />
+                                {errors.email && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.email}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className={styles.form_row}>
+                            <label
+                                htmlFor="sicret"
+                                className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                            >
+                                Sicret key
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    type="text"
+                                    id="sicret"
+                                    name="sicret"
+                                    defaultValue={sicretKey}
+                                    onChange={sicretKeyChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
                             </div>
+                            <span className={styles.span}>
+                                If you are a teacher please enter your key!
+                            </span>
                         </div>
 
                         <div className={styles.form_row}>
                             <div className="flex items-center justify-between">
                                 <label
                                     htmlFor="password"
-                                    className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                    className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                                 >
                                     Password
                                 </label>
                             </div>
                             <div className="mt-2">
                                 <input
+                                    type="password"
                                     id="password"
                                     name="password"
-                                    type="password"
+                                    defaultValue={password}
                                     required
-                                    autoComplete="current-password"
+                                    onChange={passwordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
+                                {errors.password && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.password}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -111,27 +265,41 @@ export default function Register() {
                             <div className="flex items-center justify-between">
                                 <label
                                     htmlFor="rePassword"
-                                    className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                    className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                                 >
                                     Repeat Password
                                 </label>
                             </div>
                             <div className="mt-2">
                                 <input
+                                    type="password"
                                     id="rePassword"
                                     name="rePassword"
-                                    type="password"
+                                    defaultValue={rePassword}
                                     required
-                                    autoComplete="current-rePassword"
+                                    onChange={rePasswordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
+                                {errors.rePassword && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.rePassword}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         <div>
                             <button
                                 type="submit"
-                                className={`${styles.button} flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                                disabled={!isFormValid || pending}
+                                className={`${
+                                    styles.button
+                                } flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600
+                                ${
+                                    !isFormValid || pending
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : "hover:bg-blue-700"
+                                }`}
                             >
                                 Sign up
                             </button>

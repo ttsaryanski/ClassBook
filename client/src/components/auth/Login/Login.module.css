@@ -28,6 +28,12 @@
     font-size: 1.2em;
 }
 
+.form .required::after {
+    content: '*';
+    color: #db0000;
+    margin-left: 0.3rem;
+}
+
 .h2 {
     font-size: 2em;
     color: #369;

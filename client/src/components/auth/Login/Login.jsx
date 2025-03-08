@@ -32,7 +32,7 @@ export default function Login() {
                         <div className={styles.form_row}>
                             <label
                                 htmlFor="email"
-                                className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                             >
                                 Email address
                             </label>
@@ -52,7 +52,7 @@ export default function Login() {
                             <div className="flex items-center justify-between">
                                 <label
                                     htmlFor="password"
-                                    className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                    className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                                 >
                                     Password
                                 </label>
