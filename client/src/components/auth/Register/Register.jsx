@@ -34,6 +34,7 @@ export default function Register() {
         }
         return "";
     };
+
     const validateEmail = (value) => {
         const emailRegex =
             /^[A-Za-z0-9._%+-]{3,}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -196,9 +197,9 @@ export default function Register() {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    type="email"
                                     id="email"
                                     name="email"
-                                    type="email"
                                     defaultValue={email}
                                     required
                                     onChange={emailChangeHandler}
