@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
-import { userService } from "../../../services/authService";
+import { useAuth } from "../../../AutContext";
+import { authService } from "../../../services/authService";
 
 import styles from "./Register.module.css";
 
 export default function Register() {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -73,13 +75,14 @@ export default function Register() {
         setPending(true);
 
         try {
-            const newUser = await userService.register({
+            const newUser = await authService.register({
                 firstName,
                 lastName,
                 email,
                 secretKey,
                 password,
             });
+            await login(email, password);
 
             setPending(false);
             clearForm();

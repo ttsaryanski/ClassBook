@@ -42,6 +42,11 @@
     font-weight: bold;
 }
 
+.role {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 /* Nav styles */
 
 .nav {
@@ -92,6 +97,10 @@
     border-radius: 0.3em;
 }
 
+.nav .ul .list .link.button_link {
+    width: 100%;
+}
+
 .nav .ul .list:hover > .link,
 .nav .ul .list .link:hover {
     background-color: lightblue;
@@ -115,6 +124,12 @@
     border: none;
     cursor: pointer;
     color: #369;
+}
+
+@media (max-width: 1000px) {
+    .nav .ul .list .link {
+        font-size: 12px;
+    }
 }
   
 @media (max-width: 768px) {

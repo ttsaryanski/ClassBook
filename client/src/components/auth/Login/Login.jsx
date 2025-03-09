@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
+import { useAuth } from "../../../AutContext";
+
 import styles from "./Login.module.css";
-import { userService } from "../../../services/authService";
 
 export default function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -38,7 +40,7 @@ export default function Login() {
         setPending(true);
 
         try {
-            const logedUser = await userService.login({ email, password });
+            await login(email, password);
 
             setPending(false);
             clearForm();

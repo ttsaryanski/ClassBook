@@ -5,6 +5,7 @@ const host = "http://localhost:3000/api";
 async function requester(method, url, data) {
     const option = {
         method,
+        credentials: "include",
         headers: {},
     };
 
@@ -25,11 +26,8 @@ async function requester(method, url, data) {
         if (!response.ok) {
             const error = await response.json();
 
-            if (
-                response.status == 403 &&
-                error.message == "Invalid access token"
-            ) {
-                userUtil.clearUserData();
+            if (response.status === 401) {
+                console.log(error.message);
             }
 
             throw new Error(error.message);
@@ -41,7 +39,7 @@ async function requester(method, url, data) {
 
         return response.json();
     } catch (error) {
-        alert(error);
+        //alert(error);
         //notify(error.message);
         throw error;
     }

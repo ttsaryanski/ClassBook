@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router";
+import { AuthProvider } from "./AutContext";
 
 import "./App.css";
 
@@ -14,32 +15,34 @@ import UnderConstruction from "./components/underConstruction/UnderConstruction"
 
 function App() {
     return (
-        <div className="app-container">
-            <Header />
+        <AuthProvider>
+            <div className="app-container">
+                <Header />
 
-            <main className="main">
-                <Routes>
-                    <Route path="/" element={<Home />} />
+                <main className="main">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
 
-                    <Route path="/class_1" element={<UserList />} />
+                        <Route path="/class_1" element={<UserList />} />
 
-                    <Route path="/contacts" element={<Contacts />} />
+                        <Route path="/contacts" element={<Contacts />} />
 
-                    <Route path="/auth/login" element={<Login />} />
+                        <Route path="/auth/login" element={<Login />} />
 
-                    <Route path="/auth/register" element={<Register />} />
+                        <Route path="/auth/register" element={<Register />} />
 
-                    <Route
-                        path="/underconstruction"
-                        element={<UnderConstruction />}
-                    />
+                        <Route
+                            path="/underconstruction"
+                            element={<UnderConstruction />}
+                        />
 
-                    <Route path="*" element={<Page404 />} />
-                </Routes>
-            </main>
+                        <Route path="*" element={<Page404 />} />
+                    </Routes>
+                </main>
 
-            <Footer />
-        </div>
+                <Footer />
+            </div>
+        </AuthProvider>
     );
 }
 

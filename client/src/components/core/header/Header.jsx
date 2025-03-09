@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router";
 
+import { useAuth } from "../../../AutContext";
+
 import styles from "./Header.module.css";
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
+    const { user, logout } = useAuth();
 
     return (
         <header className={styles.header}>
@@ -20,6 +23,10 @@ export default function Header() {
                 </div>
                 <span className={styles.course}>НАГ Васил Априлов</span>
             </div>
+
+            {user && (
+                <span className={styles.role}>User status: {user.role}</span>
+            )}
 
             <button
                 className={styles.burger}
@@ -100,19 +107,24 @@ export default function Header() {
                             <i className="fa-solid fa-right-to-bracket"></i>
                         </Link>
                         <ul className={styles.ul}>
-                            <li className={styles.list}>
-                                <Link className={styles.link} to="/auth/login">
-                                    Login
-                                </Link>
-                            </li>
-                            <li className={styles.list}>
-                                <Link
-                                    className={styles.link}
-                                    to="/auth/register"
-                                >
-                                    Register
-                                </Link>
-                                {/* <ul className={styles.ul}>
+                            {!user && (
+                                <>
+                                    <li className={styles.list}>
+                                        <Link
+                                            className={styles.link}
+                                            to="/auth/login"
+                                        >
+                                            Login
+                                        </Link>
+                                    </li>
+                                    <li className={styles.list}>
+                                        <Link
+                                            className={styles.link}
+                                            to="/auth/register"
+                                        >
+                                            Register
+                                        </Link>
+                                        {/* <ul className={styles.ul}>
                                     <li className={styles.list}>
                                         <Link
                                             className={styles.link}
@@ -146,12 +158,19 @@ export default function Header() {
                                         </Link>
                                     </li>
                                 </ul> */}
-                            </li>
-                            <li className={styles.list}>
-                                <Link className={styles.link} to="/logout">
-                                    Logout
-                                </Link>
-                            </li>
+                                    </li>
+                                </>
+                            )}
+                            {user && (
+                                <li className={styles.list}>
+                                    <button
+                                        onClick={logout}
+                                        className={`${styles.link} ${styles.button_link}`}
+                                    >
+                                        Logout
+                                    </button>
+                                </li>
+                            )}
                             {/* <li className={styles.list}>
                                 <Link className={styles.link} to="/about/last">
                                     About last one

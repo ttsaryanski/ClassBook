@@ -716,6 +716,9 @@ ul {
 }
 
 @media (min-width: 681px) and (max-width: 1000px) {
+  body {
+    font-size: 12px;
+  }
   .detail-container {
     height: 66vh;
   }

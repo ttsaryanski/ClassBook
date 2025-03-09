@@ -5,6 +5,7 @@ const endPoints = {
     register: "/auth/register",
     login: "/auth/login",
     logout: "/auth/logout",
+    profile: "/auth/profile",
 };
 
 async function register(data) {
@@ -20,12 +21,20 @@ async function login(data) {
 }
 
 async function logout() {
-    await api.get(endPoints.logout);
+    return await api.post(endPoints.logout);
     //  userUtil.clearUserData();
 }
 
-export const userService = {
+async function profile() {
+    const user = await api.get(endPoints.profile);
+
+    return user;
+    //  userUtil.clearUserData();
+}
+
+export const authService = {
     register,
     login,
     logout,
+    profile,
 };
