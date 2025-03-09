@@ -8,8 +8,6 @@ import styles from "./Register.module.css";
 export default function Register() {
     const navigate = useNavigate();
 
-    const [pending, setPending] = useState(false);
-
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -17,6 +15,7 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
 
+    const [pending, setPending] = useState(false);
     const [errors, setErrors] = useState({
         firstName: "",
         lastName: "",

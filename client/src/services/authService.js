@@ -14,7 +14,8 @@ async function register(data) {
 }
 
 async function login(data) {
-    const userData = await api.post(endPoints.login, data);
+    //const userData = await api.post(endPoints.login, data);
+    return await api.post(endPoints.login, data);
     // userUtil.setUser(userData);
 }
 

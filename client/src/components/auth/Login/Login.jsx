@@ -1,18 +1,24 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 import styles from "./Login.module.css";
-import { useState } from "react";
+import { userService } from "../../../services/authService";
 
 export default function Login() {
-    const [pending, setPending] = useState(false);
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [pending, setPending] = useState(false);
     const [errors, setErrors] = useState({
         email: "",
         password: "",
     });
+
+    const clearForm = () => {
+        setEmail(""), setPassword("");
+    };
 
     const validateEmail = (value) => {
         const emailRegex =
@@ -29,9 +35,18 @@ export default function Login() {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        //setPending(true);
+        setPending(true);
 
-        console.log(email, password);
+        try {
+            const logedUser = await userService.login({ email, password });
+
+            setPending(false);
+            clearForm();
+            navigate("/");
+        } catch (error) {
+            console.log(error.msg);
+            setPending(false);
+        }
     };
 
     const emailChangeHandler = (e) => {
