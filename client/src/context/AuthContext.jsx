@@ -39,6 +39,7 @@ export function AuthProvider({ children }) {
         } catch (err) {
             setUser(null);
             setError(err.message);
+            throw err;
         }
     };
 
@@ -52,6 +53,7 @@ export function AuthProvider({ children }) {
             } catch (err) {
                 setUser(null);
                 setError(err.message);
+                throw err;
             }
         };
 

@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { useFormAction, useFormStatus } from "react-dom";
 
 import { useAuth } from "../../../context/AuthContext";
+import { useError } from "../../../context/ErrorContext";
 import { authService } from "../../../services/authService";
 
 import styles from "./Register.module.css";
 
 export default function Register() {
     const { login } = useAuth();
+    const { pending } = useFormStatus();
+    const { setError } = useError();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -16,7 +20,6 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
 
-    const [pending, setPending] = useState(false);
     const [errors, setErrors] = useState({
         firstName: "",
         lastName: "",
@@ -69,25 +72,23 @@ export default function Register() {
         return "";
     };
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        setPending(true);
-
+    const submitHandler = async (formData) => {
         try {
-            const newUser = await authService.register({
+            setError(null);
+            await authService.register({
                 firstName,
                 lastName,
                 email,
                 secretKey,
                 password,
             });
-            await login(email, password);
 
-            setPending(false);
+            await login(email, password);
             clearForm();
         } catch (error) {
-            console.log(error.msg);
-            setPending(false);
+            setError(error.message);
+            setPassword("");
+            setRePassword("");
         }
     };
 
@@ -163,7 +164,7 @@ export default function Register() {
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form
-                        onSubmit={submitHandler}
+                        action={submitHandler}
                         className={`${styles.form} space-y-6}`}
                     >
                         <div className={styles.form_row}>
@@ -178,7 +179,7 @@ export default function Register() {
                                     type="text"
                                     id="firstName"
                                     name="firstName"
-                                    defaultValue={firstName}
+                                    value={firstName}
                                     required
                                     onChange={firstNameChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -203,7 +204,7 @@ export default function Register() {
                                     type="text"
                                     id="lastName"
                                     name="lastName"
-                                    defaultValue={lastName}
+                                    value={lastName}
                                     required
                                     onChange={lastNameChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -228,7 +229,7 @@ export default function Register() {
                                     type="email"
                                     id="email"
                                     name="email"
-                                    defaultValue={email}
+                                    value={email}
                                     required
                                     onChange={emailChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -253,7 +254,7 @@ export default function Register() {
                                     type="password"
                                     id="sicret"
                                     name="sicret"
-                                    defaultValue={secretKey}
+                                    value={secretKey}
                                     onChange={secretKeyChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
@@ -277,7 +278,7 @@ export default function Register() {
                                     type="password"
                                     id="password"
                                     name="password"
-                                    defaultValue={password}
+                                    value={password}
                                     required
                                     onChange={passwordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -304,7 +305,7 @@ export default function Register() {
                                     type="password"
                                     id="rePassword"
                                     name="rePassword"
-                                    defaultValue={rePassword}
+                                    value={rePassword}
                                     required
                                     onChange={rePasswordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
