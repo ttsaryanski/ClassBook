@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
-import { useAuth } from "../../../AutContext";
+import { useAuth } from "../../../context/AuthContext";
 import { authService } from "../../../services/authService";
 
 import styles from "./Register.module.css";
 
 export default function Register() {
-    const navigate = useNavigate();
     const { login } = useAuth();
 
     const [firstName, setFirstName] = useState("");
@@ -86,7 +85,6 @@ export default function Register() {
 
             setPending(false);
             clearForm();
-            navigate("/");
         } catch (error) {
             console.log(error.msg);
             setPending(false);

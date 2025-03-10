@@ -1,5 +1,3 @@
-// import { userUtil } from "./userUtil.js";
-
 const host = "http://localhost:3000/api";
 
 async function requester(method, url, data) {
@@ -14,21 +12,11 @@ async function requester(method, url, data) {
         option.body = JSON.stringify(data);
     }
 
-    // const userToken = userUtil.getToken();
-
-    // if (userToken) {
-    //     option.headers['X-Authorization'] = userToken;
-    // }
-
     try {
         const response = await fetch(host + url, option);
 
         if (!response.ok) {
             const error = await response.json();
-
-            if (response.status === 401) {
-                console.log(error.message);
-            }
 
             throw new Error(error.message);
         }
@@ -39,8 +27,6 @@ async function requester(method, url, data) {
 
         return response.json();
     } catch (error) {
-        //alert(error);
-        //notify(error.message);
         throw error;
     }
 }

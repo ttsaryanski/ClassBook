@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useFormAction, useFormStatus } from "react-dom";
+import { Link } from "react-router";
 
-import { useAuth } from "../../../AutContext";
+import { useAuth } from "../../../context/AuthContext";
 
 import styles from "./Login.module.css";
 
 export default function Login() {
-    const navigate = useNavigate();
     const { login } = useAuth();
+    const { pending } = useFormStatus();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [pending, setPending] = useState(false);
     const [errors, setErrors] = useState({
         email: "",
         password: "",
@@ -35,19 +35,13 @@ export default function Login() {
         return "";
     };
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        setPending(true);
-
+    const submitHandler = async (formData) => {
         try {
             await login(email, password);
 
-            setPending(false);
             clearForm();
-            navigate("/");
         } catch (error) {
-            console.log(error.msg);
-            setPending(false);
+            setPassword("");
         }
     };
 
@@ -87,7 +81,7 @@ export default function Login() {
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form
-                        onSubmit={submitHandler}
+                        action={submitHandler}
                         className={`${styles.form} space-y-6}`}
                     >
                         <div className={styles.form_row}>
@@ -102,7 +96,7 @@ export default function Login() {
                                     type="email"
                                     id="email"
                                     name="email"
-                                    defaultValue={email}
+                                    value={email}
                                     required
                                     onChange={emailChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -129,7 +123,7 @@ export default function Login() {
                                     type="password"
                                     id="password"
                                     name="password"
-                                    defaultValue={password}
+                                    value={password}
                                     required
                                     onChange={passwordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}

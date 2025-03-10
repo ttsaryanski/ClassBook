@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router";
-import { AuthProvider } from "./AutContext";
+
+import { AuthProvider } from "./context/AuthContext";
+import { ErrorProvider } from "./context/ErrorContext";
 
 import "./App.css";
 
@@ -12,37 +14,45 @@ import Login from "./components/auth/Login/Login";
 import Register from "./components/auth/Register/Register";
 import Page404 from "./components/page 404/Page404";
 import UnderConstruction from "./components/underConstruction/UnderConstruction";
+import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
 
 function App() {
     return (
-        <AuthProvider>
-            <div className="app-container">
-                <Header />
+        <ErrorProvider>
+            <AuthProvider>
+                <div className="app-container">
+                    <Header />
 
-                <main className="main">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
+                    <ErrorMsg />
 
-                        <Route path="/class_1" element={<UserList />} />
+                    <main className="main">
+                        <Routes>
+                            <Route path="/" element={<Home />} />
 
-                        <Route path="/contacts" element={<Contacts />} />
+                            <Route path="/class_1" element={<UserList />} />
 
-                        <Route path="/auth/login" element={<Login />} />
+                            <Route path="/contacts" element={<Contacts />} />
 
-                        <Route path="/auth/register" element={<Register />} />
+                            <Route path="/auth/login" element={<Login />} />
 
-                        <Route
-                            path="/underconstruction"
-                            element={<UnderConstruction />}
-                        />
+                            <Route
+                                path="/auth/register"
+                                element={<Register />}
+                            />
 
-                        <Route path="*" element={<Page404 />} />
-                    </Routes>
-                </main>
+                            <Route
+                                path="/underconstruction"
+                                element={<UnderConstruction />}
+                            />
 
-                <Footer />
-            </div>
-        </AuthProvider>
+                            <Route path="*" element={<Page404 />} />
+                        </Routes>
+                    </main>
+
+                    <Footer />
+                </div>
+            </AuthProvider>
+        </ErrorProvider>
     );
 }
 
