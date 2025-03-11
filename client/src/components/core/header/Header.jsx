@@ -10,7 +10,7 @@ export default function Header() {
     const { user, logout } = useAuth();
 
     return (
-        <>
+        <div className={styles.header}>
             <div className={styles.status}>
                 {user ? (
                     <span className={styles.role}>
@@ -29,7 +29,7 @@ export default function Header() {
                 )}
             </div>
 
-            <div className={styles.header}>
+            <div className={styles.header_wrapper}>
                 <div className={styles.logo}>
                     <div className={styles.media}>
                         <Link to="/">
@@ -174,6 +174,6 @@ export default function Header() {
                     </ul>
                 </nav>
             </div>
-        </>
+        </div>
     );
 }
