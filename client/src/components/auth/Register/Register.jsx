@@ -1,25 +1,24 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { useFormAction, useFormStatus } from "react-dom";
 
 import { useAuth } from "../../../context/AuthContext";
 import { useError } from "../../../context/ErrorContext";
+
 import { authService } from "../../../services/authService";
 
 import styles from "./Register.module.css";
 
 export default function Register() {
     const { login } = useAuth();
-    const { pending } = useFormStatus();
     const { setError } = useError();
 
+    const [pending, setPending] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [secretKey, setSecretKey] = useState(null);
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
-
     const [errors, setErrors] = useState({
         firstName: "",
         lastName: "",
@@ -72,20 +71,26 @@ export default function Register() {
         return "";
     };
 
-    const submitHandler = async (formData) => {
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        setPending(true);
+
         try {
             setError(null);
             await authService.register({
                 firstName,
                 lastName,
                 email,
-                secretKey,
+                secretKey:
+                    secretKey && secretKey.trim() !== "" ? secretKey : null,
                 password,
             });
 
             await login(email, password);
+            setPending(false);
             clearForm();
         } catch (error) {
+            setPending(false);
             setError(error.message);
             setPassword("");
             setRePassword("");
@@ -164,7 +169,7 @@ export default function Register() {
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form
-                        action={submitHandler}
+                        onSubmit={submitHandler}
                         className={`${styles.form} space-y-6}`}
                     >
                         <div className={styles.form_row}>
@@ -180,6 +185,7 @@ export default function Register() {
                                     id="firstName"
                                     name="firstName"
                                     value={firstName}
+                                    placeholder="John"
                                     required
                                     onChange={firstNameChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -205,6 +211,7 @@ export default function Register() {
                                     id="lastName"
                                     name="lastName"
                                     value={lastName}
+                                    placeholder="Doe"
                                     required
                                     onChange={lastNameChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -230,6 +237,7 @@ export default function Register() {
                                     id="email"
                                     name="email"
                                     value={email}
+                                    placeholder="john_doe@gmail.com"
                                     required
                                     onChange={emailChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -254,7 +262,8 @@ export default function Register() {
                                     type="password"
                                     id="sicret"
                                     name="sicret"
-                                    value={secretKey}
+                                    value={secretKey ?? ""}
+                                    placeholder="secretKey"
                                     onChange={secretKeyChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
@@ -279,6 +288,7 @@ export default function Register() {
                                     id="password"
                                     name="password"
                                     value={password}
+                                    placeholder="password"
                                     required
                                     onChange={passwordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -306,6 +316,7 @@ export default function Register() {
                                     id="rePassword"
                                     name="rePassword"
                                     value={rePassword}
+                                    placeholder="Repeat password"
                                     required
                                     onChange={rePasswordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}

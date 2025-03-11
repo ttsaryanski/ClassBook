@@ -40,7 +40,7 @@
 
 .form .required::after {
     content: '*';
-    color: #db0000;
+    color: red;
     margin-left: 0.3rem;
 }
 

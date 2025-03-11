@@ -1,4 +1,16 @@
-/* Header styles */
+.status {
+    padding: 1em 0 2em;
+    margin: 0 auto;
+    width: 92%;
+    display: flex;
+    justify-content: space-between;
+    color: #369;
+    font-size: 0.8em;
+}
+
+.status_responsive {
+    display: none;
+}
 
 .header {
     width: 92%;
@@ -10,7 +22,7 @@
     align-items: center;
     background: #f7f7f7;
     color: #369;
-    padding: 2.5rem 0 4rem;
+    padding: 0 0 4rem;
     border-bottom: 1px solid #369;
 }
   
@@ -133,6 +145,19 @@
 }
   
 @media (max-width: 768px) {
+    .status {
+        display: none;
+    }
+
+    .status_responsive {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.1em;
+        font-size: 0.5em;
+    }
+
     .header {
       padding: 0 5%;
       height: 4rem;

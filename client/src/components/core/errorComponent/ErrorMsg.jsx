@@ -1,15 +1,55 @@
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+
 import { useError } from "../../../context/ErrorContext";
 
-export default function ErrorMsg() {
-    const { error } = useError();
+import styles from "./ErrorMsg.module.css";
 
-    if (!error) {
-        return null;
-    }
+export default function ErrorMsg() {
+    const { error, setError } = useError();
+    const errorRef = useRef(null);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (error && errorRef.current) {
+            errorRef.current.focus();
+            errorRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+
+            const timer = setTimeout(() => {
+                setError(null);
+            }, 10000);
+
+            return () => {
+                clearTimeout(timer);
+            };
+        }
+    }, [error, setError]);
+
+    useEffect(() => {
+        setError(null);
+    }, [location.pathname]);
 
     return (
-        <div className="global-error">
-            <span>{error}</span>
-        </div>
+        <>
+            {error && (
+                <div
+                    className={styles.error}
+                    ref={errorRef}
+                    tabIndex={-1}
+                    role="alert"
+                >
+                    {error}
+                    <button
+                        onClick={() => setError(null)}
+                        className={styles.button}
+                    >
+                        Dismiss
+                    </button>
+                </div>
+            )}
+        </>
     );
 }
