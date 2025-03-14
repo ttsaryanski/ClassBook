@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router";
 
-import { AuthProvider } from "./context/AuthContext";
-import { ErrorProvider } from "./context/ErrorContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ErrorProvider } from "./contexts/ErrorContext";
 
 import "./App.css";
 
@@ -15,6 +15,8 @@ import Register from "./components/auth/Register/Register";
 import Page404 from "./components/page 404/Page404";
 import UnderConstruction from "./components/underConstruction/UnderConstruction";
 import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
+import Classes from "./components/classes/Classes/Classes";
+import Profile from "./components/auth/Profile/Profile";
 
 function App() {
     return (
@@ -29,11 +31,15 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Home />} />
 
+                            <Route path="/classes" element={<Classes />} />
+
                             <Route path="/class_1" element={<UserList />} />
 
                             <Route path="/contacts" element={<Contacts />} />
 
                             <Route path="/auth/login" element={<Login />} />
+
+                            <Route path="/auth/profile" element={<Profile />} />
 
                             <Route
                                 path="/auth/register"

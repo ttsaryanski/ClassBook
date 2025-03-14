@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router";
 
-import { useAuth } from "../../../context/AuthContext";
-import { useError } from "../../../context/ErrorContext";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useError } from "../../../contexts/ErrorContext";
 
 import { authService } from "../../../services/authService";
 

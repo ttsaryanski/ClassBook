@@ -1,28 +1,30 @@
 import { useState } from "react";
 import { Link } from "react-router";
 
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
 
 import styles from "./Header.module.css";
 
 export default function Header() {
-    const [isOpen, setIsOpen] = useState(false);
     const { user, logout } = useAuth();
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [classes, setClasses] = useState([]);
 
     return (
         <div className={styles.header}>
             <div className={styles.status}>
                 {user ? (
                     <span className={styles.role}>
-                        Welcome: {`${user.firstName} ${user.lastName}`}
+                        User status: {user.role}
                     </span>
                 ) : (
-                    <span className={styles.role}>Welcome: guest</span>
+                    <span className={styles.role}>User status: guest</span>
                 )}
 
                 {user ? (
                     <span className={styles.role}>
-                        User status: {user.role}
+                        Welcome: {`${user.firstName} ${user.lastName}`}
                     </span>
                 ) : (
                     ""
@@ -75,6 +77,27 @@ export default function Header() {
                                 Home
                             </Link>
                         </li>
+
+                        <li className={styles.list}>
+                            <Link className={styles.link} to="/classes">
+                                Classes
+                            </Link>
+                            {classes.length > 0 && (
+                                <ul className={styles.ul}>
+                                    {classes.map((schoolClasses) => (
+                                        <li className={styles.list}>
+                                            <Link
+                                                className={styles.link}
+                                                to="/class_1"
+                                            >
+                                                {schoolClasses.classTitle}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </li>
+
                         <li className={styles.list}>
                             <Link className={styles.link}>Teachers</Link>
                             <ul className={styles.ul}>
@@ -101,6 +124,7 @@ export default function Header() {
                                 </li>
                             </ul>
                         </li>
+
                         <li className={styles.list}>
                             <Link className={styles.link}>Students</Link>
                             <ul className={styles.ul}>
@@ -130,25 +154,37 @@ export default function Header() {
                                 </li>
                             </ul>
                         </li>
+
                         <li className={styles.list}>
                             <Link className={styles.link} to="/contacts">
                                 Contacts
                             </Link>
                         </li>
+
                         <li className={`${styles.list} ${styles.last}`}>
                             <Link className={styles.link}>
                                 <i className="fa-solid fa-right-to-bracket"></i>
                             </Link>
                             <ul className={styles.ul}>
                                 {user ? (
-                                    <li className={styles.list}>
-                                        <button
-                                            onClick={logout}
-                                            className={`${styles.link} ${styles.button_link}`}
-                                        >
-                                            Logout
-                                        </button>
-                                    </li>
+                                    <>
+                                        <li className={styles.list}>
+                                            <Link
+                                                className={styles.link}
+                                                to="/auth/profile"
+                                            >
+                                                My Profile
+                                            </Link>
+                                        </li>
+                                        <li className={styles.list}>
+                                            <button
+                                                onClick={logout}
+                                                className={`${styles.link} ${styles.button_link}`}
+                                            >
+                                                Logout
+                                            </button>
+                                        </li>
+                                    </>
                                 ) : (
                                     <>
                                         <li className={styles.list}>
@@ -159,6 +195,7 @@ export default function Header() {
                                                 Login
                                             </Link>
                                         </li>
+
                                         <li className={styles.list}>
                                             <Link
                                                 className={styles.link}
