@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 
 import { dataService } from "../../../services/dataService";
+import { authService } from "../../../services/authService";
 import { fromIsoToString } from "../../../utils/setDateString";
 
 import styles from "./Profile.module.css";
 import EditProfile from "../EditProfile/EditProfile";
 
 export default function Profile() {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
 
     const [picture, setPicture] = useState({});
     const [speciality, setSpeciality] = useState("");
@@ -23,30 +24,26 @@ export default function Profile() {
             setPicture(null);
         }
 
-        // if (user?.speciality) {
-        //     setSpeciality(user.speciality);
-        // }
-
         if (user?.role === "teacher") {
             setIsTeacher(true);
         }
     }, [user]);
 
-    //const [user, setUser] = useState({});
+    const editUser = async (e) => {
+        e.preventDefault();
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const result = await dataService.getById(userId);
+        const formData = new FormData(e.target.parentElement.parentElement);
+        const userData = Object.fromEntries(formData);
 
-    //             setUser(result);
-    //         } catch (err) {
-    //             console.log("Error fetching data:", err.message);
-    //         }
-    //     };
+        if (userData.imageUrl === "") {
+            userData.imageUrl = null;
+        }
 
-    //     fetchData();
-    // }, [userId]);
+        const editedUser = await authService.editUser(user._id, userData);
+        updateUser(editedUser);
+
+        setShowEdit(false);
+    };
 
     const showEditView = () => {
         setShowEdit(true);
@@ -63,6 +60,7 @@ export default function Profile() {
                     user={user}
                     isTchr={isTeacher}
                     onClose={closeEditView}
+                    onEdit={editUser}
                 />
             )}
 

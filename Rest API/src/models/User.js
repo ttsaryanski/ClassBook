@@ -33,8 +33,7 @@ const userSchema = new Schema({
     role: {
         type: String,
     },
-
-    specialty: {
+    speciality: {
         type: String,
     },
     dateCreated: {

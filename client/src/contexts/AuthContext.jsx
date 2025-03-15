@@ -30,6 +30,10 @@ export function AuthProvider({ children }) {
         fetchUser();
     }, []);
 
+    const updateUser = (updatedUserData) => {
+        setUser(updatedUserData);
+    };
+
     const login = async (email, password) => {
         try {
             setError(null);
@@ -61,7 +65,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

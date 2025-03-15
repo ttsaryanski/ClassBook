@@ -5,6 +5,7 @@ const endPoints = {
     login: "/auth/login",
     logout: "/auth/logout",
     profile: "/auth/profile",
+    editProfile: "/auth",
 };
 
 async function register(data) {
@@ -25,9 +26,16 @@ async function profile() {
     return user;
 }
 
+async function editUser(id, data) {
+    const editedUser = await api.put(endPoints.editProfile + `/${id}`, data);
+
+    return editedUser;
+}
+
 export const authService = {
     register,
     login,
     logout,
     profile,
+    editUser,
 };

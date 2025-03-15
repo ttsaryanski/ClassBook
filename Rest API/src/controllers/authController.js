@@ -126,4 +126,23 @@ router.get("/profile", authMiddleware, async (req, res) => {
     }
 });
 
+router.put("/:userId", async (req, res) => {
+    const userId = req.params.userId;
+    const data = req.body;
+
+    try {
+        const user = await authService.editUser(userId, data);
+
+        res.status(201).json(user).end();
+    } catch (error) {
+        if (error.message.includes("validation")) {
+            res.status(400).json({ message: createErrorMsg(error) });
+        } else if (error.message === "Missing or invalid data!") {
+            res.status(400).json({ message: createErrorMsg(error) });
+        } else {
+            res.status(500).json({ message: createErrorMsg(error) });
+        }
+    }
+});
+
 export default router;

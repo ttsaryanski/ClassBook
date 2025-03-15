@@ -67,6 +67,15 @@ const getUserById = (id) => User.findById(id);
 
 const saveUserFile = (fileName, fileUrl) => File.create({ fileName, fileUrl });
 
+const editUser = (userId, data) => {
+    data.dateUpdate = Date.now();
+
+    return User.findByIdAndUpdate(userId, data, {
+        runValidators: true,
+        new: true,
+    });
+};
+
 async function createAccessToken(user) {
     const payload = {
         _id: user._id,
@@ -92,4 +101,5 @@ export default {
     logout,
     getUserById,
     saveUserFile,
+    editUser,
 };
