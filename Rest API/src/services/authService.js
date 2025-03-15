@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import File from "../models/File.js";
 import Setting from "../models/Setting.js";
+import Student from "../models/Student.js";
+import Teacher from "../models/Teacher.js";
 
 import jwt from "../lib/jwt.js";
 import InvalidToken from "../models/InvalidToken.js";
@@ -41,6 +43,23 @@ const register = async (
         password,
         profilePicture: profilePicture || null,
     });
+
+    if (role === "student") {
+        await Student.create({
+            firstName,
+            lastName,
+            clss: [],
+        });
+    }
+
+    if (role === "teacher") {
+        await Teacher.create({
+            firstName,
+            lastName,
+            email,
+            clss: [],
+        });
+    }
 
     return createAccessToken(createdUser);
 };

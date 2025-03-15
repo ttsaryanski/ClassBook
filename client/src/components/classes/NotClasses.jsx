@@ -1,13 +1,15 @@
-export default function NotUsers() {
+import styles from "./NotClasses.module.css";
+
+export default function NotClasses() {
     return (
         <div className="loading-shade">
-            <div className="table-overlap">
+            <div className={`${styles.table} table-overlap`}>
                 <svg
                     aria-hidden="true"
                     focusable="false"
                     data-prefix="fas"
                     data-icon="triangle-exclamation"
-                    className="svg-inline--fa fa-triangle-exclamation Table_icon__+HHgn"
+                    className={`${styles.icon} svg-inline--fa fa-triangle-exclamation Table_icon__+HHgn`}
                     role="img"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 512 512"

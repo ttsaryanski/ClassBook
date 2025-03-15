@@ -2,22 +2,16 @@ import { fromIsoToString } from "../../../utils/setDateString";
 
 export default function OneClass({
     _id,
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    createdAt,
+    title,
+    teacher,
     onInfo,
     onDel,
     onEdit,
 }) {
     return (
         <tr>
-            <td>{firstName}</td>
-            <td>{lastName}</td>
-            <td>{email}</td>
-            <td>{phoneNumber}</td>
-            <td>{fromIsoToString(createdAt)}</td>
+            <td>{title}</td>
+            <td>{teacher}</td>
 
             <td className="actions">
                 <button

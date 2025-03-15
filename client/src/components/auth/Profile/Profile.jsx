@@ -4,6 +4,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 
 import { dataService } from "../../../services/dataService";
 import { authService } from "../../../services/authService";
+import { teacherService } from "../../../services/teacherService";
 import { fromIsoToString } from "../../../utils/setDateString";
 
 import styles from "./Profile.module.css";
@@ -40,6 +41,7 @@ export default function Profile() {
         }
 
         const editedUser = await authService.editUser(user._id, userData);
+        await teacherService.editById(user._id, userData);
         updateUser(editedUser);
 
         setShowEdit(false);

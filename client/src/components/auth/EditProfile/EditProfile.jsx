@@ -74,7 +74,7 @@ export default function EditProfile({ user, isTchr, onClose, onEdit }) {
                             </div>
                         )}
 
-                        <div className={`${styles.form_group} form-group`}>
+                        {/* <div className={`${styles.form_group} form-group`}>
                             <label htmlFor="imageUrl">Image Url</label>
                             <div className="input-wrapper">
                                 <span>
@@ -87,7 +87,7 @@ export default function EditProfile({ user, isTchr, onClose, onEdit }) {
                                     defaultValue={user.imageUrl}
                                 />
                             </div>
-                        </div>
+                        </div> */}
 
                         <div id="form-actions">
                             <button
