@@ -42,7 +42,7 @@ export default function EditProfile({ user, isTchr, onClose, onEdit }) {
                             </div>
                         </div>
 
-                        <div className={`${styles.form_group} form-group`}>
+                        {/* <div className={`${styles.form_group} form-group`}>
                             <label htmlFor="email">Email</label>
                             <div className="input-wrapper">
                                 <span>
@@ -55,7 +55,7 @@ export default function EditProfile({ user, isTchr, onClose, onEdit }) {
                                     defaultValue={user.email}
                                 />
                             </div>
-                        </div>
+                        </div> */}
 
                         {isTchr && (
                             <div className={`${styles.form_group} form-group`}>

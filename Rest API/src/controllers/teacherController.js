@@ -21,6 +21,24 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/:teacherId", async (req, res) => {
+    const teacherId = req.params.teacherId;
+
+    try {
+        const teacher = await teacherService.getById(teacherId);
+
+        if (teacher !== null) {
+            res.status(200).json(teacher).end();
+        } else {
+            res.status(404)
+                .json({ message: "There is no item with this id." })
+                .end();
+        }
+    } catch (error) {
+        res.status(500).json({ message: createErrorMsg(error) });
+    }
+});
+
 router.put("/:teacherId", async (req, res) => {
     const teacherId = req.params.teacherId;
     const data = req.body;

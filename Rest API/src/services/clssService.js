@@ -29,7 +29,7 @@ const getAllPaginated = async (query = {}) => {
     return { classes, totalCount, totalPages, currentPage };
 };
 
-const create = (data, userId) => Clss.create({ ...data, _ownerId: userId });
+const create = (data, userId) => Clss.create({ ...data, _createdBy: userId });
 
 const getById = (itemId) => Clss.findById(itemId);
 

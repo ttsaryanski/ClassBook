@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { dataService } from "../../../services/dataService";
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
@@ -12,55 +13,78 @@ export default function CreateClass({
     students,
 }) {
     const [clss, setClss] = useState({});
-    const [classTitle, setClassTitle] = useState(clss ? clss.title : "");
-    // const [teachers, setTeachers] = useState([]);
-    // const [students, setStudents] = useState([]);
-    const [selectedTeacher, setSelectedTeacher] = useState(
+    const [classTitle, setClassTitle] = useState(
+        clss && clss ? clss.title : ""
+    );
+    const [selectedTeacher, setSelectedTeacher] = useState(null);
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [selectedTeacherId, setSelectedTeacherId] = useState(
         clss ? clss.teacher : ""
     );
-    const [selectedStudents, setSelectedStudents] = useState(
+    const [selectedStudentsIds, setSelectedStudentsIds] = useState(
         clss ? clss.students : []
     );
 
     useEffect(() => {
-        if (!classId) {
+        if (!selectedTeacherId) {
             return;
         }
 
-        // const fetchTeachers = async () => {
-        //     try {
-        //         const dataTeachers = await teacherService.getAll();
-        //         setTeachers(dataTeachers);
-        //     } catch (err) {
-        //         console.log("Error fetching data:", err.message);
-        //     }
-        // };
-        // fetchTeachers();
-
-        // const fetchStudents = async () => {
-        //     try {
-        //         const dataSudents = await studentService.getAll();
-        //         setStudents(dataSudents);
-        //     } catch (err) {
-        //         console.log("Error fetching data:", err.message);
-        //     }
-        // };
-        // fetchStudents();
-
-        const fetchClss = async () => {
+        const fetchTeacher = async () => {
             try {
-                const result = await dataService.getById(classId);
-                setClss(result);
+                const dataTeacher = await teacherService.getById(
+                    selectedTeacherId
+                );
+                setSelectedTeacher(dataTeacher);
             } catch (err) {
                 console.log("Error fetching data:", err.message);
             }
         };
-        fetchClss();
-    }, [classId]);
+        fetchTeacher();
+
+        // const fetchClss = async () => {
+        //     try {
+        //         const result = await dataService.getById(classId);
+        //         setClss(result);
+        //     } catch (err) {
+        //         console.log("Error fetching data:", err.message);
+        //     }
+        // };
+        // fetchClss();
+    }, [selectedTeacherId]);
+
+    useEffect(() => {
+        if (!selectedStudentsIds || selectedStudentsIds.length === 0) {
+            setSelectedStudents([]);
+            return;
+        }
+
+        const fetchStudents = async () => {
+            try {
+                const studentsData = await Promise.all(
+                    selectedStudentsIds.map((id) => studentService.getById(id))
+                );
+                setSelectedStudents(studentsData);
+            } catch (err) {
+                console.log("Грешка при извличане на ученици:", err.message);
+            }
+        };
+        fetchStudents();
+    }, [selectedStudentsIds]);
 
     const submitHandler = (e) => {
         e.preventDefault();
-        console.log(classTitle, selectedTeacher, selectedStudents);
+
+        const classData = {
+            title: classTitle,
+            teacher: selectedTeacherId,
+            students: selectedStudentsIds,
+        };
+        if (classId) {
+            onEdit(classData);
+        } else {
+            onSave(classData);
+        }
     };
 
     const titleChangeHandler = (e) => {
@@ -70,12 +94,15 @@ export default function CreateClass({
 
     const teacherChangeHandler = (e) => {
         const value = e.target.value;
-        setSelectedTeacher(value);
+        setSelectedTeacherId(value);
     };
 
     const studentChangeHandler = (e) => {
-        const value = e.target.value;
-        setSelectedStudents(value);
+        const selectedOptions = Array.from(
+            e.target.selectedOptions,
+            (option) => option.value
+        );
+        setSelectedStudentsIds(selectedOptions);
     };
 
     return (
@@ -98,7 +125,7 @@ export default function CreateClass({
                                         type="text"
                                         id="title"
                                         name="title"
-                                        value={classTitle}
+                                        value={classTitle || ""}
                                         placeholder="History"
                                         onChange={titleChangeHandler}
                                     />
@@ -106,7 +133,6 @@ export default function CreateClass({
                             </div>
                         </div>
 
-                        {/* Dropdown за учители */}
                         <div className="form-row">
                             <div className="form-group">
                                 <label htmlFor="teacher">Teachers</label>
@@ -114,7 +140,7 @@ export default function CreateClass({
                                     <select
                                         id="teacher"
                                         name="teacher"
-                                        value={selectedTeacher}
+                                        value={selectedTeacherId}
                                         onChange={teacherChangeHandler}
                                     >
                                         <option value="">Select seacher</option>
@@ -131,9 +157,27 @@ export default function CreateClass({
                                     </select>
                                 </div>
                             </div>
+
+                            <div className="form-group">
+                                <label>Selected Teachers</label>
+                                <div className="input-wrapper">
+                                    <div className="input-wrapper">
+                                        <span>
+                                            <i className="fa-solid fa-user"></i>
+                                        </span>
+                                        <input
+                                            value={
+                                                selectedTeacher
+                                                    ? `${selectedTeacher.firstName} ${selectedTeacher.lastName} - ${selectedTeacher.speciality}`
+                                                    : ""
+                                            }
+                                            readOnly
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Dropdown за ученици */}
                         <div className="form-row">
                             <div className="form-group">
                                 <label htmlFor="students">Students</label>
@@ -141,7 +185,8 @@ export default function CreateClass({
                                     <select
                                         id="students"
                                         name="students"
-                                        value={selectedStudents}
+                                        multiple
+                                        value={selectedStudentsIds}
                                         onChange={studentChangeHandler}
                                     >
                                         <option value="">
@@ -159,6 +204,33 @@ export default function CreateClass({
                                     </select>
                                 </div>
                             </div>
+
+                            <div className="form-group">
+                                <label>Selected students</label>
+                                {selectedStudents.length > 0 ? (
+                                    selectedStudents.map((student) => (
+                                        <div
+                                            key={student._id}
+                                            className="input-wrapper"
+                                        >
+                                            <span>
+                                                <i className="fa-solid fa-user"></i>
+                                            </span>
+                                            <input
+                                                value={`${student.firstName} ${student.lastName}`}
+                                                readOnly
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="input-wrapper">
+                                        <span>
+                                            <i className="fa-solid fa-user"></i>
+                                        </span>
+                                        <input readOnly placeholder="" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         <div id="form-actions">
@@ -167,7 +239,6 @@ export default function CreateClass({
                                     id="action-save"
                                     className="btn"
                                     type="submit"
-                                    onClick={onEdit}
                                 >
                                     Edit
                                 </button>
@@ -176,7 +247,6 @@ export default function CreateClass({
                                     id="action-save"
                                     className="btn"
                                     type="submit"
-                                    onClick={onSave}
                                 >
                                     Save
                                 </button>

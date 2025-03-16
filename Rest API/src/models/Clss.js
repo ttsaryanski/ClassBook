@@ -15,6 +15,10 @@ const clssSchema = new Schema({
             ref: "User",
         },
     ],
+    _createdBy: {
+        type: Types.ObjectId,
+        ref: "User",
+    },
     createdAt: {
         type: Date,
         default: Date.now,

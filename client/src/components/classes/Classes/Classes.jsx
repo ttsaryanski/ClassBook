@@ -75,15 +75,15 @@ export default function Classes() {
         setShowEditClassById(null);
     };
 
-    const createClass = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.target.parentElement.parentElement);
-        const classData = Object.fromEntries(formData);
-        console.log(classData);
-
-        //const newClass = await dataService.createNew(classData);
-        //setClasses((state) => [...state, newClass]);
+    const createClass = async (classData) => {
+        try {
+            const newClass = await clssService.createNew(classData);
+            setClasses((state) => [...state, newClass]);
+            setShowCreateClass(false);
+        } catch (err) {
+            console.log("Грешка при създаване на клас:", err.message);
+            setIsError(true);
+        }
 
         setShowCreateClass(false);
     };
@@ -92,20 +92,21 @@ export default function Classes() {
         setShowEditClassById(classId);
     };
 
-    const editClass = async (e) => {
-        e.preventDefault();
+    const editClass = async (classData) => {
+        //e.preventDefault();
+        console.log(classData);
 
-        const classId = showEditClassById;
-        const formData = new FormData(e.target.parentElement.parentElement);
-        const classData = Object.fromEntries(formData);
+        // const classId = showEditClassById;
+        // const formData = new FormData(e.target.parentElement.parentElement);
+        // const classData = Object.fromEntries(formData);
 
-        const updatedClass = await dataService.editById(classId, classData);
+        // const updatedClass = await dataService.editById(classId, classData);
 
-        setClasses((state) =>
-            state.map((oneClass) =>
-                oneClass._id === classId ? updatedClass : oneClass
-            )
-        );
+        // setClasses((state) =>
+        //     state.map((oneClass) =>
+        //         oneClass._id === classId ? updatedClass : oneClass
+        //     )
+        // );
 
         setShowEditClassById(null);
     };

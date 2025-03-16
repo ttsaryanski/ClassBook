@@ -13,9 +13,7 @@ async function getAll() {
 }
 
 async function createNew(data) {
-    const postData = transformUserData(data);
-
-    return await api.post(endPoints.getAll, postData);
+    return await api.post(endPoints.getAll, data);
 }
 
 async function getById(id) {
