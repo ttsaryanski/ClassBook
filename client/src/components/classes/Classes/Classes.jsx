@@ -7,6 +7,7 @@ import { studentService } from "../../../services/studentService";
 
 import OneClass from "../OneClass/OneClass";
 import CreateClass from "../CreateClass/CreateClass";
+import ShowDeleteClass from "../DeleteClass/DelClass";
 import Pagination from "../../shared/Pagination";
 
 import Search from "../../Search";
@@ -14,7 +15,6 @@ import Spinner from "../../Spinner";
 import NotSearchingResults from "../../NotSearchingResult";
 import FetchError from "../../FetchError";
 import UserDetails from "../../UserDetails";
-import ShowDeleteUser from "../../UserDelete";
 import NotClasses from "../NotClasses";
 
 import styles from "./Classes.module.css";
@@ -173,7 +173,8 @@ export default function Classes() {
                 )}
 
                 {showDelClassById && (
-                    <ShowDeleteUser
+                    <ShowDeleteClass
+                        classId={showDelClassById}
                         onDelete={deleteClass}
                         onClose={closeDeleteClass}
                     />
@@ -219,7 +220,7 @@ export default function Classes() {
                     Add new class
                 </button>
 
-                <Pagination />
+                {/* <Pagination /> */}
             </section>
         </>
     );

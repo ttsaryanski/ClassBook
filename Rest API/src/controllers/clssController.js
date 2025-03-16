@@ -85,4 +85,16 @@ router.put("/:clssId", async (req, res) => {
     }
 });
 
+router.delete("/:clssId", async (req, res) => {
+    const clssId = req.params.clssId;
+
+    try {
+        await clssService.remove(clssId);
+
+        res.status(204).end();
+    } catch (error) {
+        res.status(500).json({ message: createErrorMsg(error) });
+    }
+});
+
 export default router;
