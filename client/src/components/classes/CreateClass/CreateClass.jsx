@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { dataService } from "../../../services/dataService";
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
+import { clssService } from "../../../services/clssService";
 
 export default function CreateClass({
     classId,
@@ -13,17 +14,34 @@ export default function CreateClass({
     students,
 }) {
     const [clss, setClss] = useState({});
-    const [classTitle, setClassTitle] = useState(
-        clss && clss ? clss.title : ""
-    );
+    const [classTitle, setClassTitle] = useState("");
+
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
-    const [selectedTeacherId, setSelectedTeacherId] = useState(
-        clss ? clss.teacher : ""
-    );
-    const [selectedStudentsIds, setSelectedStudentsIds] = useState(
-        clss ? clss.students : []
-    );
+    const [selectedTeacherId, setSelectedTeacherId] = useState("");
+    const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
+
+    const [clssTeacher, setClssTeacher] = useState({});
+    const [clssTeacherId, setClssTeacherId] = useState("");
+
+    useEffect(() => {
+        if (!classId) {
+            return;
+        }
+
+        const fetchClss = async () => {
+            try {
+                const clssResult = await clssService.getById(classId);
+                setClss(clssResult);
+                setClassTitle(clssResult.title || "");
+                setSelectedTeacherId(clssResult.teacher || "");
+                setSelectedStudentsIds(clssResult.students || []);
+            } catch (err) {
+                console.log("Error fetching data:", err.message);
+            }
+        };
+        fetchClss();
+    }, [classId]);
 
     useEffect(() => {
         if (!selectedTeacherId) {
@@ -41,16 +59,6 @@ export default function CreateClass({
             }
         };
         fetchTeacher();
-
-        // const fetchClss = async () => {
-        //     try {
-        //         const result = await dataService.getById(classId);
-        //         setClss(result);
-        //     } catch (err) {
-        //         console.log("Error fetching data:", err.message);
-        //     }
-        // };
-        // fetchClss();
     }, [selectedTeacherId]);
 
     useEffect(() => {
@@ -121,62 +129,94 @@ export default function CreateClass({
                                     <span>
                                         <i className="fa-solid fa-chalkboard"></i>
                                     </span>
-                                    <input
-                                        type="text"
-                                        id="title"
-                                        name="title"
-                                        value={classTitle || ""}
-                                        placeholder="History"
-                                        onChange={titleChangeHandler}
-                                    />
+                                    {classId ? (
+                                        <input
+                                            defaultValue={clss.title}
+                                            readOnly
+                                        />
+                                    ) : (
+                                        <input
+                                            type="text"
+                                            id="title"
+                                            name="title"
+                                            value={classTitle || ""}
+                                            placeholder="History"
+                                            onChange={titleChangeHandler}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="teacher">Teachers</label>
-                                <div className="input-wrapper">
-                                    <select
-                                        id="teacher"
-                                        name="teacher"
-                                        value={selectedTeacherId}
-                                        onChange={teacherChangeHandler}
-                                    >
-                                        <option value="">Select seacher</option>
-                                        {teachers.map((teacher) => (
-                                            <option
-                                                key={teacher._id}
-                                                value={teacher._id}
-                                            >
-                                                {teacher.firstName}{" "}
-                                                {teacher.lastName} -{" "}
-                                                {teacher.speciality}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Selected Teachers</label>
-                                <div className="input-wrapper">
+                        {classId ? (
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Teacher</label>
                                     <div className="input-wrapper">
-                                        <span>
-                                            <i className="fa-solid fa-user"></i>
-                                        </span>
-                                        <input
-                                            value={
-                                                selectedTeacher
-                                                    ? `${selectedTeacher.firstName} ${selectedTeacher.lastName} - ${selectedTeacher.speciality}`
-                                                    : ""
-                                            }
-                                            readOnly
-                                        />
+                                        <div className="input-wrapper">
+                                            <span>
+                                                <i className="fa-solid fa-user"></i>
+                                            </span>
+                                            <input
+                                                value={
+                                                    selectedTeacher
+                                                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+                                                        : ""
+                                                }
+                                                readOnly
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="teacher">Teachers</label>
+                                    <div className="input-wrapper">
+                                        <select
+                                            id="teacher"
+                                            name="teacher"
+                                            value={selectedTeacherId}
+                                            onChange={teacherChangeHandler}
+                                        >
+                                            <option value="">
+                                                Select seacher
+                                            </option>
+                                            {teachers.map((teacher) => (
+                                                <option
+                                                    key={teacher._id}
+                                                    value={teacher._id}
+                                                >
+                                                    {teacher.firstName}{" "}
+                                                    {teacher.lastName} -{" "}
+                                                    {teacher.speciality}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Selected Teachers</label>
+                                    <div className="input-wrapper">
+                                        <div className="input-wrapper">
+                                            <span>
+                                                <i className="fa-solid fa-user"></i>
+                                            </span>
+                                            <input
+                                                value={
+                                                    selectedTeacher
+                                                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName} - ${selectedTeacher.speciality}`
+                                                        : ""
+                                                }
+                                                readOnly
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="form-row">
                             <div className="form-group">

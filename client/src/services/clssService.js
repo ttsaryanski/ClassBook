@@ -21,9 +21,7 @@ async function getById(id) {
 }
 
 async function editById(id, data) {
-    const postData = transformUserData(data);
-
-    return await api.put(endPoints.getAll + `/${id}`, postData);
+    return await api.put(endPoints.getAll + `/${id}`, data);
 }
 
 async function delById(id) {

@@ -93,20 +93,19 @@ export default function Classes() {
     };
 
     const editClass = async (classData) => {
-        //e.preventDefault();
-        console.log(classData);
-
-        // const classId = showEditClassById;
-        // const formData = new FormData(e.target.parentElement.parentElement);
-        // const classData = Object.fromEntries(formData);
-
-        // const updatedClass = await dataService.editById(classId, classData);
-
-        // setClasses((state) =>
-        //     state.map((oneClass) =>
-        //         oneClass._id === classId ? updatedClass : oneClass
-        //     )
-        // );
+        try {
+            const classId = showEditClassById;
+            const updatedClass = await clssService.editById(classId, classData);
+            setClasses((state) =>
+                state.map((oneClass) =>
+                    oneClass._id === classId ? updatedClass : oneClass
+                )
+            );
+            setShowEditClassById(null);
+        } catch (err) {
+            console.log("Грешка при редактиране на клас:", err.message);
+            setIsError(true);
+        }
 
         setShowEditClassById(null);
     };
@@ -161,6 +160,8 @@ export default function Classes() {
                         onClose={closeCreateClassView}
                         onSave={createClass}
                         onEdit={editClass}
+                        teachers={teachers}
+                        students={students}
                     />
                 )}
 
