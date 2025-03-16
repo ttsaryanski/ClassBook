@@ -1,17 +1,39 @@
-import { fromIsoToString } from "../../../utils/setDateString";
+import { useEffect, useState } from "react";
+
+import { teacherService } from "../../../services/teacherService";
 
 export default function OneClass({
     _id,
     title,
     teacher,
+    students,
     onInfo,
     onDel,
     onEdit,
 }) {
+    const [teacherData, setTeacherData] = useState({});
+
+    useEffect(() => {
+        if (!teacher) {
+            return;
+        }
+
+        const fetchTeacher = async () => {
+            try {
+                const dataTeacher = await teacherService.getById(teacher);
+                setTeacherData(dataTeacher);
+            } catch (err) {
+                console.log("Error fetching data:", err.message);
+            }
+        };
+        fetchTeacher();
+    }, [teacher]);
+
     return (
         <tr>
             <td>{title}</td>
-            <td>{teacher}</td>
+            <td>{`${teacherData.firstName} ${teacherData.lastName}`}</td>
+            <td>{students.length}</td>
 
             <td className="actions">
                 <button

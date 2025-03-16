@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
+import { clssService } from "../../../services/clssService";
 
 import styles from "./Header.module.css";
 
@@ -10,6 +11,18 @@ export default function Header() {
 
     const [isOpen, setIsOpen] = useState(false);
     const [classes, setClasses] = useState([]);
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                const dataClass = await clssService.getAll();
+                setClasses(dataClass);
+            } catch (err) {
+                console.log("Error fetching data:", err.message);
+            }
+        };
+        fetchClasses();
+    }, []);
 
     return (
         <div className={styles.header}>
@@ -84,13 +97,16 @@ export default function Header() {
                             </Link>
                             {classes.length > 0 && (
                                 <ul className={styles.ul}>
-                                    {classes.map((schoolClasses) => (
-                                        <li className={styles.list}>
+                                    {classes.map((clss) => (
+                                        <li
+                                            key={clss._id}
+                                            className={styles.list}
+                                        >
                                             <Link
                                                 className={styles.link}
                                                 to="/class_1"
                                             >
-                                                {schoolClasses.classTitle}
+                                                {clss.title}
                                             </Link>
                                         </li>
                                     ))}

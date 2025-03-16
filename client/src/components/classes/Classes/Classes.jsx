@@ -196,6 +196,7 @@ export default function Classes() {
                                 {/* <th>Image</th> */}
                                 <th>Class Title</th>
                                 <th>Class Teacher</th>
+                                <th>Class Students</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
