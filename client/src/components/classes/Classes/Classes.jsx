@@ -8,6 +8,7 @@ import { studentService } from "../../../services/studentService";
 import OneClass from "../OneClass/OneClass";
 import CreateClass from "../CreateClass/CreateClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
+import ClassDetails from "../DetailsClass/DetailsClass";
 import Pagination from "../../shared/Pagination";
 
 import Search from "../../Search";
@@ -166,8 +167,8 @@ export default function Classes() {
                 )}
 
                 {showClassInfoById && (
-                    <UserDetails
-                        userId={showClassInfoById}
+                    <ClassDetails
+                        classId={showClassInfoById}
                         onClose={closeShowClassInfo}
                     />
                 )}

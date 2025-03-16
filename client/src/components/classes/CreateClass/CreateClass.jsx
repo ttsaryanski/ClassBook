@@ -21,9 +21,6 @@ export default function CreateClass({
     const [selectedTeacherId, setSelectedTeacherId] = useState("");
     const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
 
-    const [clssTeacher, setClssTeacher] = useState({});
-    const [clssTeacherId, setClssTeacherId] = useState("");
-
     useEffect(() => {
         if (!classId) {
             return;
