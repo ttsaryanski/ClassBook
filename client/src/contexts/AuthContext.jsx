@@ -8,16 +8,23 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
     const { setError } = useError();
+
+    const [user, setUser] = useState(null);
+    const [isDirector, setIsDirector] = useState(false);
 
     const fetchUser = async () => {
         try {
             setError(null);
             const userData = await authService.profile();
             setUser(userData);
+
+            if (userData && userData.role === "director") {
+                setIsDirector(true);
+            }
         } catch (err) {
             setUser(null);
+            setIsDirector(false);
             if (err.message === "Invalid token!") {
                 setError(null);
             } else {
@@ -42,6 +49,7 @@ export function AuthProvider({ children }) {
             navigate("/");
         } catch (err) {
             setUser(null);
+            setIsDirector(false);
             setError(err.message);
             throw err;
         }
@@ -53,9 +61,11 @@ export function AuthProvider({ children }) {
                 setError(null);
                 await authService.logout();
                 setUser(null);
+                setIsDirector(false);
                 navigate("/");
             } catch (err) {
                 setUser(null);
+                setIsDirector(false);
                 setError(err.message);
                 throw err;
             }
@@ -65,7 +75,9 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, updateUser }}>
+        <AuthContext.Provider
+            value={{ user, isDirector, login, logout, updateUser }}
+        >
             {children}
         </AuthContext.Provider>
     );

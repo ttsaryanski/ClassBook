@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useAuth } from "../../../contexts/AuthContext";
+
 import { clssService } from "../../../services/clssService";
 import { dataService } from "../../../services/dataService";
 import { teacherService } from "../../../services/teacherService";
@@ -21,6 +23,8 @@ import NotClasses from "../NotClasses";
 import styles from "./Classes.module.css";
 
 export default function Classes() {
+    const { isDirector } = useAuth();
+
     const [classes, setClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
@@ -200,7 +204,7 @@ export default function Classes() {
                                 <th>Class Title</th>
                                 <th>Class Teacher</th>
                                 <th>Class Students</th>
-                                <th>Actions</th>
+                                {isDirector && <th>Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -210,6 +214,7 @@ export default function Classes() {
                                     onInfo={showClassDetails}
                                     onEdit={showEditClass}
                                     onDel={showDeleteClass}
+                                    isDirector={isDirector}
                                     {...clss}
                                 />
                             ))}
@@ -217,9 +222,14 @@ export default function Classes() {
                     </table>
                 </div>
 
-                <button className="btn-add btn" onClick={showCreateClassView}>
-                    Add new class
-                </button>
+                {isDirector && (
+                    <button
+                        className="btn-add btn"
+                        onClick={showCreateClassView}
+                    >
+                        Add new class
+                    </button>
+                )}
 
                 {/* <Pagination /> */}
             </section>
