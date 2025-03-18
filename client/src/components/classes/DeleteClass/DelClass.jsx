@@ -6,19 +6,31 @@ export default function ShowDeleteClass({ classId, onDelete, onClose }) {
     const [clss, setClss] = useState({});
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         if (!classId) {
             return;
         }
 
         const fetchClss = async () => {
             try {
-                const clssResult = await clssService.getById(classId);
+                const clssResult = await clssService.getById(classId, signal);
                 setClss(clssResult);
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log(
+                        "Error fetching classes:",
+                        err.message || "Unknown error"
+                    );
+                }
             }
         };
         fetchClss();
+
+        return () => {
+            abortController.abort();
+        };
     }, [classId]);
 
     return (

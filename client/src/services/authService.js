@@ -8,26 +8,30 @@ const endPoints = {
     editProfile: "/auth",
 };
 
-async function register(data) {
-    return await api.post(endPoints.register, data);
+async function register(data, signal) {
+    return await api.post(endPoints.register, data, signal);
 }
 
-async function login(data) {
-    return await api.post(endPoints.login, data);
+async function login(data, signal) {
+    return await api.post(endPoints.login, data, signal);
 }
 
-async function logout() {
-    return await api.post(endPoints.logout);
+async function logout(signal) {
+    return await api.post(endPoints.logout, signal);
 }
 
-async function profile() {
-    const user = await api.get(endPoints.profile);
+async function profile(signal) {
+    const user = await api.get(endPoints.profile, signal);
 
     return user;
 }
 
-async function editUser(id, data) {
-    const editedUser = await api.put(endPoints.editProfile + `/${id}`, data);
+async function editUser(id, data, signal) {
+    const editedUser = await api.put(
+        endPoints.editProfile + `/${id}`,
+        data,
+        signal
+    );
 
     return editedUser;
 }

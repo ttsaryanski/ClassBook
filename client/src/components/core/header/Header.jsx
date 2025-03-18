@@ -13,15 +13,24 @@ export default function Header() {
     const [classes, setClasses] = useState([]);
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         const fetchClasses = async () => {
             try {
-                const dataClass = await clssService.getAll();
+                const dataClass = await clssService.getAll(signal);
                 setClasses(dataClass);
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log("Error fetching teachers:", err.message);
+                }
             }
         };
         fetchClasses();
+
+        return () => {
+            abortController.abort();
+        };
     }, []);
 
     return (

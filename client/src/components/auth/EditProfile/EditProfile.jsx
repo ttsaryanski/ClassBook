@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
-
 import styles from "./EditProfile.module.css";
 
-export default function EditProfile({ user, isTchr, onClose, onEdit }) {
+export default function EditProfile({
+    user,
+    isTchr,
+    onClose,
+    onEdit,
+    pending,
+}) {
     return (
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
@@ -42,7 +46,7 @@ export default function EditProfile({ user, isTchr, onClose, onEdit }) {
                             </div>
                         </div>
 
-                        {/* <div className={`${styles.form_group} form-group`}>
+                        <div className={`${styles.form_group} form-group`}>
                             <label htmlFor="email">Email</label>
                             <div className="input-wrapper">
                                 <span>
@@ -52,10 +56,11 @@ export default function EditProfile({ user, isTchr, onClose, onEdit }) {
                                     id="email"
                                     name="email"
                                     type="text"
+                                    readOnly
                                     defaultValue={user.email}
                                 />
                             </div>
-                        </div> */}
+                        </div>
 
                         {isTchr && (
                             <div className={`${styles.form_group} form-group`}>
@@ -94,6 +99,7 @@ export default function EditProfile({ user, isTchr, onClose, onEdit }) {
                                 id="action-save"
                                 className="btn"
                                 type="submit"
+                                disabled={pending}
                                 onClick={onEdit}
                             >
                                 Edit

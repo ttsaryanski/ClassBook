@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { dataService } from "../../../services/dataService";
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
 import { clssService } from "../../../services/clssService";
@@ -22,43 +21,77 @@ export default function CreateClass({
     const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         if (!classId) {
             return;
         }
 
         const fetchClss = async () => {
             try {
-                const clssResult = await clssService.getById(classId);
+                const clssResult = await clssService.getById(classId, signal);
                 setClss(clssResult);
                 setClassTitle(clssResult.title || "");
                 setSelectedTeacherId(clssResult.teacher || "");
                 setSelectedStudentsIds(clssResult.students || []);
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log(
+                        "Error fetching classes:",
+                        err.message || "Unknown error"
+                    );
+                }
             }
         };
         fetchClss();
+
+        return () => {
+            abortController.abort();
+        };
     }, [classId]);
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+        let isMounted = true;
+
         if (!selectedTeacherId) {
+            setSelectedTeacher(null);
             return;
         }
 
         const fetchTeacher = async () => {
             try {
                 const dataTeacher = await teacherService.getById(
-                    selectedTeacherId
+                    selectedTeacherId,
+                    signal
                 );
-                setSelectedTeacher(dataTeacher);
+                if (isMounted) {
+                    setSelectedTeacher(dataTeacher);
+                }
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log(
+                        "Error fetching teachers:",
+                        err.message || "Unknown error"
+                    );
+                }
             }
         };
         fetchTeacher();
+
+        return () => {
+            isMounted = false;
+            abortController.abort();
+        };
     }, [selectedTeacherId]);
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+        let isMounted = true;
+
         if (!selectedStudentsIds || selectedStudentsIds.length === 0) {
             setSelectedStudents([]);
             return;
@@ -67,14 +100,28 @@ export default function CreateClass({
         const fetchStudents = async () => {
             try {
                 const studentsData = await Promise.all(
-                    selectedStudentsIds.map((id) => studentService.getById(id))
+                    selectedStudentsIds.map((id) =>
+                        studentService.getById(id, signal)
+                    )
                 );
-                setSelectedStudents(studentsData);
+                if (isMounted) {
+                    setSelectedStudents(studentsData);
+                }
             } catch (err) {
-                console.log("Грешка при извличане на ученици:", err.message);
+                if (!signal.aborted) {
+                    console.log(
+                        "Error fetching students:",
+                        err.message || "Unknown error"
+                    );
+                }
             }
         };
         fetchStudents();
+
+        return () => {
+            isMounted = false;
+            abortController.abort();
+        };
     }, [selectedStudentsIds]);
 
     const submitHandler = (e) => {

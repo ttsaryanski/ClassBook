@@ -13,10 +13,10 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [isDirector, setIsDirector] = useState(false);
 
-    const fetchUser = async () => {
+    const fetchUser = async (signal) => {
         try {
             setError(null);
-            const userData = await authService.profile();
+            const userData = await authService.profile(signal);
             setUser(userData);
 
             if (userData && userData.role === "director") {
@@ -27,25 +27,49 @@ export function AuthProvider({ children }) {
             setIsDirector(false);
             if (err.message === "Invalid token!") {
                 setError(null);
-            } else {
+            } else if (err.name !== "AbortError") {
                 setError(err.message);
             }
         }
     };
 
     useEffect(() => {
-        fetchUser();
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
+        fetchUser(signal);
+
+        return () => {
+            abortController.abort();
+        };
     }, []);
 
     const updateUser = (updatedUserData) => {
         setUser(updatedUserData);
     };
 
-    const login = async (email, password) => {
+    const login = async (email, password, signal) => {
         try {
             setError(null);
-            await authService.login({ email, password });
-            await fetchUser();
+            await authService.login({ email, password }, signal);
+            await fetchUser(signal);
+            navigate("/");
+        } catch (err) {
+            setUser(null);
+            setIsDirector(false);
+            if (err.name !== "AbortError") {
+                setError(err.message);
+            }
+            throw err;
+        }
+    };
+
+    const logout = async () => {
+        try {
+            setError(null);
+            await authService.logout();
+            setUser(null);
+            setIsDirector(false);
             navigate("/");
         } catch (err) {
             setUser(null);
@@ -53,25 +77,6 @@ export function AuthProvider({ children }) {
             setError(err.message);
             throw err;
         }
-    };
-
-    const logout = () => {
-        const fetchUser = async () => {
-            try {
-                setError(null);
-                await authService.logout();
-                setUser(null);
-                setIsDirector(false);
-                navigate("/");
-            } catch (err) {
-                setUser(null);
-                setIsDirector(false);
-                setError(err.message);
-                throw err;
-            }
-        };
-
-        fetchUser();
     };
 
     return (

@@ -1,10 +1,11 @@
 const host = "http://localhost:3000/api";
 
-async function requester(method, url, data) {
+async function requester(method, url, data, signal) {
     const option = {
         method,
         credentials: "include",
         headers: {},
+        signal,
     };
 
     if (data != undefined) {
@@ -22,29 +23,32 @@ async function requester(method, url, data) {
         }
 
         if (response.status === 204) {
-            return response;
+            return;
         }
 
         return response.json();
     } catch (error) {
+        if (error.name === "AbortError") {
+            throw new Error("Request was aborted");
+        }
         throw error;
     }
 }
 
-async function get(url) {
-    return requester("GET", url);
+async function get(url, signal) {
+    return requester("GET", url, undefined, signal);
 }
 
-async function post(url, data) {
-    return requester("POST", url, data);
+async function post(url, data, signal) {
+    return requester("POST", url, data, signal);
 }
 
-async function put(url, data) {
-    return requester("PUT", url, data);
+async function put(url, data, signal) {
+    return requester("PUT", url, data, signal);
 }
 
-async function del(url) {
-    return requester("DELETE", url);
+async function del(url, signal) {
+    return requester("DELETE", url, undefined, signal);
 }
 
 export const api = {

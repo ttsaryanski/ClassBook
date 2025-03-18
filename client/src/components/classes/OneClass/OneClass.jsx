@@ -11,23 +11,43 @@ export default function OneClass({
     onDel,
     onEdit,
     isDirector,
+    pending,
 }) {
     const [teacherData, setTeacherData] = useState({});
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+        let isMounted = true;
+
         if (!teacher) {
             return;
         }
 
         const fetchTeacher = async () => {
             try {
-                const dataTeacher = await teacherService.getById(teacher);
-                setTeacherData(dataTeacher);
+                const dataTeacher = await teacherService.getById(
+                    teacher,
+                    signal
+                );
+                if (isMounted) {
+                    setTeacherData(dataTeacher);
+                }
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log(
+                        "Error fetching teacher:",
+                        err.message || "Unknown error"
+                    );
+                }
             }
         };
         fetchTeacher();
+
+        return () => {
+            isMounted = false;
+            abortController.abort();
+        };
     }, [teacher]);
 
     return (
@@ -41,6 +61,7 @@ export default function OneClass({
                     <button
                         className="btn edit-btn"
                         title="Edit"
+                        disabled={pending}
                         onClick={() => onEdit(_id)}
                     >
                         <svg
@@ -62,6 +83,7 @@ export default function OneClass({
                     <button
                         className="btn delete-btn"
                         title="Delete"
+                        disabled={pending}
                         onClick={() => onDel(_id)}
                     >
                         <svg
@@ -83,6 +105,7 @@ export default function OneClass({
                     <button
                         className="btn info-btn"
                         title="Info"
+                        disabled={pending}
                         onClick={() => onInfo(_id)}
                     >
                         <svg

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
@@ -9,6 +9,7 @@ import { authService } from "../../../services/authService";
 import styles from "./Register.module.css";
 
 export default function Register() {
+    const registerAbortControllerRef = useRef(null);
     const { login } = useAuth();
     const { setError } = useError();
 
@@ -28,12 +29,12 @@ export default function Register() {
     });
 
     const clearForm = () => {
-        setFirstName(""),
-            setLastName(""),
-            setEmail(""),
-            setSecretKey(null),
-            setPassword(""),
-            setRePassword("");
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setSecretKey(null);
+        setPassword("");
+        setRePassword("");
     };
 
     const validateFirstName = (value) => {
@@ -73,27 +74,43 @@ export default function Register() {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (registerAbortControllerRef.current) {
+            registerAbortControllerRef.current.abort();
+        }
+        registerAbortControllerRef.current = new AbortController();
+        const signal = registerAbortControllerRef.current.signal;
+
         setPending(true);
 
         try {
             setError(null);
-            await authService.register({
-                firstName,
-                lastName,
-                email,
-                secretKey:
-                    secretKey && secretKey.trim() !== "" ? secretKey : null,
-                password,
-            });
+            await authService.register(
+                {
+                    firstName,
+                    lastName,
+                    email,
+                    secretKey:
+                        secretKey && secretKey.trim() !== "" ? secretKey : null,
+                    password,
+                },
+                signal
+            );
 
-            await login(email, password);
+            await login(email, password, signal);
             setPending(false);
             clearForm();
         } catch (error) {
-            setPending(false);
-            setError(error.message);
+            if (error.name === "AbortError") {
+                console.log("Request was aborted:", error.message);
+            } else {
+                setError(error.message || "Registration failed.");
+                console.log("Error fetching registration:", error.message);
+            }
             setPassword("");
             setRePassword("");
+        } finally {
+            setPending(false);
         }
     };
 

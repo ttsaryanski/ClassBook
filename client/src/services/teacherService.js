@@ -8,24 +8,24 @@ const endPoints = {
     // getMyCar: (userId) => `/data/cars?where=_ownerId%3D%22${userId}%22&sortBy=_createdOn%20desc`
 };
 
-async function getAll() {
-    return await api.get(endPoints.getAll);
+async function getAll(signal) {
+    return await api.get(endPoints.getAll, signal);
 }
 
-async function createNew(data) {
-    return await api.post(endPoints.getAll, data);
+async function createNew(data, signal) {
+    return await api.post(endPoints.getAll, data, signal);
 }
 
-async function getById(id) {
-    return await api.get(endPoints.getAll + `/${id}`);
+async function getById(id, signal) {
+    return await api.get(endPoints.getAll + `/${id}`, signal);
 }
 
-async function editById(id, data) {
-    return await api.put(endPoints.getAll + `/${id}`, data);
+async function editById(id, data, signal) {
+    return await api.put(endPoints.getAll + `/${id}`, data, signal);
 }
 
-async function delById(id) {
-    return await api.del(endPoints.getAll + `/${id}`);
+async function delById(id, signal) {
+    return await api.del(endPoints.getAll + `/${id}`, signal);
 }
 
 // async function searchItem(query) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
@@ -6,6 +6,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import styles from "./Login.module.css";
 
 export default function Login() {
+    const loginAbortControllerRef = useRef(null);
     const { login } = useAuth();
 
     const [pending, setPending] = useState(false);
@@ -17,7 +18,8 @@ export default function Login() {
     });
 
     const clearForm = () => {
-        setEmail(""), setPassword("");
+        setEmail("");
+        setPassword("");
     };
 
     const validateEmail = (value) => {
@@ -35,16 +37,27 @@ export default function Login() {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (loginAbortControllerRef.current) {
+            loginAbortControllerRef.current.abort();
+        }
+        loginAbortControllerRef.current = new AbortController();
+        const signal = loginAbortControllerRef.current.signal;
+
         setPending(true);
 
         try {
-            await login(email, password);
-
-            setPending(false);
+            await login(email, password, signal);
             clearForm();
         } catch (error) {
-            setPending(false);
+            if (error.name === "AbortError") {
+                console.log("Login request was aborted:", error.message);
+            } else {
+                console.log("Error during login:", error.message);
+            }
             setPassword("");
+        } finally {
+            setPending(false);
         }
     };
 

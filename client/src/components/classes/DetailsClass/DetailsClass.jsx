@@ -13,32 +13,57 @@ export default function ClassDetails({ classId, onClose }) {
     const [students, setStudents] = useState([]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+        let isMounted = true;
+
+        const fetchClss = async () => {
             try {
-                const result = await clssService.getById(classId);
-                setClss(result);
+                const result = await clssService.getById(classId, signal);
+                if (isMounted) {
+                    setClss(result);
+                }
 
                 if (result.teacher) {
                     const teacherData = await teacherService.getById(
-                        result.teacher
+                        result.teacher,
+                        signal
                     );
-                    setTeacher(teacherData);
+                    if (isMounted) {
+                        setTeacher(teacherData);
+                    }
+                } else if (isMounted) {
+                    setTeacher(null);
                 }
 
                 if (result.students && result.students.length > 0) {
                     const studentsData = await Promise.all(
                         result.students.map((studentId) =>
-                            studentService.getById(studentId)
+                            studentService.getById(studentId, signal)
                         )
                     );
-                    setStudents(studentsData);
+                    if (isMounted) {
+                        setStudents(studentsData);
+                    }
+                } else if (isMounted) {
+                    setStudents([]);
                 }
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log(
+                        "Error fetching class:",
+                        err.message || "Unknown error"
+                    );
+                }
             }
         };
 
-        fetchData();
+        fetchClss();
+
+        return () => {
+            isMounted = false;
+            abortController.abort();
+        };
     }, [classId]);
 
     return (

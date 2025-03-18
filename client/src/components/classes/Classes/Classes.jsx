@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "../../../contexts/AuthContext";
 
 import { clssService } from "../../../services/clssService";
-import { dataService } from "../../../services/dataService";
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
 
@@ -11,23 +10,23 @@ import OneClass from "../OneClass/OneClass";
 import CreateClass from "../CreateClass/CreateClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
 import ClassDetails from "../DetailsClass/DetailsClass";
-import Pagination from "../../shared/Pagination";
-
-import Search from "../../Search";
-import Spinner from "../../Spinner";
-import NotSearchingResults from "../../NotSearchingResult";
-import FetchError from "../../FetchError";
-import UserDetails from "../../UserDetails";
 import NotClasses from "../NotClasses";
+
+import Spinner from "../../Spinner";
+import Pagination from "../../shared/Pagination";
 
 import styles from "./Classes.module.css";
 
 export default function Classes() {
+    const creatAbortControllerRef = useRef(null);
+    const editAbortControllerRef = useRef(null);
+    const delAbortControllerRef = useRef(null);
     const { isDirector } = useAuth();
 
     const [classes, setClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState(false);
+    const [pending, setPending] = useState(false);
+
     const [showCreateClass, setShowCreateClass] = useState(false);
     const [showClassInfoById, setShowClassInfoById] = useState(null);
     const [showDelClassById, setShowDelClassById] = useState(null);
@@ -37,38 +36,50 @@ export default function Classes() {
     const [students, setStudents] = useState([]);
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         const fetchTeachers = async () => {
             try {
-                const dataTeachers = await teacherService.getAll();
+                const dataTeachers = await teacherService.getAll(signal);
                 setTeachers(dataTeachers);
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log("Error fetching teachers:", err.message);
+                }
             }
         };
-        fetchTeachers();
 
         const fetchStudents = async () => {
             try {
-                const dataSudents = await studentService.getAll();
+                const dataSudents = await studentService.getAll(signal);
                 setStudents(dataSudents);
             } catch (err) {
-                console.log("Error fetching data:", err.message);
+                if (!signal.aborted) {
+                    console.log("Error fetching teachers:", err.message);
+                }
             }
         };
-        fetchStudents();
+
         const fetchData = async () => {
             try {
-                const result = await clssService.getAll();
-
+                const result = await clssService.getAll(signal);
                 setClasses(result);
                 setIsLoading(false);
             } catch (err) {
-                console.log("Error fetching data:", err.message);
-                setIsError(true);
+                if (!signal.aborted) {
+                    console.log("Error fetching teachers:", err.message);
+                }
             }
         };
 
+        fetchTeachers();
+        fetchStudents();
         fetchData();
+
+        return () => {
+            abortController.abort();
+        };
     }, []);
 
     const showCreateClassView = () => {
@@ -81,13 +92,31 @@ export default function Classes() {
     };
 
     const createClass = async (classData) => {
+        if (pending) {
+            return;
+        }
+
+        if (creatAbortControllerRef.current) {
+            creatAbortControllerRef.current.abort();
+        }
+
+        creatAbortControllerRef.current = new AbortController();
+        const signal = creatAbortControllerRef.current.signal;
+
+        setPending(true);
+
         try {
-            const newClass = await clssService.createNew(classData);
+            const newClass = await clssService.createNew(classData, signal);
             setClasses((state) => [...state, newClass]);
             setShowCreateClass(false);
         } catch (err) {
-            console.log("Грешка при създаване на клас:", err.message);
-            setIsError(true);
+            if (err.name === "AbortError") {
+                console.log("Request was aborted:", err.message);
+            } else {
+                console.log("Error fetching data:", err.message);
+            }
+        } finally {
+            setPending(false);
         }
 
         setShowCreateClass(false);
@@ -98,9 +127,26 @@ export default function Classes() {
     };
 
     const editClass = async (classData) => {
+        if (pending) {
+            return;
+        }
+
+        if (editAbortControllerRef.current) {
+            editAbortControllerRef.current.abort();
+        }
+
+        editAbortControllerRef.current = new AbortController();
+        const signal = editAbortControllerRef.current.signal;
+
+        setPending(true);
+
         try {
             const classId = showEditClassById;
-            const updatedClass = await clssService.editById(classId, classData);
+            const updatedClass = await clssService.editById(
+                classId,
+                classData,
+                signal
+            );
             setClasses((state) =>
                 state.map((oneClass) =>
                     oneClass._id === classId ? updatedClass : oneClass
@@ -108,8 +154,13 @@ export default function Classes() {
             );
             setShowEditClassById(null);
         } catch (err) {
-            console.log("Грешка при редактиране на клас:", err.message);
-            setIsError(true);
+            if (err.name === "AbortError") {
+                console.log("Request was aborted:", err.message);
+            } else {
+                console.log("Error editing data:", err.message);
+            }
+        } finally {
+            setPending(false);
         }
 
         setShowEditClassById(null);
@@ -132,17 +183,34 @@ export default function Classes() {
     };
 
     const deleteClass = async () => {
-        try {
-            await dataService.delItemById(showDelClassById);
+        if (pending) {
+            return;
+        }
 
+        if (delAbortControllerRef.current) {
+            delAbortControllerRef.current.abort();
+        }
+
+        delAbortControllerRef.current = new AbortController();
+        const signal = delAbortControllerRef.current.signal;
+
+        setPending(true);
+
+        try {
+            await clssService.delById(showDelClassById, signal);
             setClasses((state) =>
                 state.filter((oneClass) => oneClass._id !== showDelClassById)
             );
 
             setShowDelClassById(null);
         } catch (err) {
-            console.log("Error fetching data:", err.message);
-            setIsError(true);
+            if (err.name === "AbortError") {
+                console.log("Request was aborted:", err.message);
+            } else {
+                console.log("Error fetching data:", err.message);
+            }
+        } finally {
+            setPending(false);
         }
     };
 
@@ -192,11 +260,6 @@ export default function Classes() {
 
                     {!isLoading && classes.length === 0 && <NotClasses />}
 
-                    {/* <!-- No content overlap component  --> */}
-                    {/* <NotSearchingResults /> */}
-
-                    {isError && <FetchError />}
-
                     <table className="table">
                         <thead>
                             <tr>
@@ -215,6 +278,7 @@ export default function Classes() {
                                     onEdit={showEditClass}
                                     onDel={showDeleteClass}
                                     isDirector={isDirector}
+                                    pending={pending}
                                     {...clss}
                                 />
                             ))}
@@ -226,6 +290,7 @@ export default function Classes() {
                     <button
                         className="btn-add btn"
                         onClick={showCreateClassView}
+                        disabled={pending}
                     >
                         Add new class
                     </button>

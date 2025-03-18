@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -11,12 +11,15 @@ import styles from "./Profile.module.css";
 import EditProfile from "../EditProfile/EditProfile";
 
 export default function Profile() {
+    const editAbortControllerRef = useRef(null);
     const { user, updateUser } = useAuth();
 
     const [picture, setPicture] = useState({});
     const [speciality, setSpeciality] = useState("");
     const [isTeacher, setIsTeacher] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
+
+    const [pending, setPending] = useState(false);
 
     useEffect(() => {
         if (user?.profilePicture?.fileUrl) {
@@ -32,17 +35,42 @@ export default function Profile() {
 
     const editUser = async (e) => {
         e.preventDefault();
+        if (pending) {
+            return;
+        }
+
+        if (editAbortControllerRef.current) {
+            editAbortControllerRef.current.abort();
+        }
+
+        editAbortControllerRef.current = new AbortController();
+        const signal = editAbortControllerRef.current.signal;
 
         const formData = new FormData(e.target.parentElement.parentElement);
         const userData = Object.fromEntries(formData);
 
-        if (userData.imageUrl === "") {
-            userData.imageUrl = null;
-        }
+        // if (userData.imageUrl === "") {
+        //     userData.imageUrl = null;
+        // }
 
-        const editedUser = await authService.editUser(user._id, userData);
-        await teacherService.editById(user._id, userData);
-        updateUser(editedUser);
+        setPending(true);
+        try {
+            const editedUser = await authService.editUser(
+                user._id,
+                userData,
+                signal
+            );
+            await teacherService.editById(user._id, userData, signal);
+            updateUser(editedUser);
+        } catch (error) {
+            if (err.name === "AbortError") {
+                console.log("Request was aborted:", err.message);
+            } else {
+                console.log("Error editing data:", err.message);
+            }
+        } finally {
+            setPending(false);
+        }
 
         setShowEdit(false);
     };
@@ -63,6 +91,7 @@ export default function Profile() {
                     isTchr={isTeacher}
                     onClose={closeEditView}
                     onEdit={editUser}
+                    pending={pending}
                 />
             )}
 
@@ -118,6 +147,7 @@ export default function Profile() {
                 <button
                     className={styles.btn_edit}
                     title="edit"
+                    disabled={pending}
                     onClick={showEditView}
                 >
                     Edit
