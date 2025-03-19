@@ -217,7 +217,9 @@ export default function Classes() {
     return (
         <>
             <h1 className={styles.h1}>Classes</h1>
-            <section className="card users-container">
+            <section
+                className={`${styles.card_container} card users-container`}
+            >
                 {showCreateClass && (
                     <CreateClass
                         onClose={closeCreateClassView}

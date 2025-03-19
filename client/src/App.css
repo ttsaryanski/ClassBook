@@ -84,7 +84,7 @@ ul {
 }
 
 .btn {
-  background: #369;
+  background: #669933;
   border: none;
   color: white;
   cursor: pointer;
@@ -251,16 +251,16 @@ ul {
 }
 
 .table tbody tr:nth-child(1n) {
-  background: rgba(7, 6, 6, 0.3);
-  color: white;
+  background: rgba(51, 102, 153, 0.473);
+  color: #369;
 }
 .table tbody tr:nth-child(2n) {
-  background: rgba(199, 198, 198, 0.3);
-  color: black;
+  background: rgba(51, 102, 153, 0.133);
+  color: #369;
 }
 
 .table tbody tr:hover {
-  background: rgba(90, 133, 150, 0.514);
+  background: rgba(51, 102, 153, 0.784);
 }
 
 .table tr.loading {
@@ -508,7 +508,7 @@ ul {
 }
 
 .btn.cancel {
-  background-color: rgb(231, 108, 108);
+  background-color: #993366;
 }
 
 .btn.close {
@@ -540,11 +540,11 @@ ul {
 }
 
 .delete-btn {
-  background-color: #d9534f;
+  background-color: #993366;
 }
 
 .edit-btn {
-  background-color: #5cb85c;
+  background-color: #369;
 }
 
 /* Add user button  */
@@ -801,12 +801,13 @@ ul {
   align-items: center;
   position: relative;
   padding: 5px 0px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #369;
   margin-bottom: 15px;
 }
 
 .header h2 {
   margin-bottom: 0px;
+  color: #369;
 }
 
 .input-wrapper {
@@ -886,7 +887,7 @@ ul {
   width: 5em;
   height: 3em;
   margin-right: 20px;
-  background-color: rgb(81, 194, 123);
+  background-color: #369;
 }
 
 #action-cancel {

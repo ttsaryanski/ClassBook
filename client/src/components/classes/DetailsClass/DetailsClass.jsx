@@ -6,6 +6,8 @@ import { studentService } from "../../../services/studentService";
 
 import { fromIsoToString } from "../../../utils/setDateString";
 
+import styles from "./DetailsClass.module.css";
+
 export default function ClassDetails({ classId, onClose }) {
     const [clss, setClss] = useState({});
 
@@ -70,36 +72,42 @@ export default function ClassDetails({ classId, onClose }) {
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
             <div className="modall">
-                <div className="detail-container">
+                <div className={`${styles.details} detail-container`}>
                     <header className="headers">
                         <h2>{`Class ${clss.title} Detail`}</h2>
                     </header>
                     <div className="content">
-                        <div className="user-details">
-                            <dir>
+                        <div className={`${styles.user_details} user-details`}>
+                            {/* <dir>
                                 Class Id: <strong>{clss._id}</strong>
+                            </dir> */}
+                            <dir>
+                                Class name: <strong>{clss.title}</strong>
                             </dir>
-                            <dir>Class name: {clss.title}</dir>
                             <dir>
                                 Class teacher:{" "}
-                                {teacher
-                                    ? `${teacher.firstName} ${teacher.lastName}`
-                                    : "Зареждане..."}
+                                <strong>
+                                    {teacher
+                                        ? `${teacher.firstName} ${teacher.lastName}`
+                                        : "Зареждане..."}
+                                </strong>
                             </dir>
-                            <dir>
-                                Students:{" "}
-                                {students.length > 0 ? (
-                                    <ul>
-                                        {students.map((student) => (
-                                            <li key={student._id}>
-                                                {student.firstName}{" "}
-                                                {student.lastName}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <dir>Няма избрани ученици</dir>
-                                )}
+                            <dir className={styles.students}>
+                                <span>Students: </span>
+                                <strong>
+                                    {students.length > 0 ? (
+                                        <ul>
+                                            {students.map((student) => (
+                                                <li key={student._id}>
+                                                    {student.firstName}{" "}
+                                                    {student.lastName}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <dir>В този клас няма ученици</dir>
+                                    )}
+                                </strong>
                             </dir>
 
                             <dir>

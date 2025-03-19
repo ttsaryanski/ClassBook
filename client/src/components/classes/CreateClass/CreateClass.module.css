@@ -1,0 +1,16 @@
+.create_class *,
+.create_class .icon {
+    color: #369;
+}
+
+.create_class button {
+    color: #fff;
+}
+
+.create_class option {
+    color: rgb(10, 65, 120)
+}
+
+.create_class .add_btn {
+    background-color: #369;
+}

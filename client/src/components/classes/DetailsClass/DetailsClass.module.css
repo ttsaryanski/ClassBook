@@ -1,0 +1,14 @@
+.details * {
+    color: #369;
+}
+
+.user_details > * {
+    margin-bottom: 0.5em;
+}
+
+.students {
+    display: flex;
+}
+.students span {
+    margin-right: 0.5em;
+}

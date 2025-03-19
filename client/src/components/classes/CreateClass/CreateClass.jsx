@@ -4,6 +4,8 @@ import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
 import { clssService } from "../../../services/clssService";
 
+import styles from "./CreateClass.module.css";
+
 export default function CreateClass({
     classId,
     onClose,
@@ -161,9 +163,11 @@ export default function CreateClass({
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
             <div className="modall">
-                <div className="user-container">
+                <div className={`${styles.create_class} user-container`}>
                     <header className="headers">
-                        <h2>{classId ? "Edit" : "Add"} Class</h2>
+                        <h2 className={styles.h2}>
+                            {classId ? "Edit" : "Add"} Class
+                        </h2>
                     </header>
                     <form onSubmit={submitHandler}>
                         <div className="form-row">
@@ -171,7 +175,9 @@ export default function CreateClass({
                                 <label htmlFor="classTitle">Class Title</label>
                                 <div className="input-wrapper">
                                     <span>
-                                        <i className="fa-solid fa-chalkboard"></i>
+                                        <i
+                                            className={`${styles.icon} fa-solid fa-chalkboard`}
+                                        ></i>
                                     </span>
                                     {classId ? (
                                         <input
@@ -199,7 +205,9 @@ export default function CreateClass({
                                     <div className="input-wrapper">
                                         <div className="input-wrapper">
                                             <span>
-                                                <i className="fa-solid fa-user"></i>
+                                                <i
+                                                    className={`${styles.icon} fa-solid fa-user`}
+                                                ></i>
                                             </span>
                                             <input
                                                 value={
@@ -225,7 +233,7 @@ export default function CreateClass({
                                             onChange={teacherChangeHandler}
                                         >
                                             <option value="">
-                                                Select seacher
+                                                Select teacher
                                             </option>
                                             {teachers.map((teacher) => (
                                                 <option
@@ -246,7 +254,9 @@ export default function CreateClass({
                                     <div className="input-wrapper">
                                         <div className="input-wrapper">
                                             <span>
-                                                <i className="fa-solid fa-user"></i>
+                                                <i
+                                                    className={`${styles.icon} fa-solid fa-user`}
+                                                ></i>
                                             </span>
                                             <input
                                                 value={
@@ -298,7 +308,9 @@ export default function CreateClass({
                                             className="input-wrapper"
                                         >
                                             <span>
-                                                <i className="fa-solid fa-user"></i>
+                                                <i
+                                                    className={`${styles.icon} fa-solid fa-user`}
+                                                ></i>
                                             </span>
                                             <input
                                                 value={`${student.firstName} ${student.lastName}`}
@@ -309,7 +321,9 @@ export default function CreateClass({
                                 ) : (
                                     <div className="input-wrapper">
                                         <span>
-                                            <i className="fa-solid fa-user"></i>
+                                            <i
+                                                className={`${styles.icon} fa-solid fa-user`}
+                                            ></i>
                                         </span>
                                         <input readOnly placeholder="" />
                                     </div>
@@ -321,7 +335,7 @@ export default function CreateClass({
                             {classId ? (
                                 <button
                                     id="action-save"
-                                    className="btn"
+                                    className={`${styles.add_btn} btn`}
                                     type="submit"
                                 >
                                     Edit
@@ -329,7 +343,7 @@ export default function CreateClass({
                             ) : (
                                 <button
                                     id="action-save"
-                                    className="btn"
+                                    className={`${styles.add_btn} btn`}
                                     type="submit"
                                 >
                                     Save

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { clssService } from "../../../services/clssService";
 
+import styles from "./DelClass.module.css";
+
 export default function ShowDeleteClass({ classId, onDelete, onClose }) {
     const [clss, setClss] = useState({});
 
@@ -37,7 +39,7 @@ export default function ShowDeleteClass({ classId, onDelete, onClose }) {
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
             <div className="modall">
-                <div className="confirm-container">
+                <div className={`${styles.del_container} confirm-container`}>
                     <header className="headers">
                         <h2>
                             {`Are you sure you want to delete ${clss.title} class?`}
