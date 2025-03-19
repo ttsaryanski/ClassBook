@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
+import { useError } from "../../../contexts/ErrorContext";
+
 import { clssService } from "../../../services/clssService";
 
 import styles from "./DelClass.module.css";
 
 export default function ShowDeleteClass({ classId, onDelete, onClose }) {
+    const { setError } = useError();
     const [clss, setClss] = useState({});
 
     useEffect(() => {
@@ -21,10 +24,11 @@ export default function ShowDeleteClass({ classId, onDelete, onClose }) {
                 setClss(clssResult);
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log(
-                        "Error fetching classes:",
+                    setError(
+                        "Error fetching class:",
                         err.message || "Unknown error"
                     );
+                    onClose();
                 }
             }
         };

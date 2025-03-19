@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useError } from "../../../contexts/ErrorContext";
+
 import { clssService } from "../../../services/clssService";
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
@@ -9,6 +11,8 @@ import { fromIsoToString } from "../../../utils/setDateString";
 import styles from "./DetailsClass.module.css";
 
 export default function ClassDetails({ classId, onClose }) {
+    const { setError } = useError();
+
     const [clss, setClss] = useState({});
 
     const [teacher, setTeacher] = useState(null);
@@ -52,10 +56,11 @@ export default function ClassDetails({ classId, onClose }) {
                 }
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log(
+                    setError(
                         "Error fetching class:",
                         err.message || "Unknown error"
                     );
+                    onClose();
                 }
             }
         };

@@ -12,7 +12,7 @@ export default function Login() {
     const [pending, setPending] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errors, setErrors] = useState({
+    const [errs, setErrs] = useState({
         email: "",
         password: "",
     });
@@ -64,16 +64,16 @@ export default function Login() {
     const emailChangeHandler = (e) => {
         const value = e.target.value;
         setEmail(value);
-        setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
+        setErrs((prev) => ({ ...prev, email: validateEmail(value) }));
     };
 
     const passwordChangeHandler = (e) => {
         const value = e.target.value;
         setPassword(value);
-        setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
+        setErrs((prev) => ({ ...prev, password: validatePassword(value) }));
     };
 
-    const isFormValid = !errors.email && !errors.password && email && password;
+    const isFormValid = !errs.email && !errs.password && email && password;
 
     return (
         <div className={styles.login}>
@@ -118,9 +118,9 @@ export default function Login() {
                                     onChange={emailChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
-                                {errors.email && (
+                                {errs.email && (
                                     <p className="text-red-500 text-xs mt-1">
-                                        {errors.email}
+                                        {errs.email}
                                     </p>
                                 )}
                             </div>
@@ -146,9 +146,9 @@ export default function Login() {
                                     onChange={passwordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
-                                {errors.password && (
+                                {errs.password && (
                                     <p className="text-red-500 text-xs mt-1">
-                                        {errors.password}
+                                        {errs.password}
                                     </p>
                                 )}
                             </div>

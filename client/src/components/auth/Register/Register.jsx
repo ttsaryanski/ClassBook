@@ -98,14 +98,12 @@ export default function Register() {
             );
 
             await login(email, password, signal);
-            setPending(false);
             clearForm();
         } catch (error) {
             if (error.name === "AbortError") {
-                console.log("Request was aborted:", error.message);
+                setError("Request was aborted:", error.message);
             } else {
                 setError(error.message || "Registration failed.");
-                console.log("Error fetching registration:", error.message);
             }
             setPassword("");
             setRePassword("");

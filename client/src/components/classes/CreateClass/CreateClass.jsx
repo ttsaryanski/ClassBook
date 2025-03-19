@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useError } from "../../../contexts/ErrorContext";
+
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
 import { clssService } from "../../../services/clssService";
@@ -14,6 +16,8 @@ export default function CreateClass({
     teachers,
     students,
 }) {
+    const { setError } = useError();
+
     const [clss, setClss] = useState({});
     const [classTitle, setClassTitle] = useState("");
 
@@ -39,10 +43,11 @@ export default function CreateClass({
                 setSelectedStudentsIds(clssResult.students || []);
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log(
+                    setError(
                         "Error fetching classes:",
                         err.message || "Unknown error"
                     );
+                    onClose();
                 }
             }
         };
@@ -74,10 +79,11 @@ export default function CreateClass({
                 }
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log(
+                    setError(
                         "Error fetching teachers:",
                         err.message || "Unknown error"
                     );
+                    onClose();
                 }
             }
         };
@@ -111,10 +117,11 @@ export default function CreateClass({
                 }
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log(
+                    setError(
                         "Error fetching students:",
                         err.message || "Unknown error"
                     );
+                    onClose();
                 }
             }
         };

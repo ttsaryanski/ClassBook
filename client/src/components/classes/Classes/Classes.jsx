@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "../../../contexts/AuthContext";
+import { useError } from "../../../contexts/ErrorContext";
 
 import { clssService } from "../../../services/clssService";
 import { teacherService } from "../../../services/teacherService";
@@ -22,6 +23,7 @@ export default function Classes() {
     const editAbortControllerRef = useRef(null);
     const delAbortControllerRef = useRef(null);
     const { isDirector } = useAuth();
+    const { setError } = useError();
 
     const [classes, setClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +47,7 @@ export default function Classes() {
                 setTeachers(dataTeachers);
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log("Error fetching teachers:", err.message);
+                    setError("Error fetching teachers:", err.message);
                 }
             }
         };
@@ -56,7 +58,7 @@ export default function Classes() {
                 setStudents(dataSudents);
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log("Error fetching teachers:", err.message);
+                    setError("Error fetching teachers:", err.message);
                 }
             }
         };
@@ -68,7 +70,7 @@ export default function Classes() {
                 setIsLoading(false);
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log("Error fetching teachers:", err.message);
+                    setError("Error fetching teachers:", err.message);
                 }
             }
         };
@@ -111,9 +113,9 @@ export default function Classes() {
             setShowCreateClass(false);
         } catch (err) {
             if (err.name === "AbortError") {
-                console.log("Request was aborted:", err.message);
+                setError("Request was aborted:", err.message);
             } else {
-                console.log("Error fetching data:", err.message);
+                setError("Error fetching data:", err.message);
             }
         } finally {
             setPending(false);
@@ -155,9 +157,9 @@ export default function Classes() {
             setShowEditClassById(null);
         } catch (err) {
             if (err.name === "AbortError") {
-                console.log("Request was aborted:", err.message);
+                setError("Request was aborted:", err.message);
             } else {
-                console.log("Error editing data:", err.message);
+                setError("Error editing data:", err.message);
             }
         } finally {
             setPending(false);
@@ -205,9 +207,9 @@ export default function Classes() {
             setShowDelClassById(null);
         } catch (err) {
             if (err.name === "AbortError") {
-                console.log("Request was aborted:", err.message);
+                setError("Request was aborted:", err.message);
             } else {
-                console.log("Error fetching data:", err.message);
+                setError("Error fetching data:", err.message);
             }
         } finally {
             setPending(false);

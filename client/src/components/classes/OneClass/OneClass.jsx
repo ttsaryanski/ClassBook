@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useError } from "../../../contexts/ErrorContext";
+
 import { teacherService } from "../../../services/teacherService";
 
 export default function OneClass({
@@ -13,6 +15,7 @@ export default function OneClass({
     isDirector,
     pending,
 }) {
+    const { setError } = useError();
     const [teacherData, setTeacherData] = useState({});
 
     useEffect(() => {
@@ -35,7 +38,7 @@ export default function OneClass({
                 }
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log(
+                    setError(
                         "Error fetching teacher:",
                         err.message || "Unknown error"
                     );

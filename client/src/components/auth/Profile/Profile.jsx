@@ -1,21 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "../../../contexts/AuthContext";
+import { useError } from "../../../contexts/ErrorContext";
 
-import { dataService } from "../../../services/dataService";
 import { authService } from "../../../services/authService";
 import { teacherService } from "../../../services/teacherService";
+
 import { fromIsoToString } from "../../../utils/setDateString";
 
-import styles from "./Profile.module.css";
 import EditProfile from "../EditProfile/EditProfile";
+
+import styles from "./Profile.module.css";
 
 export default function Profile() {
     const editAbortControllerRef = useRef(null);
     const { user, updateUser } = useAuth();
+    const { setError } = useError();
 
     const [picture, setPicture] = useState({});
-    const [speciality, setSpeciality] = useState("");
+    //const [speciality, setSpeciality] = useState("");
     const [isTeacher, setIsTeacher] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
 
@@ -60,13 +63,15 @@ export default function Profile() {
                 userData,
                 signal
             );
-            await teacherService.editById(user._id, userData, signal);
+            if (isTeacher) {
+                await teacherService.editById(user._id, userData, signal);
+            }
             updateUser(editedUser);
         } catch (error) {
-            if (err.name === "AbortError") {
-                console.log("Request was aborted:", err.message);
+            if (error.name === "AbortError") {
+                setError("Request was aborted:", error.message);
             } else {
-                console.log("Error editing data:", err.message);
+                setError("Error editing data:", error.message);
             }
         } finally {
             setPending(false);

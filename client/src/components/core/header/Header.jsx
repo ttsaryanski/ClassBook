@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
+import { useError } from "../../../contexts/ErrorContext";
+
 import { clssService } from "../../../services/clssService";
 
 import styles from "./Header.module.css";
 
 export default function Header() {
     const { user, logout } = useAuth();
+    const { setError } = useError();
 
     const [isOpen, setIsOpen] = useState(false);
     const [classes, setClasses] = useState([]);
@@ -22,7 +25,7 @@ export default function Header() {
                 setClasses(dataClass);
             } catch (err) {
                 if (!signal.aborted) {
-                    console.log("Error fetching teachers:", err.message);
+                    setError("Error fetching classes:", err.message);
                 }
             }
         };
