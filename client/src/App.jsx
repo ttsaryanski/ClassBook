@@ -17,6 +17,7 @@ import UnderConstruction from "./components/underConstruction/UnderConstruction"
 import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
 import Classes from "./components/classes/Classes/Classes";
 import Profile from "./components/auth/Profile/Profile";
+import Clss from "./components/class/Class/Clss";
 
 function App() {
     return (
@@ -40,6 +41,8 @@ function App() {
                             <Route path="/auth/login" element={<Login />} />
 
                             <Route path="/auth/profile" element={<Profile />} />
+
+                            <Route path="/class/:clssId" element={<Clss />} />
 
                             <Route
                                 path="/auth/register"

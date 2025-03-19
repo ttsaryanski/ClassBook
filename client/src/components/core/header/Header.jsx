@@ -113,7 +113,7 @@ export default function Header() {
                                         >
                                             <Link
                                                 className={styles.link}
-                                                to="/class_1"
+                                                to={`/class/${clss._id}`}
                                             >
                                                 {clss.title}
                                             </Link>
