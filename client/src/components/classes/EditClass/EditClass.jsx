@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, Link } from "react-router";
+import { useNavigate, Link, useParams } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";
 
@@ -7,16 +7,17 @@ import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
 import { clssService } from "../../../services/clssService";
 
-import styles from "./CreateClass.module.css";
+import styles from "./EditClass.module.css";
 
-export default function CreateClass() {
+export default function EditClass() {
     const registerAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
+    const { classId } = useParams();
 
     const [pending, setPending] = useState(false);
 
-    //const [clss, setClss] = useState({});
+    const [clss, setClss] = useState({});
     const [classTitle, setClassTitle] = useState("");
     const [selectedTeacherId, setSelectedTeacherId] = useState("");
     const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
@@ -29,6 +30,28 @@ export default function CreateClass() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
+
+        if (!classId) {
+            return;
+        }
+
+        const fetchClss = async () => {
+            try {
+                const clssResult = await clssService.getById(classId, signal);
+                setClss(clssResult);
+                setClassTitle(clssResult.title || "");
+                setSelectedTeacherId(clssResult.teacher || "");
+                setSelectedStudentsIds(clssResult.students || []);
+            } catch (err) {
+                if (!signal.aborted) {
+                    setError(
+                        "Error fetching classes:",
+                        err.message || "Unknown error"
+                    );
+                    onClose();
+                }
+            }
+        };
 
         const fetchTeachers = async () => {
             try {
@@ -52,41 +75,18 @@ export default function CreateClass() {
             }
         };
 
+        fetchClss();
         fetchTeachers();
         fetchStudents();
-
-        // if (!classId) {
-        //     return;
-        // }
-
-        // const fetchClss = async () => {
-        //     try {
-        //         const clssResult = await clssService.getById(classId, signal);
-        //         setClss(clssResult);
-        //         setClassTitle(clssResult.title || "");
-        //         setSelectedTeacherId(clssResult.teacher || "");
-        //         setSelectedStudentsIds(clssResult.students || []);
-        //     } catch (err) {
-        //         if (!signal.aborted) {
-        //             setError(
-        //                 "Error fetching classes:",
-        //                 err.message || "Unknown error"
-        //             );
-        //             onClose();
-        //         }
-        //     }
-        // };
-        // fetchClss();
 
         return () => {
             abortController.abort();
         };
-    }, []);
+    }, [classId]);
 
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
 
         if (!selectedTeacherId) {
             setSelectedTeacher(null);
@@ -99,9 +99,7 @@ export default function CreateClass() {
                     selectedTeacherId,
                     signal
                 );
-                if (isMounted) {
-                    setSelectedTeacher(dataTeacher);
-                }
+                setSelectedTeacher(dataTeacher);
             } catch (err) {
                 if (!signal.aborted) {
                     setError(
@@ -115,7 +113,6 @@ export default function CreateClass() {
         fetchTeacher();
 
         return () => {
-            isMounted = false;
             abortController.abort();
         };
     }, [selectedTeacherId]);
@@ -123,7 +120,6 @@ export default function CreateClass() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
 
         if (!selectedStudentsIds || selectedStudentsIds.length === 0) {
             setSelectedStudents([]);
@@ -137,9 +133,7 @@ export default function CreateClass() {
                         studentService.getById(id, signal)
                     )
                 );
-                if (isMounted) {
-                    setSelectedStudents(studentsData);
-                }
+                setSelectedStudents(studentsData);
             } catch (err) {
                 if (!signal.aborted) {
                     setError(
@@ -153,7 +147,6 @@ export default function CreateClass() {
         fetchStudents();
 
         return () => {
-            isMounted = false;
             abortController.abort();
         };
     }, [selectedStudentsIds]);
@@ -177,7 +170,7 @@ export default function CreateClass() {
 
         try {
             setError(null);
-            await clssService.createNew(classData, signal);
+            await clssService.editById(classId, classData, signal);
             navigate("/classes");
         } catch (error) {
             if (error.name === "AbortError") {
@@ -209,12 +202,13 @@ export default function CreateClass() {
     };
 
     return (
-        <div className={styles.create}>
-            {/* <div className="backdrop"></div> */}
-            <div className={`${styles.modall_create} modall`}>
-                <div className={`${styles.create_class} user-container`}>
+        <div className={styles.edit}>
+            <div className={`${styles.modall_edit} modall`}>
+                <div className={`${styles.edit_class} user-container`}>
                     <header className="headers">
-                        <h2 className={styles.h2}>Add Class</h2>
+                        <h2 className={styles.h2}>
+                            {`Edit ${clss.title} Class`}
+                        </h2>
                     </header>
                     <form onSubmit={submitHandler}>
                         <div className="form-row">
@@ -226,13 +220,11 @@ export default function CreateClass() {
                                             className={`${styles.icon} fa-solid fa-chalkboard`}
                                         ></i>
                                     </span>
-
                                     <input
                                         type="text"
                                         id="title"
                                         name="title"
                                         value={classTitle || ""}
-                                        placeholder="History"
                                         onChange={titleChangeHandler}
                                     />
                                 </div>
@@ -348,11 +340,11 @@ export default function CreateClass() {
                         <div id="form-actions">
                             <button
                                 id="action-save"
-                                className={`${styles.add_btn} btn`}
+                                className={`${styles.edit_btn} btn`}
                                 disabled={pending}
                                 type="submit"
                             >
-                                Save
+                                Edit
                             </button>
                             <Link
                                 id="action-cancel"

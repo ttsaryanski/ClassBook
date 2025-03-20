@@ -19,6 +19,7 @@ import Classes from "./components/classes/Classes/Classes";
 import Profile from "./components/auth/Profile/Profile";
 import Clss from "./components/class/Class/Clss";
 import CreateClass from "./components/classes/CreateClass/CreateClass";
+import EditClass from "./components/classes/EditClass/EditClass";
 
 function App() {
     return (
@@ -38,6 +39,11 @@ function App() {
                             <Route
                                 path="/classes/create"
                                 element={<CreateClass />}
+                            />
+
+                            <Route
+                                path="/classes/:classId/edit"
+                                element={<EditClass />}
                             />
 
                             <Route path="/class_1" element={<UserList />} />

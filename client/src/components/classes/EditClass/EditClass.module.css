@@ -1,25 +1,25 @@
-.create .modall_create {
+.edit .modall_edit {
     position: relative;
     box-shadow: 0 2px 8px rgba(51, 102, 153, 0.25);
 }
 
-.create_class *,
-.create_class .icon {
+.edit_class *,
+.edit_class .icon {
     color: #369;
 }
 
-.create_class button {
+.edit_class button {
     color: #fff;
 }
 
-.create_class option {
+.edit_class option {
     color: rgb(10, 65, 120)
 }
 
-.create_class .add_btn {
+.edit_class .edit_btn {
     background-color: #369;
 }
 
-.create_class .cancel_btn {
+.edit_class .cancel_btn {
     color: #fff;
 }

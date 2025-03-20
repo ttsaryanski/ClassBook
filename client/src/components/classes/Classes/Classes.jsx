@@ -20,8 +20,8 @@ import Pagination from "../../shared/Pagination";
 import styles from "./Classes.module.css";
 
 export default function Classes() {
-    const creatAbortControllerRef = useRef(null);
-    const editAbortControllerRef = useRef(null);
+    //const creatAbortControllerRef = useRef(null);
+    //const editAbortControllerRef = useRef(null);
     const delAbortControllerRef = useRef(null);
     const { isDirector } = useAuth();
     const { setError } = useError();
@@ -32,7 +32,7 @@ export default function Classes() {
 
     const [showClassInfoById, setShowClassInfoById] = useState(null);
     const [showDelClassById, setShowDelClassById] = useState(null);
-    const [showEditClassById, setShowEditClassById] = useState(null);
+    //const [showEditClassById, setShowEditClassById] = useState(null);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -57,49 +57,49 @@ export default function Classes() {
         };
     }, []);
 
-    const showEditClass = (classId) => {
-        setShowEditClassById(classId);
-    };
+    // const showEditClass = (classId) => {
+    //     setShowEditClassById(classId);
+    // };
 
-    const editClass = async (classData) => {
-        if (pending) {
-            return;
-        }
+    // const editClass = async (classData) => {
+    //     if (pending) {
+    //         return;
+    //     }
 
-        if (editAbortControllerRef.current) {
-            editAbortControllerRef.current.abort();
-        }
+    //     if (editAbortControllerRef.current) {
+    //         editAbortControllerRef.current.abort();
+    //     }
 
-        editAbortControllerRef.current = new AbortController();
-        const signal = editAbortControllerRef.current.signal;
+    //     editAbortControllerRef.current = new AbortController();
+    //     const signal = editAbortControllerRef.current.signal;
 
-        setPending(true);
+    //     setPending(true);
 
-        try {
-            const classId = showEditClassById;
-            const updatedClass = await clssService.editById(
-                classId,
-                classData,
-                signal
-            );
-            setClasses((state) =>
-                state.map((oneClass) =>
-                    oneClass._id === classId ? updatedClass : oneClass
-                )
-            );
-            setShowEditClassById(null);
-        } catch (err) {
-            if (err.name === "AbortError") {
-                setError("Request was aborted:", err.message);
-            } else {
-                setError("Error editing data:", err.message);
-            }
-        } finally {
-            setPending(false);
-        }
+    //     try {
+    //         const classId = showEditClassById;
+    //         const updatedClass = await clssService.editById(
+    //             classId,
+    //             classData,
+    //             signal
+    //         );
+    //         setClasses((state) =>
+    //             state.map((oneClass) =>
+    //                 oneClass._id === classId ? updatedClass : oneClass
+    //             )
+    //         );
+    //         setShowEditClassById(null);
+    //     } catch (err) {
+    //         if (err.name === "AbortError") {
+    //             setError("Request was aborted:", err.message);
+    //         } else {
+    //             setError("Error editing data:", err.message);
+    //         }
+    //     } finally {
+    //         setPending(false);
+    //     }
 
-        setShowEditClassById(null);
-    };
+    //     setShowEditClassById(null);
+    // };
 
     const showClassDetails = (classId) => {
         setShowClassInfoById(classId);
@@ -155,7 +155,7 @@ export default function Classes() {
             <section
                 className={`${styles.card_container} card users-container`}
             >
-                {showEditClassById && (
+                {/* {showEditClassById && (
                     <CreateClass
                         classId={showEditClassById}
                         onClose={closeCreateClassView}
@@ -164,7 +164,7 @@ export default function Classes() {
                         teachers={teachers}
                         students={students}
                     />
-                )}
+                )} */}
 
                 {showClassInfoById && (
                     <ClassDetails
@@ -203,7 +203,6 @@ export default function Classes() {
                                 <OneClass
                                     key={clss._id}
                                     onInfo={showClassDetails}
-                                    onEdit={showEditClass}
                                     onDel={showDeleteClass}
                                     isDirector={isDirector}
                                     pending={pending}
