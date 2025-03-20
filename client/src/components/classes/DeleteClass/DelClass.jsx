@@ -22,11 +22,11 @@ export default function ShowDeleteClass({ classId, onDelete, onClose }) {
             try {
                 const clssResult = await clssService.getById(classId, signal);
                 setClss(clssResult);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
                     setError(
                         "Error fetching class:",
-                        err.message || "Unknown error"
+                        error.message || "Unknown error"
                     );
                     onClose();
                 }

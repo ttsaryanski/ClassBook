@@ -16,7 +16,6 @@ export default function CreateClass() {
 
     const [pending, setPending] = useState(false);
 
-    //const [clss, setClss] = useState({});
     const [classTitle, setClassTitle] = useState("");
     const [selectedTeacherId, setSelectedTeacherId] = useState("");
     const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
@@ -34,9 +33,9 @@ export default function CreateClass() {
             try {
                 const dataTeachers = await teacherService.getAll(signal);
                 setTeachers(dataTeachers);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", err.message);
+                    setError("Error fetching teachers:", error.message);
                 }
             }
         };
@@ -45,38 +44,15 @@ export default function CreateClass() {
             try {
                 const dataSudents = await studentService.getAll(signal);
                 setStudents(dataSudents);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", err.message);
+                    setError("Error fetching teachers:", error.message);
                 }
             }
         };
 
         fetchTeachers();
         fetchStudents();
-
-        // if (!classId) {
-        //     return;
-        // }
-
-        // const fetchClss = async () => {
-        //     try {
-        //         const clssResult = await clssService.getById(classId, signal);
-        //         setClss(clssResult);
-        //         setClassTitle(clssResult.title || "");
-        //         setSelectedTeacherId(clssResult.teacher || "");
-        //         setSelectedStudentsIds(clssResult.students || []);
-        //     } catch (err) {
-        //         if (!signal.aborted) {
-        //             setError(
-        //                 "Error fetching classes:",
-        //                 err.message || "Unknown error"
-        //             );
-        //             onClose();
-        //         }
-        //     }
-        // };
-        // fetchClss();
 
         return () => {
             abortController.abort();
@@ -86,7 +62,6 @@ export default function CreateClass() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
 
         if (!selectedTeacherId) {
             setSelectedTeacher(null);
@@ -99,23 +74,19 @@ export default function CreateClass() {
                     selectedTeacherId,
                     signal
                 );
-                if (isMounted) {
-                    setSelectedTeacher(dataTeacher);
-                }
-            } catch (err) {
+                setSelectedTeacher(dataTeacher);
+            } catch (error) {
                 if (!signal.aborted) {
                     setError(
                         "Error fetching teachers:",
-                        err.message || "Unknown error"
+                        error.message || "Unknown error"
                     );
-                    onClose();
                 }
             }
         };
         fetchTeacher();
 
         return () => {
-            isMounted = false;
             abortController.abort();
         };
     }, [selectedTeacherId]);
@@ -123,7 +94,6 @@ export default function CreateClass() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
 
         if (!selectedStudentsIds || selectedStudentsIds.length === 0) {
             setSelectedStudents([]);
@@ -137,23 +107,19 @@ export default function CreateClass() {
                         studentService.getById(id, signal)
                     )
                 );
-                if (isMounted) {
-                    setSelectedStudents(studentsData);
-                }
-            } catch (err) {
+                setSelectedStudents(studentsData);
+            } catch (error) {
                 if (!signal.aborted) {
                     setError(
                         "Error fetching students:",
-                        err.message || "Unknown error"
+                        error.message || "Unknown error"
                     );
-                    onClose();
                 }
             }
         };
         fetchStudents();
 
         return () => {
-            isMounted = false;
             abortController.abort();
         };
     }, [selectedStudentsIds]);
@@ -210,7 +176,6 @@ export default function CreateClass() {
 
     return (
         <div className={styles.create}>
-            {/* <div className="backdrop"></div> */}
             <div className={`${styles.modall_create} modall`}>
                 <div className={`${styles.create_class} user-container`}>
                     <header className="headers">

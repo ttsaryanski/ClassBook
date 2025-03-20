@@ -20,6 +20,7 @@ import Profile from "./components/auth/Profile/Profile";
 import Clss from "./components/class/Class/Clss";
 import CreateClass from "./components/classes/CreateClass/CreateClass";
 import EditClass from "./components/classes/EditClass/EditClass";
+import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
 
 function App() {
     return (
@@ -44,6 +45,11 @@ function App() {
                             <Route
                                 path="/classes/:classId/edit"
                                 element={<EditClass />}
+                            />
+
+                            <Route
+                                path="/classes/:classId/details"
+                                element={<DetailsClass />}
                             />
 
                             <Route path="/class_1" element={<UserList />} />

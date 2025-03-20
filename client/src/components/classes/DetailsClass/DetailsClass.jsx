@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";
 
@@ -10,8 +11,9 @@ import { fromIsoToString } from "../../../utils/setDateString";
 
 import styles from "./DetailsClass.module.css";
 
-export default function ClassDetails({ classId, onClose }) {
+export default function DetailsClass() {
     const { setError } = useError();
+    const { classId } = useParams();
 
     const [clss, setClss] = useState({});
 
@@ -26,19 +28,15 @@ export default function ClassDetails({ classId, onClose }) {
         const fetchClss = async () => {
             try {
                 const result = await clssService.getById(classId, signal);
-                if (isMounted) {
-                    setClss(result);
-                }
+                setClss(result);
 
                 if (result.teacher) {
                     const teacherData = await teacherService.getById(
                         result.teacher,
                         signal
                     );
-                    if (isMounted) {
-                        setTeacher(teacherData);
-                    }
-                } else if (isMounted) {
+                    setTeacher(teacherData);
+                } else {
                     setTeacher(null);
                 }
 
@@ -48,10 +46,8 @@ export default function ClassDetails({ classId, onClose }) {
                             studentService.getById(studentId, signal)
                         )
                     );
-                    if (isMounted) {
-                        setStudents(studentsData);
-                    }
-                } else if (isMounted) {
+                    setStudents(studentsData);
+                } else {
                     setStudents([]);
                 }
             } catch (err) {
@@ -64,28 +60,22 @@ export default function ClassDetails({ classId, onClose }) {
                 }
             }
         };
-
         fetchClss();
 
         return () => {
-            isMounted = false;
             abortController.abort();
         };
-    }, [classId]);
+    }, []);
 
     return (
-        <div className="overlay">
-            <div className="backdrop" onClick={onClose}></div>
-            <div className="modall">
-                <div className={`${styles.details} detail-container`}>
+        <div className={styles.details}>
+            <div className={`${styles.modall_details} modall`}>
+                <div className={`${styles.details_class} detail-container`}>
                     <header className="headers">
                         <h2>{`Class ${clss.title} Detail`}</h2>
                     </header>
                     <div className="content">
                         <div className={`${styles.user_details} user-details`}>
-                            {/* <dir>
-                                Class Id: <strong>{clss._id}</strong>
-                            </dir> */}
                             <dir>
                                 Class name: <strong>{clss.title}</strong>
                             </dir>
@@ -130,6 +120,12 @@ export default function ClassDetails({ classId, onClose }) {
                             </dir>
                         </div>
                     </div>
+                </div>
+
+                <div id="form-actions">
+                    <Link id="action-save" className="btn" to={"/classes"}>
+                        Back
+                    </Link>
                 </div>
             </div>
         </div>

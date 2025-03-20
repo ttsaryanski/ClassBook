@@ -42,13 +42,12 @@ export default function EditClass() {
                 setClassTitle(clssResult.title || "");
                 setSelectedTeacherId(clssResult.teacher || "");
                 setSelectedStudentsIds(clssResult.students || []);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
                     setError(
                         "Error fetching classes:",
-                        err.message || "Unknown error"
+                        error.message || "Unknown error"
                     );
-                    onClose();
                 }
             }
         };
@@ -57,9 +56,9 @@ export default function EditClass() {
             try {
                 const dataTeachers = await teacherService.getAll(signal);
                 setTeachers(dataTeachers);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", err.message);
+                    setError("Error fetching teachers:", error.message);
                 }
             }
         };
@@ -68,9 +67,9 @@ export default function EditClass() {
             try {
                 const dataSudents = await studentService.getAll(signal);
                 setStudents(dataSudents);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", err.message);
+                    setError("Error fetching students:", error.message);
                 }
             }
         };
@@ -100,13 +99,12 @@ export default function EditClass() {
                     signal
                 );
                 setSelectedTeacher(dataTeacher);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
                     setError(
                         "Error fetching teachers:",
-                        err.message || "Unknown error"
+                        error.message || "Unknown error"
                     );
-                    onClose();
                 }
             }
         };
@@ -134,13 +132,12 @@ export default function EditClass() {
                     )
                 );
                 setSelectedStudents(studentsData);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
                     setError(
                         "Error fetching students:",
-                        err.message || "Unknown error"
+                        error.message || "Unknown error"
                     );
-                    onClose();
                 }
             }
         };

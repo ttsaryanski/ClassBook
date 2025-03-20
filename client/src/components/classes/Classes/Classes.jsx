@@ -5,23 +5,16 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
 
 import { clssService } from "../../../services/clssService";
-import { teacherService } from "../../../services/teacherService";
-import { studentService } from "../../../services/studentService";
 
 import OneClass from "../OneClass/OneClass";
-import CreateClass from "../CreateClass/CreateClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
-import ClassDetails from "../DetailsClass/DetailsClass";
 import NotClasses from "../NotClasses";
 
 import Spinner from "../../Spinner";
-import Pagination from "../../shared/Pagination";
 
 import styles from "./Classes.module.css";
 
 export default function Classes() {
-    //const creatAbortControllerRef = useRef(null);
-    //const editAbortControllerRef = useRef(null);
     const delAbortControllerRef = useRef(null);
     const { isDirector } = useAuth();
     const { setError } = useError();
@@ -30,9 +23,7 @@ export default function Classes() {
     const [isLoading, setIsLoading] = useState(true);
     const [pending, setPending] = useState(false);
 
-    const [showClassInfoById, setShowClassInfoById] = useState(null);
     const [showDelClassById, setShowDelClassById] = useState(null);
-    //const [showEditClassById, setShowEditClassById] = useState(null);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -57,60 +48,8 @@ export default function Classes() {
         };
     }, []);
 
-    // const showEditClass = (classId) => {
-    //     setShowEditClassById(classId);
-    // };
-
-    // const editClass = async (classData) => {
-    //     if (pending) {
-    //         return;
-    //     }
-
-    //     if (editAbortControllerRef.current) {
-    //         editAbortControllerRef.current.abort();
-    //     }
-
-    //     editAbortControllerRef.current = new AbortController();
-    //     const signal = editAbortControllerRef.current.signal;
-
-    //     setPending(true);
-
-    //     try {
-    //         const classId = showEditClassById;
-    //         const updatedClass = await clssService.editById(
-    //             classId,
-    //             classData,
-    //             signal
-    //         );
-    //         setClasses((state) =>
-    //             state.map((oneClass) =>
-    //                 oneClass._id === classId ? updatedClass : oneClass
-    //             )
-    //         );
-    //         setShowEditClassById(null);
-    //     } catch (err) {
-    //         if (err.name === "AbortError") {
-    //             setError("Request was aborted:", err.message);
-    //         } else {
-    //             setError("Error editing data:", err.message);
-    //         }
-    //     } finally {
-    //         setPending(false);
-    //     }
-
-    //     setShowEditClassById(null);
-    // };
-
-    const showClassDetails = (classId) => {
-        setShowClassInfoById(classId);
-    };
-
-    const closeShowClassInfo = () => {
-        setShowClassInfoById(null);
-    };
-
-    const showDeleteClass = (userId) => {
-        setShowDelClassById(userId);
+    const showDeleteClass = (clssId) => {
+        setShowDelClassById(clssId);
     };
 
     const closeDeleteClass = () => {
@@ -134,7 +73,7 @@ export default function Classes() {
         try {
             await clssService.delById(showDelClassById, signal);
             setClasses((state) =>
-                state.filter((oneClass) => oneClass._id !== showDelClassById)
+                state.filter((clss) => clss._id !== showDelClassById)
             );
 
             setShowDelClassById(null);
@@ -155,24 +94,6 @@ export default function Classes() {
             <section
                 className={`${styles.card_container} card users-container`}
             >
-                {/* {showEditClassById && (
-                    <CreateClass
-                        classId={showEditClassById}
-                        onClose={closeCreateClassView}
-                        onSave={createClass}
-                        onEdit={editClass}
-                        teachers={teachers}
-                        students={students}
-                    />
-                )} */}
-
-                {showClassInfoById && (
-                    <ClassDetails
-                        classId={showClassInfoById}
-                        onClose={closeShowClassInfo}
-                    />
-                )}
-
                 {showDelClassById && (
                     <ShowDeleteClass
                         classId={showDelClassById}
@@ -180,8 +101,6 @@ export default function Classes() {
                         onClose={closeDeleteClass}
                     />
                 )}
-
-                {/* <Search /> */}
 
                 <div className="table-wrapper">
                     {isLoading && <Spinner />}
@@ -195,14 +114,13 @@ export default function Classes() {
                                 <th>Class Title</th>
                                 <th>Class Teacher</th>
                                 <th>Class Students</th>
-                                {isDirector && <th>Actions</th>}
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {classes.map((clss) => (
                                 <OneClass
                                     key={clss._id}
-                                    onInfo={showClassDetails}
                                     onDel={showDeleteClass}
                                     isDirector={isDirector}
                                     pending={pending}
@@ -214,12 +132,13 @@ export default function Classes() {
                 </div>
 
                 {isDirector && (
-                    <Link className="btn-add btn" to={"/classes/create"}>
+                    <Link
+                        className={`${styles.add_btn} btn-add btn`}
+                        to={"/classes/create"}
+                    >
                         Add new class
                     </Link>
                 )}
-
-                {/* <Pagination /> */}
             </section>
         </>
     );
