@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, Link } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";
 
@@ -8,55 +9,79 @@ import { clssService } from "../../../services/clssService";
 
 import styles from "./CreateClass.module.css";
 
-export default function CreateClass({
-    classId,
-    onClose,
-    onSave,
-    onEdit,
-    teachers,
-    students,
-}) {
+export default function CreateClass() {
+    const registerAbortControllerRef = useRef(null);
+    const navigate = useNavigate();
     const { setError } = useError();
 
-    const [clss, setClss] = useState({});
-    const [classTitle, setClassTitle] = useState("");
+    const [pending, setPending] = useState(false);
 
-    const [selectedTeacher, setSelectedTeacher] = useState(null);
-    const [selectedStudents, setSelectedStudents] = useState([]);
+    //const [clss, setClss] = useState({});
+    const [classTitle, setClassTitle] = useState("");
     const [selectedTeacherId, setSelectedTeacherId] = useState("");
     const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
+
+    const [teachers, setTeachers] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [selectedTeacher, setSelectedTeacher] = useState(null);
+    const [selectedStudents, setSelectedStudents] = useState([]);
 
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
 
-        if (!classId) {
-            return;
-        }
-
-        const fetchClss = async () => {
+        const fetchTeachers = async () => {
             try {
-                const clssResult = await clssService.getById(classId, signal);
-                setClss(clssResult);
-                setClassTitle(clssResult.title || "");
-                setSelectedTeacherId(clssResult.teacher || "");
-                setSelectedStudentsIds(clssResult.students || []);
+                const dataTeachers = await teacherService.getAll(signal);
+                setTeachers(dataTeachers);
             } catch (err) {
                 if (!signal.aborted) {
-                    setError(
-                        "Error fetching classes:",
-                        err.message || "Unknown error"
-                    );
-                    onClose();
+                    setError("Error fetching teachers:", err.message);
                 }
             }
         };
-        fetchClss();
+
+        const fetchStudents = async () => {
+            try {
+                const dataSudents = await studentService.getAll(signal);
+                setStudents(dataSudents);
+            } catch (err) {
+                if (!signal.aborted) {
+                    setError("Error fetching teachers:", err.message);
+                }
+            }
+        };
+
+        fetchTeachers();
+        fetchStudents();
+
+        // if (!classId) {
+        //     return;
+        // }
+
+        // const fetchClss = async () => {
+        //     try {
+        //         const clssResult = await clssService.getById(classId, signal);
+        //         setClss(clssResult);
+        //         setClassTitle(clssResult.title || "");
+        //         setSelectedTeacherId(clssResult.teacher || "");
+        //         setSelectedStudentsIds(clssResult.students || []);
+        //     } catch (err) {
+        //         if (!signal.aborted) {
+        //             setError(
+        //                 "Error fetching classes:",
+        //                 err.message || "Unknown error"
+        //             );
+        //             onClose();
+        //         }
+        //     }
+        // };
+        // fetchClss();
 
         return () => {
             abortController.abort();
         };
-    }, [classId]);
+    }, []);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -133,18 +158,35 @@ export default function CreateClass({
         };
     }, [selectedStudentsIds]);
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (registerAbortControllerRef.current) {
+            registerAbortControllerRef.current.abort();
+        }
+        registerAbortControllerRef.current = new AbortController();
+        const signal = registerAbortControllerRef.current.signal;
 
         const classData = {
             title: classTitle,
             teacher: selectedTeacherId,
             students: selectedStudentsIds,
         };
-        if (classId) {
-            onEdit(classData);
-        } else {
-            onSave(classData);
+
+        setPending(true);
+
+        try {
+            setError(null);
+            await clssService.createNew(classData, signal);
+            navigate("/classes");
+        } catch (error) {
+            if (error.name === "AbortError") {
+                setError("Request was aborted:", error.message);
+            } else {
+                setError(error.message || "Create class failed.");
+            }
+        } finally {
+            setPending(false);
         }
     };
 
@@ -167,14 +209,12 @@ export default function CreateClass({
     };
 
     return (
-        <div className="overlay">
-            <div className="backdrop" onClick={onClose}></div>
-            <div className="modall">
+        <div className={styles.create}>
+            {/* <div className="backdrop"></div> */}
+            <div className={`${styles.modall_create} modall`}>
                 <div className={`${styles.create_class} user-container`}>
                     <header className="headers">
-                        <h2 className={styles.h2}>
-                            {classId ? "Edit" : "Add"} Class
-                        </h2>
+                        <h2 className={styles.h2}>Add Class</h2>
                     </header>
                     <form onSubmit={submitHandler}>
                         <div className="form-row">
@@ -186,98 +226,65 @@ export default function CreateClass({
                                             className={`${styles.icon} fa-solid fa-chalkboard`}
                                         ></i>
                                     </span>
-                                    {classId ? (
-                                        <input
-                                            defaultValue={clss.title}
-                                            readOnly
-                                        />
-                                    ) : (
-                                        <input
-                                            type="text"
-                                            id="title"
-                                            name="title"
-                                            value={classTitle || ""}
-                                            placeholder="History"
-                                            onChange={titleChangeHandler}
-                                        />
-                                    )}
+
+                                    <input
+                                        type="text"
+                                        id="title"
+                                        name="title"
+                                        value={classTitle || ""}
+                                        placeholder="History"
+                                        onChange={titleChangeHandler}
+                                    />
                                 </div>
                             </div>
                         </div>
 
-                        {classId ? (
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Teacher</label>
-                                    <div className="input-wrapper">
-                                        <div className="input-wrapper">
-                                            <span>
-                                                <i
-                                                    className={`${styles.icon} fa-solid fa-user`}
-                                                ></i>
-                                            </span>
-                                            <input
-                                                value={
-                                                    selectedTeacher
-                                                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
-                                                        : ""
-                                                }
-                                                readOnly
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label htmlFor="teacher">Teachers</label>
-                                    <div className="input-wrapper">
-                                        <select
-                                            id="teacher"
-                                            name="teacher"
-                                            value={selectedTeacherId}
-                                            onChange={teacherChangeHandler}
-                                        >
-                                            <option value="">
-                                                Select teacher
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="teacher">Teachers</label>
+                                <div className="input-wrapper">
+                                    <select
+                                        id="teacher"
+                                        name="teacher"
+                                        value={selectedTeacherId}
+                                        onChange={teacherChangeHandler}
+                                    >
+                                        <option value="">Select teacher</option>
+                                        {teachers.map((teacher) => (
+                                            <option
+                                                key={teacher._id}
+                                                value={teacher._id}
+                                            >
+                                                {teacher.firstName}{" "}
+                                                {teacher.lastName} -{" "}
+                                                {teacher.speciality}
                                             </option>
-                                            {teachers.map((teacher) => (
-                                                <option
-                                                    key={teacher._id}
-                                                    value={teacher._id}
-                                                >
-                                                    {teacher.firstName}{" "}
-                                                    {teacher.lastName} -{" "}
-                                                    {teacher.speciality}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                        ))}
+                                    </select>
                                 </div>
+                            </div>
 
-                                <div className="form-group">
-                                    <label>Selected Teachers</label>
+                            <div className="form-group">
+                                <label>Selected Teachers</label>
+                                <div className="input-wrapper">
                                     <div className="input-wrapper">
-                                        <div className="input-wrapper">
-                                            <span>
-                                                <i
-                                                    className={`${styles.icon} fa-solid fa-user`}
-                                                ></i>
-                                            </span>
-                                            <input
-                                                value={
-                                                    selectedTeacher
-                                                        ? `${selectedTeacher.firstName} ${selectedTeacher.lastName} - ${selectedTeacher.speciality}`
-                                                        : ""
-                                                }
-                                                readOnly
-                                            />
-                                        </div>
+                                        <span>
+                                            <i
+                                                className={`${styles.icon} fa-solid fa-user`}
+                                            ></i>
+                                        </span>
+                                        <input
+                                            value={
+                                                selectedTeacher
+                                                    ? `${selectedTeacher.firstName} ${selectedTeacher.lastName} - ${selectedTeacher.speciality}`
+                                                    : ""
+                                            }
+                                            readOnly
+                                        />
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         <div className="form-row">
                             <div className="form-group">
@@ -339,31 +346,21 @@ export default function CreateClass({
                         </div>
 
                         <div id="form-actions">
-                            {classId ? (
-                                <button
-                                    id="action-save"
-                                    className={`${styles.add_btn} btn`}
-                                    type="submit"
-                                >
-                                    Edit
-                                </button>
-                            ) : (
-                                <button
-                                    id="action-save"
-                                    className={`${styles.add_btn} btn`}
-                                    type="submit"
-                                >
-                                    Save
-                                </button>
-                            )}
                             <button
+                                id="action-save"
+                                className={`${styles.add_btn} btn`}
+                                disabled={pending}
+                                type="submit"
+                            >
+                                Save
+                            </button>
+                            <Link
                                 id="action-cancel"
                                 className="btn"
-                                type="button"
-                                onClick={onClose}
+                                to={"/classes"}
                             >
                                 Cancel
-                            </button>
+                            </Link>
                         </div>
                     </form>
                 </div>

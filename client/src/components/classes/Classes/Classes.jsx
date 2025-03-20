@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
@@ -29,39 +30,13 @@ export default function Classes() {
     const [isLoading, setIsLoading] = useState(true);
     const [pending, setPending] = useState(false);
 
-    const [showCreateClass, setShowCreateClass] = useState(false);
     const [showClassInfoById, setShowClassInfoById] = useState(null);
     const [showDelClassById, setShowDelClassById] = useState(null);
     const [showEditClassById, setShowEditClassById] = useState(null);
 
-    const [teachers, setTeachers] = useState([]);
-    const [students, setStudents] = useState([]);
-
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-
-        const fetchTeachers = async () => {
-            try {
-                const dataTeachers = await teacherService.getAll(signal);
-                setTeachers(dataTeachers);
-            } catch (err) {
-                if (!signal.aborted) {
-                    setError("Error fetching teachers:", err.message);
-                }
-            }
-        };
-
-        const fetchStudents = async () => {
-            try {
-                const dataSudents = await studentService.getAll(signal);
-                setStudents(dataSudents);
-            } catch (err) {
-                if (!signal.aborted) {
-                    setError("Error fetching teachers:", err.message);
-                }
-            }
-        };
 
         const fetchData = async () => {
             try {
@@ -75,54 +50,12 @@ export default function Classes() {
             }
         };
 
-        fetchTeachers();
-        fetchStudents();
         fetchData();
 
         return () => {
             abortController.abort();
         };
     }, []);
-
-    const showCreateClassView = () => {
-        setShowCreateClass(true);
-    };
-
-    const closeCreateClassView = () => {
-        setShowCreateClass(false);
-        setShowEditClassById(null);
-    };
-
-    const createClass = async (classData) => {
-        if (pending) {
-            return;
-        }
-
-        if (creatAbortControllerRef.current) {
-            creatAbortControllerRef.current.abort();
-        }
-
-        creatAbortControllerRef.current = new AbortController();
-        const signal = creatAbortControllerRef.current.signal;
-
-        setPending(true);
-
-        try {
-            const newClass = await clssService.createNew(classData, signal);
-            setClasses((state) => [...state, newClass]);
-            setShowCreateClass(false);
-        } catch (err) {
-            if (err.name === "AbortError") {
-                setError("Request was aborted:", err.message);
-            } else {
-                setError("Error fetching data:", err.message);
-            }
-        } finally {
-            setPending(false);
-        }
-
-        setShowCreateClass(false);
-    };
 
     const showEditClass = (classId) => {
         setShowEditClassById(classId);
@@ -222,15 +155,6 @@ export default function Classes() {
             <section
                 className={`${styles.card_container} card users-container`}
             >
-                {showCreateClass && (
-                    <CreateClass
-                        onClose={closeCreateClassView}
-                        onSave={createClass}
-                        teachers={teachers}
-                        students={students}
-                    />
-                )}
-
                 {showEditClassById && (
                     <CreateClass
                         classId={showEditClassById}
@@ -291,13 +215,9 @@ export default function Classes() {
                 </div>
 
                 {isDirector && (
-                    <button
-                        className="btn-add btn"
-                        onClick={showCreateClassView}
-                        disabled={pending}
-                    >
+                    <Link className="btn-add btn" to={"/classes/create"}>
                         Add new class
-                    </button>
+                    </Link>
                 )}
 
                 {/* <Pagination /> */}
