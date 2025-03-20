@@ -6,7 +6,7 @@ import { ErrorProvider } from "./contexts/ErrorContext";
 import "./App.css";
 
 import Header from "./components/core/header/Header";
-import UserList from "./components/UserList";
+//import UserList from "./components/UserList";
 import Footer from "./components/core/footer/Footer";
 import Contacts from "./components/contacts/Contacts";
 import Home from "./components/home/Home";
@@ -52,7 +52,7 @@ function App() {
                                 element={<DetailsClass />}
                             />
 
-                            <Route path="/class_1" element={<UserList />} />
+                            {/* <Route path="/class_1" element={<UserList />} /> */}
 
                             <Route path="/contacts" element={<Contacts />} />
 

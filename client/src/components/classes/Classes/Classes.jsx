@@ -10,7 +10,7 @@ import OneClass from "../OneClass/OneClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
 import NotClasses from "../NotClasses";
 
-import Spinner from "../../Spinner";
+import Spinner from "../../shared/Spinner";
 
 import styles from "./Classes.module.css";
 
