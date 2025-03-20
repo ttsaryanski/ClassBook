@@ -1,3 +1,8 @@
+.edit .modall_edit {
+    position: relative;
+    box-shadow: 0 2px 8px rgba(51, 102, 153, 0.25);
+}
+
 .edit_user {
     color: #369;
 }

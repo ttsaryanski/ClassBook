@@ -10,7 +10,7 @@ import { clssService } from "../../../services/clssService";
 import styles from "./EditClass.module.css";
 
 export default function EditClass() {
-    const registerAbortControllerRef = useRef(null);
+    const editAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
     const { classId } = useParams();
@@ -151,11 +151,11 @@ export default function EditClass() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (registerAbortControllerRef.current) {
-            registerAbortControllerRef.current.abort();
+        if (editAbortControllerRef.current) {
+            editAbortControllerRef.current.abort();
         }
-        registerAbortControllerRef.current = new AbortController();
-        const signal = registerAbortControllerRef.current.signal;
+        editAbortControllerRef.current = new AbortController();
+        const signal = editAbortControllerRef.current.signal;
 
         const classData = {
             title: classTitle,

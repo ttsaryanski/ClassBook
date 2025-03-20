@@ -1,21 +1,87 @@
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams, Link } from "react-router";
+
+import { useAuth } from "../../../contexts/AuthContext";
+import { useError } from "../../../contexts/ErrorContext";
+
+import { authService } from "../../../services/authService";
+import { teacherService } from "../../../services/teacherService";
+
 import styles from "./EditProfile.module.css";
 
-export default function EditProfile({
-    user,
-    isTchr,
-    onClose,
-    onEdit,
-    pending,
-}) {
+export default function EditProfile() {
+    const editAbortControllerRef = useRef();
+    const navigate = useNavigate();
+    const { user, updateUser } = useAuth();
+    const { setError } = useError();
+
+    const [picture, setPicture] = useState({});
+    const [isTeacher, setIsTeacher] = useState(false);
+
+    const [pending, setPending] = useState(false);
+
+    useEffect(() => {
+        if (user?.profilePicture?.fileUrl) {
+            setPicture(user.profilePicture);
+        } else {
+            setPicture(null);
+        }
+
+        if (user?.role === "teacher") {
+            setIsTeacher(true);
+        }
+    }, [user]);
+
+    const submitHandler = async (e) => {
+        e.preventDefault();
+
+        if (editAbortControllerRef.current) {
+            editAbortControllerRef.current.abort();
+        }
+
+        editAbortControllerRef.current = new AbortController();
+        const signal = editAbortControllerRef.current.signal;
+
+        const formData = new FormData(e.target);
+        const userData = Object.fromEntries(formData);
+
+        // if (userData.imageUrl === "") {
+        //     userData.imageUrl = null;
+        // }
+
+        setPending(true);
+
+        try {
+            setError(null);
+            const editedUser = await authService.editUser(
+                user._id,
+                userData,
+                signal
+            );
+            if (isTeacher) {
+                await teacherService.editById(user._id, userData, signal);
+            }
+            updateUser(editedUser);
+            navigate("/auth/profile");
+        } catch (error) {
+            if (error.name === "AbortError") {
+                setError("Request was aborted:", error.message);
+            } else {
+                setError("Error editing data:", error.message);
+            }
+        } finally {
+            setPending(false);
+        }
+    };
+
     return (
-        <div className="overlay">
-            <div className="backdrop" onClick={onClose}></div>
-            <div className="modall">
+        <div className={styles.edit}>
+            <div className={`${styles.modall_edit} modall`}>
                 <div className={`${styles.edit_user} user-container`}>
                     <header className={`${styles.headers} headers`}>
                         <h2>Edit User</h2>
                     </header>
-                    <form>
+                    <form onSubmit={submitHandler}>
                         <div className={`${styles.form_group} form-group`}>
                             <label htmlFor="firstName">First name</label>
                             <div className="input-wrapper">
@@ -26,7 +92,7 @@ export default function EditProfile({
                                     id="firstName"
                                     name="firstName"
                                     type="text"
-                                    defaultValue={user.firstName}
+                                    defaultValue={user?.firstName}
                                 />
                             </div>
                         </div>
@@ -41,7 +107,7 @@ export default function EditProfile({
                                     id="lastName"
                                     name="lastName"
                                     type="text"
-                                    defaultValue={user.lastName}
+                                    defaultValue={user?.lastName}
                                 />
                             </div>
                         </div>
@@ -57,12 +123,12 @@ export default function EditProfile({
                                     name="email"
                                     type="text"
                                     readOnly
-                                    defaultValue={user.email}
+                                    defaultValue={user?.email}
                                 />
                             </div>
                         </div>
 
-                        {isTchr && (
+                        {isTeacher && (
                             <div className={`${styles.form_group} form-group`}>
                                 <label htmlFor="speciality">Speciality</label>
                                 <div className="input-wrapper">
@@ -73,7 +139,7 @@ export default function EditProfile({
                                         id="speciality"
                                         name="speciality"
                                         type="text"
-                                        defaultValue={user.speciality}
+                                        defaultValue={user?.speciality}
                                     />
                                 </div>
                             </div>
@@ -100,19 +166,17 @@ export default function EditProfile({
                                 className="btn"
                                 type="submit"
                                 disabled={pending}
-                                onClick={onEdit}
                             >
                                 Edit
                             </button>
 
-                            <button
+                            <Link
                                 id="action-cancel"
                                 className="btn"
-                                type="button"
-                                onClick={onClose}
+                                to={"/auth/profile"}
                             >
                                 Cancel
-                            </button>
+                            </Link>
                         </div>
                     </form>
                 </div>

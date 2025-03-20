@@ -21,6 +21,7 @@ import Clss from "./components/class/Class/Clss";
 import CreateClass from "./components/classes/CreateClass/CreateClass";
 import EditClass from "./components/classes/EditClass/EditClass";
 import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
+import EditProfile from "./components/auth/EditProfile/EditProfile";
 
 function App() {
     return (
@@ -59,6 +60,11 @@ function App() {
                             <Route path="/auth/login" element={<Login />} />
 
                             <Route path="/auth/profile" element={<Profile />} />
+
+                            <Route
+                                path="/auth/profile/:userId"
+                                element={<EditProfile />}
+                            />
 
                             <Route path="/class/:clssId" element={<Clss />} />
 

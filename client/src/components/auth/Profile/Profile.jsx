@@ -1,28 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
-import { useError } from "../../../contexts/ErrorContext";
-
-import { authService } from "../../../services/authService";
-import { teacherService } from "../../../services/teacherService";
 
 import { fromIsoToString } from "../../../utils/setDateString";
-
-import EditProfile from "../EditProfile/EditProfile";
 
 import styles from "./Profile.module.css";
 
 export default function Profile() {
-    const editAbortControllerRef = useRef(null);
-    const { user, updateUser } = useAuth();
-    const { setError } = useError();
+    const { user } = useAuth();
 
     const [picture, setPicture] = useState({});
-    //const [speciality, setSpeciality] = useState("");
     const [isTeacher, setIsTeacher] = useState(false);
-    const [showEdit, setShowEdit] = useState(false);
-
-    const [pending, setPending] = useState(false);
 
     useEffect(() => {
         if (user?.profilePicture?.fileUrl) {
@@ -36,70 +25,8 @@ export default function Profile() {
         }
     }, [user]);
 
-    const editUser = async (e) => {
-        e.preventDefault();
-        if (pending) {
-            return;
-        }
-
-        if (editAbortControllerRef.current) {
-            editAbortControllerRef.current.abort();
-        }
-
-        editAbortControllerRef.current = new AbortController();
-        const signal = editAbortControllerRef.current.signal;
-
-        const formData = new FormData(e.target.parentElement.parentElement);
-        const userData = Object.fromEntries(formData);
-
-        // if (userData.imageUrl === "") {
-        //     userData.imageUrl = null;
-        // }
-
-        setPending(true);
-        try {
-            const editedUser = await authService.editUser(
-                user._id,
-                userData,
-                signal
-            );
-            if (isTeacher) {
-                await teacherService.editById(user._id, userData, signal);
-            }
-            updateUser(editedUser);
-        } catch (error) {
-            if (error.name === "AbortError") {
-                setError("Request was aborted:", error.message);
-            } else {
-                setError("Error editing data:", error.message);
-            }
-        } finally {
-            setPending(false);
-        }
-
-        setShowEdit(false);
-    };
-
-    const showEditView = () => {
-        setShowEdit(true);
-    };
-
-    const closeEditView = () => {
-        setShowEdit(false);
-    };
-
     return (
         <>
-            {showEdit && (
-                <EditProfile
-                    user={user}
-                    isTchr={isTeacher}
-                    onClose={closeEditView}
-                    onEdit={editUser}
-                    pending={pending}
-                />
-            )}
-
             <div className={`${styles.details} detail-container`}>
                 <header className={`${styles.headers} headers`}>
                     <h2>User Detail</h2>
@@ -149,14 +76,13 @@ export default function Profile() {
                     </div>
                 </div>
 
-                <button
+                <Link
+                    to={`/auth/profile/${user?._id}`}
                     className={styles.btn_edit}
                     title="edit"
-                    disabled={pending}
-                    onClick={showEditView}
                 >
                     Edit
-                </button>
+                </Link>
             </div>
         </>
     );
