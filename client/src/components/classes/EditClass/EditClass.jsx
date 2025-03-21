@@ -22,10 +22,14 @@ export default function EditClass() {
     const [selectedTeacherId, setSelectedTeacherId] = useState("");
     const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
 
-    const [teachers, setTeachers] = useState([]);
-    const [students, setStudents] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
+    const [teachers, setTeachers] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [errors, setErrors] = useState({
+        title: "",
+        teacher: "",
+    });
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -180,14 +184,30 @@ export default function EditClass() {
         }
     };
 
+    const validateTitle = (value) => {
+        if (value.length < 3) {
+            return "Class title must be at least 3 characters long.";
+        }
+        return "";
+    };
+
+    const validateTeacher = (value) => {
+        if (value === "") {
+            return "You must choose a teacher.";
+        }
+        return "";
+    };
+
     const titleChangeHandler = (e) => {
         const value = e.target.value;
         setClassTitle(value);
+        setErrors((prev) => ({ ...prev, title: validateTitle(value) }));
     };
 
     const teacherChangeHandler = (e) => {
         const value = e.target.value;
         setSelectedTeacherId(value);
+        setErrors((prev) => ({ ...prev, teacher: validateTeacher(value) }));
     };
 
     const studentChangeHandler = (e) => {
@@ -198,6 +218,9 @@ export default function EditClass() {
         setSelectedStudentsIds(selectedOptions);
     };
 
+    const isFormValid =
+        !errors.title && !errors.teacher && classTitle && selectedTeacherId;
+
     return (
         <div className={styles.edit}>
             <div className={`${styles.modall_edit} modall`}>
@@ -207,30 +230,49 @@ export default function EditClass() {
                             {`Edit ${clss.title} Class`}
                         </h2>
                     </header>
-                    <form onSubmit={submitHandler}>
+                    <form onSubmit={submitHandler} className={styles.form}>
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="classTitle">Class Title</label>
+                                <label
+                                    htmlFor="classTitle"
+                                    className={styles.required}
+                                >
+                                    Class Title
+                                </label>
                                 <div className="input-wrapper">
-                                    <span>
-                                        <i
-                                            className={`${styles.icon} fa-solid fa-chalkboard`}
-                                        ></i>
-                                    </span>
-                                    <input
-                                        type="text"
-                                        id="title"
-                                        name="title"
-                                        value={classTitle || ""}
-                                        onChange={titleChangeHandler}
-                                    />
+                                    <div className="mt-2">
+                                        <div className="flex">
+                                            <span>
+                                                <i
+                                                    className={`${styles.icon} fa-solid fa-chalkboard`}
+                                                ></i>
+                                            </span>
+                                            <input
+                                                type="text"
+                                                id="title"
+                                                name="title"
+                                                value={classTitle || ""}
+                                                onChange={titleChangeHandler}
+                                            />
+                                        </div>
+                                        {errors.title && (
+                                            <p className="text-danger midlle mt-1">
+                                                {errors.title}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="teacher">Teachers</label>
+                                <label
+                                    htmlFor="teacher"
+                                    className={styles.required}
+                                >
+                                    Teachers
+                                </label>
                                 <div className="input-wrapper">
                                     <select
                                         id="teacher"
@@ -251,6 +293,11 @@ export default function EditClass() {
                                         ))}
                                     </select>
                                 </div>
+                                {errors.teacher && (
+                                    <p className="text-danger midlle mt-1">
+                                        {errors.teacher}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="form-group">
@@ -337,9 +384,19 @@ export default function EditClass() {
                         <div id="form-actions">
                             <button
                                 id="action-save"
-                                className={`${styles.edit_btn} btn`}
-                                disabled={pending}
                                 type="submit"
+                                className={`${styles.edit_btn} btn ${
+                                    !isFormValid || pending
+                                        ? "disabled opacity-50"
+                                        : ""
+                                }`}
+                                disabled={!isFormValid || pending}
+                                style={{
+                                    cursor:
+                                        !isFormValid || pending
+                                            ? "not-allowed"
+                                            : "pointer",
+                                }}
                             >
                                 Edit
                             </button>
