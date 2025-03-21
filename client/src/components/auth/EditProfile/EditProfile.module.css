@@ -11,6 +11,28 @@
     border-bottom: 1px solid #369;
 }
 
+.edit .icon {
+    color: #369;
+}
+
 .form_group {
     width: 100%;
+}
+
+.form {
+    font-size: 1.1em;
+}
+
+.form_row {
+    margin-bottom: 1.5rem;
+}
+
+.form .required::after {
+    content: '*';
+    color: red;
+    margin-left: 0.3rem;
+}
+
+.form .span {
+    color: #369;
 }

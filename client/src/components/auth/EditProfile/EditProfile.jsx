@@ -19,6 +19,12 @@ export default function EditProfile() {
     const [isTeacher, setIsTeacher] = useState(false);
 
     const [pending, setPending] = useState(false);
+    const [firstName, setFirstName] = useState(user.firstName);
+    const [lastName, setLastName] = useState(user.lastName);
+    const [errors, setErrors] = useState({
+        firstName: "",
+        lastName: "",
+    });
 
     useEffect(() => {
         if (user?.profilePicture?.fileUrl) {
@@ -42,8 +48,8 @@ export default function EditProfile() {
         editAbortControllerRef.current = new AbortController();
         const signal = editAbortControllerRef.current.signal;
 
-        const formData = new FormData(e.target);
-        const userData = Object.fromEntries(formData);
+        //const formData = new FormData(e.target);
+        const userData = { firstName, lastName };
 
         // if (userData.imageUrl === "") {
         //     userData.imageUrl = null;
@@ -63,6 +69,7 @@ export default function EditProfile() {
             }
             updateUser(editedUser);
             navigate("/auth/profile");
+            clearForm();
         } catch (error) {
             if (error.name === "AbortError") {
                 setError("Request was aborted:", error.message);
@@ -74,6 +81,40 @@ export default function EditProfile() {
         }
     };
 
+    const validateFirstName = (value) => {
+        if (value.length < 3) {
+            return "First name must be at least 3 characters long.";
+        }
+        return "";
+    };
+
+    const validateLastName = (value) => {
+        if (value.length < 3) {
+            return "Last name must be at least 3 characters long.";
+        }
+        return "";
+    };
+
+    const firstNameChangeHandler = (e) => {
+        const value = e.target.value;
+        setFirstName(value);
+        setErrors((prev) => ({ ...prev, firstName: validateFirstName(value) }));
+    };
+
+    const lastNameChangeHandler = (e) => {
+        const value = e.target.value;
+        setLastName(value);
+        setErrors((prev) => ({ ...prev, lastName: validateLastName(value) }));
+    };
+
+    const isFormValid =
+        !errors.firstName && !errors.lastName && firstName && lastName;
+
+    const clearForm = () => {
+        setFirstName("");
+        setLastName("");
+    };
+
     return (
         <div className={styles.edit}>
             <div className={`${styles.modall_edit} modall`}>
@@ -81,34 +122,68 @@ export default function EditProfile() {
                     <header className={`${styles.headers} headers`}>
                         <h2>Edit User</h2>
                     </header>
-                    <form onSubmit={submitHandler}>
+                    <form onSubmit={submitHandler} className={styles.form}>
                         <div className={`${styles.form_group} form-group`}>
-                            <label htmlFor="firstName">First name</label>
+                            <label
+                                htmlFor="firstName"
+                                className={styles.required}
+                            >
+                                First name
+                            </label>
                             <div className="input-wrapper">
-                                <span>
-                                    <i className="fa-solid fa-user"></i>
-                                </span>
-                                <input
-                                    id="firstName"
-                                    name="firstName"
-                                    type="text"
-                                    defaultValue={user?.firstName}
-                                />
+                                <div className={`${styles.form_group} mt-2`}>
+                                    <div className="flex">
+                                        <span>
+                                            <i
+                                                className={`${styles.icon} fa-solid fa-user`}
+                                            ></i>
+                                        </span>
+                                        <input
+                                            type="text"
+                                            id="firstName"
+                                            name="firstName"
+                                            value={firstName}
+                                            onChange={firstNameChangeHandler}
+                                        />
+                                    </div>
+                                    {errors.firstName && (
+                                        <p className="text-danger midlle mt-1">
+                                            {errors.firstName}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
                         <div className={`${styles.form_group} form-group`}>
-                            <label htmlFor="lastName">Last name</label>
+                            <label
+                                htmlFor="lastName"
+                                className={styles.required}
+                            >
+                                Last name
+                            </label>
                             <div className="input-wrapper">
-                                <span>
-                                    <i className="fa-solid fa-user"></i>
-                                </span>
-                                <input
-                                    id="lastName"
-                                    name="lastName"
-                                    type="text"
-                                    defaultValue={user?.lastName}
-                                />
+                                <div className={`${styles.form_group} mt-2`}>
+                                    <div className="flex">
+                                        <span>
+                                            <i
+                                                className={`${styles.icon} fa-solid fa-user`}
+                                            ></i>
+                                        </span>
+                                        <input
+                                            type="text"
+                                            id="lastName"
+                                            name="lastName"
+                                            value={lastName}
+                                            onChange={lastNameChangeHandler}
+                                        />
+                                    </div>
+                                    {errors.lastName && (
+                                        <p className="text-danger midlle mt-1">
+                                            {errors.lastName}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -116,7 +191,9 @@ export default function EditProfile() {
                             <label htmlFor="email">Email</label>
                             <div className="input-wrapper">
                                 <span>
-                                    <i className="fa-solid fa-envelope"></i>
+                                    <i
+                                        className={`${styles.icon} fa-solid fa-envelope`}
+                                    ></i>
                                 </span>
                                 <input
                                     id="email"
@@ -133,7 +210,9 @@ export default function EditProfile() {
                                 <label htmlFor="speciality">Speciality</label>
                                 <div className="input-wrapper">
                                     <span>
-                                        <i className="fa-solid fa-phone"></i>
+                                        <i
+                                            className={`${styles.icon} fa-solid fa-graduation-cap`}
+                                        ></i>
                                     </span>
                                     <input
                                         id="speciality"
@@ -149,7 +228,7 @@ export default function EditProfile() {
                             <label htmlFor="imageUrl">Image Url</label>
                             <div className="input-wrapper">
                                 <span>
-                                    <i className="fa-solid fa-image"></i>
+                                    <i className={`${styles.icon} fa-solid fa-image`}></i>
                                 </span>
                                 <input
                                     id="imageUrl"
@@ -163,9 +242,19 @@ export default function EditProfile() {
                         <div id="form-actions">
                             <button
                                 id="action-save"
-                                className="btn"
                                 type="submit"
-                                disabled={pending}
+                                className={`btn btn-primary ${
+                                    !isFormValid || pending
+                                        ? "disabled opacity-50"
+                                        : ""
+                                }`}
+                                disabled={!isFormValid || pending}
+                                style={{
+                                    cursor:
+                                        !isFormValid || pending
+                                            ? "not-allowed"
+                                            : "pointer",
+                                }}
                             >
                                 Edit
                             </button>
@@ -179,6 +268,11 @@ export default function EditProfile() {
                             </Link>
                         </div>
                     </form>
+                    <p className={styles.form}>
+                        {" "}
+                        All fields marked with
+                        <span className={styles.required}></span> are required!
+                    </p>
                 </div>
             </div>
         </div>

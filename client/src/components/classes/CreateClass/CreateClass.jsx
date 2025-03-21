@@ -384,6 +384,11 @@ export default function CreateClass() {
                             </Link>
                         </div>
                     </form>
+                    <p className={styles.form}>
+                        {" "}
+                        All fields marked with
+                        <span className={styles.required}></span> are required!
+                    </p>
                 </div>
             </div>
         </div>
