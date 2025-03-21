@@ -28,6 +28,12 @@
     font-size: 1.2em;
 }
 
+.form.p {
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: #369;
+}
+
 .form .required::after {
     content: '*';
     color: red;

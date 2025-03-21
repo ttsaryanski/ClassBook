@@ -27,6 +27,12 @@
     font-size: 1.2em;
 }
 
+.form.p {
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: #369;
+}
+
 .h2 {
     font-size: 2em;
     color: #369;
@@ -46,6 +52,10 @@
 
 .form .span {
     color: #369;
+}
+
+.form .span.red {
+    color: red;
 }
 
 .button {

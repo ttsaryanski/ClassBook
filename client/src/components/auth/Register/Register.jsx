@@ -14,6 +14,7 @@ export default function Register() {
     const { setError } = useError();
 
     const [pending, setPending] = useState(false);
+    const [isTeacher, setIsTeacher] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ export default function Register() {
         firstName: "",
         lastName: "",
         email: "",
+        secretKey: "",
         password: "",
         rePassword: "",
     });
@@ -55,6 +57,16 @@ export default function Register() {
         const emailRegex =
             /^[A-Za-z0-9._%+-]{3,}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
         return emailRegex.test(value) ? "" : "Invalid email format.";
+    };
+
+    const validateSecretKey = (value) => {
+        const validKeys = ["director_secret_key", "teacher_secret_key"];
+        if (value.trim() === "") {
+            return "";
+        }
+        return validKeys.includes(value)
+            ? ""
+            : "Invalid secret key. Please enter a valid key.";
     };
 
     const validatePassword = (value) => {
@@ -133,6 +145,7 @@ export default function Register() {
     const secretKeyChangeHandler = (e) => {
         const value = e.target.value;
         setSecretKey(value);
+        setErrors((prev) => ({ ...prev, secretKey: validateSecretKey(value) }));
     };
 
     const passwordChangeHandler = (e) => {
@@ -154,6 +167,7 @@ export default function Register() {
         !errors.firstName &&
         !errors.lastName &&
         !errors.email &&
+        !errors.secretKey &&
         !errors.password &&
         !errors.rePassword &&
         firstName &&
@@ -205,7 +219,7 @@ export default function Register() {
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
                                 {errors.firstName && (
-                                    <p className="text-red-500 text-xs mt-1">
+                                    <p className="text-red-500 text-base mt-1">
                                         {errors.firstName}
                                     </p>
                                 )}
@@ -230,7 +244,7 @@ export default function Register() {
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
                                 {errors.lastName && (
-                                    <p className="text-red-500 text-xs mt-1">
+                                    <p className="text-red-500 text-base mt-1">
                                         {errors.lastName}
                                     </p>
                                 )}
@@ -256,7 +270,7 @@ export default function Register() {
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
                                 {errors.email && (
-                                    <p className="text-red-500 text-xs mt-1">
+                                    <p className="text-red-500 text-base mt-1">
                                         {errors.email}
                                     </p>
                                 )}
@@ -265,26 +279,49 @@ export default function Register() {
 
                         <div className={styles.form_row}>
                             <label
-                                htmlFor="sicret"
-                                className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                className={`${styles.label} flex items-center gap-2 cursor-pointer`}
                             >
-                                Sicret key
-                            </label>
-                            <div className="mt-2">
                                 <input
-                                    type="password"
-                                    id="sicret"
-                                    name="sicret"
-                                    value={secretKey ?? ""}
-                                    placeholder="secretKey"
-                                    onChange={secretKeyChangeHandler}
-                                    className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
+                                    type="checkbox"
+                                    checked={isTeacher}
+                                    onChange={() => setIsTeacher(!isTeacher)}
+                                    className="w-4 h-4"
                                 />
-                            </div>
-                            <span className={styles.span}>
-                                If you are a teacher please enter your key!
-                            </span>
+                                Register as a teacher
+                            </label>
                         </div>
+
+                        {isTeacher && (
+                            <div className={styles.form_row}>
+                                <label
+                                    htmlFor="sicret"
+                                    className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                >
+                                    Sicret key
+                                </label>
+                                <div className="mt-2">
+                                    <input
+                                        type="password"
+                                        id="sicret"
+                                        name="sicret"
+                                        value={secretKey ?? ""}
+                                        placeholder="secretKey"
+                                        onChange={secretKeyChangeHandler}
+                                        className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
+                                    />
+                                    {errors.secretKey && (
+                                        <p className="text-red-500 text-base mt-1">
+                                            {errors.secretKey}
+                                        </p>
+                                    )}
+                                </div>
+                                <span
+                                    className={`${styles.span} ${styles.red}`}
+                                >
+                                    If you are a teacher please enter your key!
+                                </span>
+                            </div>
+                        )}
 
                         <div className={styles.form_row}>
                             <div className="flex items-center justify-between">
@@ -307,7 +344,7 @@ export default function Register() {
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
                                 {errors.password && (
-                                    <p className="text-red-500 text-xs mt-1">
+                                    <p className="text-red-500 text-base mt-1">
                                         {errors.password}
                                     </p>
                                 )}
@@ -335,7 +372,7 @@ export default function Register() {
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
                                 {errors.rePassword && (
-                                    <p className="text-red-500 text-xs mt-1">
+                                    <p className="text-red-500 text-base mt-1">
                                         {errors.rePassword}
                                     </p>
                                 )}
@@ -374,6 +411,11 @@ export default function Register() {
                     </p>
                 </div>
             </div>
+            <p className={`${styles.form} ${styles.p}`}>
+                {" "}
+                All fields marked with
+                <span className={styles.required}></span> are required!
+            </p>
         </div>
     );
 }
