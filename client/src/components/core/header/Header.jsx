@@ -83,7 +83,7 @@ export default function Header() {
                             <Link className={styles.link} to="/classes">
                                 Classes
                             </Link>
-                            {clss.length > 0 && (
+                            {user && clss.length > 0 && (
                                 <ul className={styles.ul}>
                                     {clss.map((cls) => (
                                         <li

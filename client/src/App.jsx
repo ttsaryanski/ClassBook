@@ -24,10 +24,10 @@ import EditClass from "./components/classes/EditClass/EditClass";
 import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
 import EditProfile from "./components/auth/EditProfile/EditProfile";
 import CreateStudents from "./components/students/CreateStudent/CreateStudent";
+import EditStudent from "./components/students/EditStudent/EditStudent";
 import Spinner from "./components/shared/Spinner/Spinner";
 
 import "./App.css";
-import EditStudent from "./components/students/EditStudent/EditStudent";
 
 function App() {
     return (
@@ -44,26 +44,6 @@ function App() {
                                 <Route path="/" element={<Home />} />
 
                                 <Route path="/classes" element={<Classes />} />
-
-                                <Route
-                                    path="/classes/create"
-                                    element={<CreateClass />}
-                                />
-
-                                <Route
-                                    path="/students/create"
-                                    element={<CreateStudents />}
-                                />
-
-                                <Route
-                                    path="/classes/:classId/edit"
-                                    element={<EditClass />}
-                                />
-
-                                <Route
-                                    path="/student/:studentId/edit/:clssId"
-                                    element={<EditStudent />}
-                                />
 
                                 <Route
                                     path="/classes/:classId/details"
@@ -90,6 +70,26 @@ function App() {
 
                                 <Route element={<AuthGuard />}>
                                     <Route
+                                        path="/classes/create"
+                                        element={<CreateClass />}
+                                    />
+
+                                    <Route
+                                        path="/students/create"
+                                        element={<CreateStudents />}
+                                    />
+
+                                    <Route
+                                        path="/classes/:classId/edit"
+                                        element={<EditClass />}
+                                    />
+
+                                    <Route
+                                        path="/student/:studentId/edit/:clssId"
+                                        element={<EditStudent />}
+                                    />
+
+                                    <Route
                                         path="/auth/profile"
                                         element={<Profile />}
                                     />
@@ -98,12 +98,12 @@ function App() {
                                         path="/auth/profile/:userId"
                                         element={<EditProfile />}
                                     />
-                                </Route>
 
-                                <Route
-                                    path="/class/:clssId"
-                                    element={<Clss />}
-                                />
+                                    <Route
+                                        path="/class/:clssId"
+                                        element={<Clss />}
+                                    />
+                                </Route>
 
                                 <Route
                                     path="/underconstruction"
