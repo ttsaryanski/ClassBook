@@ -3,63 +3,41 @@ import { Link } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";
 
-import { teacherService } from "../../../services/teacherService";
-
-export default function Student({
-    _id,
-    //title,
-    //teacher,
-    student,
-    // onDel,
-    isDirector,
-    // pending,
-}) {
+export default function Student({ clssId, student, isEditor }) {
     const { setError } = useError();
-    const [teacherData, setTeacherData] = useState({});
+    const [classGrades, setClassGrades] = useState([]);
 
-    // useEffect(() => {
-    //     const abortController = new AbortController();
-    //     const signal = abortController.signal;
+    useEffect(() => {
+        try {
+            const filteredGrades =
+                student.grades?.filter(
+                    (grade) => grade.class.toString() === clssId
+                ) || [];
+            setClassGrades(filteredGrades);
+        } catch (error) {
+            setError("Error processing grades", error.message);
+        }
+    }, [student.grades, clssId, setError]);
 
-    //     if (!teacher) {
-    //         return;
-    //     }
+    const formatGrades = (grades) => {
+        if (!grades || grades.length === 0) {
+            return "No grades yet";
+        }
 
-    //     setError(null);
-    //     const fetchTeacher = async () => {
-    //         try {
-    //             const dataTeacher = await teacherService.getById(
-    //                 teacher,
-    //                 signal
-    //             );
-    //             setTeacherData(dataTeacher);
-    //         } catch (error) {
-    //             if (!signal.aborted) {
-    //                 setError(
-    //                     "Error fetching teacher:",
-    //                     error.message || "Unknown error"
-    //                 );
-    //             }
-    //         }
-    //     };
-    //     fetchTeacher();
-
-    //     return () => {
-    //         abortController.abort();
-    //     };
-    // }, [teacher, setError]);
+        return grades.map((grade) => grade.value).join(", ");
+    };
 
     return (
         <tr>
             <td>{student.firstName}</td>
             <td>{student.lastName}</td>
-            <td>xxx</td>
+            <td>{formatGrades(classGrades)}</td>
 
             <td className="actions">
-                {isDirector && (
+                {isEditor && (
                     <>
                         <Link
-                            to={`/student/${_id}/edit`}
+                            to={`/student/${student._id}/edit/${clssId}`}
                             className="btn edit-btn"
                             title="Edit"
                         >

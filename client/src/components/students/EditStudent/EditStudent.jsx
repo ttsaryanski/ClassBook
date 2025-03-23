@@ -2,239 +2,133 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";
-import { useClass } from "../../../contexts/ClassContext";
 
-import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
 import { clssService } from "../../../services/clssService";
 
 import styles from "./EditStudent.module.css";
 
 export default function EditStudent() {
-    const editAbortControllerRef = useRef(null);
+    const addAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
-    const { refreshClasses } = useClass();
-    const { classId } = useParams();
+    const { studentId, clssId } = useParams();
 
     const [pending, setPending] = useState(false);
+    const [student, setStudent] = useState({});
+    const [teacher, setTeacher] = useState({});
+    const [grade, setGrade] = useState("");
 
-    const [clss, setClss] = useState({});
-    const [classTitle, setClassTitle] = useState("");
-    const [selectedTeacherId, setSelectedTeacherId] = useState("");
-    const [selectedStudentsIds, setSelectedStudentsIds] = useState([]);
-
-    const [selectedTeacher, setSelectedTeacher] = useState(null);
-    const [selectedStudents, setSelectedStudents] = useState([]);
-    const [teachers, setTeachers] = useState([]);
-    const [students, setStudents] = useState([]);
     const [errors, setErrors] = useState({
-        title: "",
-        teacher: "",
+        grade: "",
     });
 
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
 
-        if (!classId) {
+        if (!studentId) {
             return;
         }
 
         setError(null);
+        const fetchStudent = async () => {
+            try {
+                const result = await studentService.getById(studentId, signal);
+                setStudent(result);
+            } catch (error) {
+                if (!signal.aborted) {
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching student: ,
+                        ${error.message || "Unknown error"}`,
+                    ]);
+                }
+            }
+        };
+
         const fetchClss = async () => {
             try {
-                const clssResult = await clssService.getById(classId, signal);
-                setClss(clssResult);
-                setClassTitle(clssResult.title || "");
-                setSelectedTeacherId(clssResult.teacher || "");
-                setSelectedStudentsIds(clssResult.students || []);
-            } catch (error) {
-                if (!signal.aborted) {
-                    setError((prev) => [
-                        ...(prev || []),
-                        `Error fetching classes: ,
-                        ${error.message || "Unknown error"}`,
-                    ]);
-                }
-            }
-        };
-
-        const fetchTeachers = async () => {
-            try {
-                const dataTeachers = await teacherService.getAll(signal);
-                setTeachers(dataTeachers);
-            } catch (error) {
-                if (!signal.aborted) {
-                    setError((prev) => [
-                        ...(prev || []),
-                        `Error fetching teachers:,
-                        ${error.message || "Unknown error"}`,
-                    ]);
-                }
-            }
-        };
-
-        const fetchStudents = async () => {
-            try {
-                const dataSudents = await studentService.getAll(signal);
-                setStudents(dataSudents);
-            } catch (error) {
-                if (!signal.aborted) {
-                    setError((prev) => [
-                        ...(prev || []),
-                        `Error fetching students:,
-                        ${error.message || "Unknown error"}`,
-                    ]);
-                }
-            }
-        };
-
-        fetchClss();
-        fetchTeachers();
-        fetchStudents();
-
-        return () => {
-            abortController.abort();
-        };
-    }, [classId, setError]);
-
-    useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
-
-        if (!selectedTeacherId) {
-            setSelectedTeacher(null);
-            return;
-        }
-
-        setError(null);
-        const fetchTeacher = async () => {
-            try {
-                const dataTeacher = await teacherService.getById(
-                    selectedTeacherId,
+                const clssResult = await clssService.getByIdPopulate(
+                    clssId,
                     signal
                 );
-                setSelectedTeacher(dataTeacher);
+                setTeacher(clssResult.teacher);
             } catch (error) {
                 if (!signal.aborted) {
-                    setError(
-                        "Error fetching teachers:",
-                        error.message || "Unknown error"
-                    );
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching class: ,
+                                ${error.message || "Unknown error"}`,
+                    ]);
                 }
             }
         };
-        fetchTeacher();
+
+        fetchStudent();
+        fetchClss();
 
         return () => {
             abortController.abort();
         };
-    }, [selectedTeacherId, setError]);
-
-    useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
-
-        if (!selectedStudentsIds || selectedStudentsIds.length === 0) {
-            setSelectedStudents([]);
-            return;
-        }
-
-        setError(null);
-        const fetchStudents = async () => {
-            try {
-                const studentsData = await Promise.all(
-                    selectedStudentsIds.map((id) =>
-                        studentService.getById(id, signal)
-                    )
-                );
-                setSelectedStudents(studentsData);
-            } catch (error) {
-                if (!signal.aborted) {
-                    setError(
-                        "Error fetching students:",
-                        error.message || "Unknown error"
-                    );
-                }
-            }
-        };
-        fetchStudents();
-
-        return () => {
-            abortController.abort();
-        };
-    }, [selectedStudentsIds, setError]);
+    }, [studentId, clssId, setError]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (editAbortControllerRef.current) {
-            editAbortControllerRef.current.abort();
+        if (addAbortControllerRef.current) {
+            addAbortControllerRef.current.abort();
         }
-        editAbortControllerRef.current = new AbortController();
-        const signal = editAbortControllerRef.current.signal;
+        addAbortControllerRef.current = new AbortController();
+        const signal = addAbortControllerRef.current.signal;
 
-        const classData = {
-            title: classTitle,
-            teacher: selectedTeacherId,
-            students: selectedStudentsIds,
+        const gradeData = {
+            teacher: teacher._id,
+            class: clssId,
+            value: Number(grade),
+            comment: "",
         };
 
         setPending(true);
-
         setError(null);
+
         try {
-            await clssService.editById(classId, classData, signal);
-            refreshClasses();
-            navigate("/classes");
+            const updatedStudent = {
+                ...student,
+                grades: [...(student.grades || []), gradeData],
+            };
+
+            await studentService.editById(studentId, updatedStudent, signal);
+            navigate(`/class/${clssId}`);
         } catch (error) {
             if (error.name === "AbortError") {
                 console.log("Request was aborted:", error.message);
             } else {
-                setError("Create class failed.", error.message);
+                setError("Add grade failed.", error.message);
             }
         } finally {
             setPending(false);
         }
     };
 
-    const validateTitle = (value) => {
-        if (value.length < 3) {
-            return "Class title must be at least 3 characters long.";
+    const validateGrade = (value) => {
+        const numValue = Number(value);
+        if (isNaN(numValue)) {
+            return "Grade must be a number";
+        }
+        if (numValue < 2 || numValue > 6) {
+            return "Grade must be between 2 and 6";
         }
         return "";
     };
 
-    const validateTeacher = (value) => {
-        if (value === "") {
-            return "You must choose a teacher.";
-        }
-        return "";
-    };
-
-    const titleChangeHandler = (e) => {
+    const gradeChangeHandler = (e) => {
         const value = e.target.value;
-        setClassTitle(value);
-        setErrors((prev) => ({ ...prev, title: validateTitle(value) }));
+        setGrade(value);
+        setErrors((prev) => ({ ...prev, grade: validateGrade(value) }));
     };
 
-    const teacherChangeHandler = (e) => {
-        const value = e.target.value;
-        setSelectedTeacherId(value);
-        setErrors((prev) => ({ ...prev, teacher: validateTeacher(value) }));
-    };
-
-    const studentChangeHandler = (e) => {
-        const selectedOptions = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        );
-        setSelectedStudentsIds(selectedOptions);
-    };
-
-    const isFormValid =
-        !errors.title && !errors.teacher && classTitle && selectedTeacherId;
+    const isFormValid = !errors.grade && grade;
 
     return (
         <div className={styles.edit}>
@@ -242,159 +136,43 @@ export default function EditStudent() {
                 <div className={`${styles.edit_class} user-container`}>
                     <header className="headers">
                         <h2 className={styles.h2}>
-                            {`Edit ${clss.title} Class`}
+                            {`Add ${student.firstName} ${student.lastName} grade`}
                         </h2>
                     </header>
                     <form onSubmit={submitHandler} className={styles.form}>
                         <div className="form-row">
                             <div className="form-group">
                                 <label
-                                    htmlFor="classTitle"
+                                    htmlFor="grade"
                                     className={styles.required}
                                 >
-                                    Class Title
+                                    Grade
                                 </label>
                                 <div className="input-wrapper">
                                     <div className="mt-2">
                                         <div className="flex">
                                             <span>
                                                 <i
-                                                    className={`${styles.icon} fa-solid fa-chalkboard`}
+                                                    className={`${styles.icon} fa-solid fa-chart-line`}
                                                 ></i>
                                             </span>
                                             <input
                                                 type="text"
-                                                id="title"
-                                                name="title"
-                                                value={classTitle || ""}
-                                                onChange={titleChangeHandler}
+                                                id="grade"
+                                                name="grade"
+                                                value={grade}
+                                                onChange={gradeChangeHandler}
+                                                min="2"
+                                                max="6"
                                             />
                                         </div>
-                                        {errors.title && (
+                                        {errors.grade && (
                                             <p className="text-danger midlle mt-1">
-                                                {errors.title}
+                                                {errors.grade}
                                             </p>
                                         )}
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label
-                                    htmlFor="teacher"
-                                    className={styles.required}
-                                >
-                                    Teachers
-                                </label>
-                                <div className="input-wrapper">
-                                    <select
-                                        id="teacher"
-                                        name="teacher"
-                                        value={selectedTeacherId}
-                                        onChange={teacherChangeHandler}
-                                    >
-                                        <option value="" disabled>
-                                            Select teacher
-                                        </option>
-                                        {teachers.map((teacher) => (
-                                            <option
-                                                key={teacher._id}
-                                                value={teacher._id}
-                                            >
-                                                {teacher.firstName}{" "}
-                                                {teacher.lastName} -{" "}
-                                                {teacher.speciality}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {errors.teacher && (
-                                    <p className="text-danger midlle mt-1">
-                                        {errors.teacher}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="form-group">
-                                <label>Selected Teachers</label>
-                                <div className="input-wrapper">
-                                    <div className="input-wrapper">
-                                        <span>
-                                            <i
-                                                className={`${styles.icon} fa-solid fa-user`}
-                                            ></i>
-                                        </span>
-                                        <input
-                                            value={
-                                                selectedTeacher
-                                                    ? `${selectedTeacher.firstName} ${selectedTeacher.lastName} - ${selectedTeacher.speciality}`
-                                                    : ""
-                                            }
-                                            readOnly
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="students">Students</label>
-                                <div className="input-wrapper">
-                                    <select
-                                        id="students"
-                                        name="students"
-                                        multiple
-                                        value={selectedStudentsIds}
-                                        onChange={studentChangeHandler}
-                                    >
-                                        <option value="" disabled>
-                                            Select students
-                                        </option>
-                                        {students.map((student) => (
-                                            <option
-                                                key={student._id}
-                                                value={student._id}
-                                            >
-                                                {student.firstName}{" "}
-                                                {student.lastName}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Selected students</label>
-                                {selectedStudents.length > 0 ? (
-                                    selectedStudents.map((student) => (
-                                        <div
-                                            key={student._id}
-                                            className="input-wrapper"
-                                        >
-                                            <span>
-                                                <i
-                                                    className={`${styles.icon} fa-solid fa-user`}
-                                                ></i>
-                                            </span>
-                                            <input
-                                                value={`${student.firstName} ${student.lastName}`}
-                                                readOnly
-                                            />
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="input-wrapper">
-                                        <span>
-                                            <i
-                                                className={`${styles.icon} fa-solid fa-user`}
-                                            ></i>
-                                        </span>
-                                        <input readOnly placeholder="" />
-                                    </div>
-                                )}
                             </div>
                         </div>
 
@@ -415,12 +193,12 @@ export default function EditStudent() {
                                             : "pointer",
                                 }}
                             >
-                                Edit
+                                Add
                             </button>
                             <Link
                                 id="action-cancel"
                                 className={`${styles.cancel_btn} btn`}
-                                to={"/classes"}
+                                to={`/class/${clssId}`}
                             >
                                 Cancel
                             </Link>

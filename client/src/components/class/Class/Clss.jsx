@@ -1,26 +1,28 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 
+import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
 
 import { clssService } from "../../../services/clssService";
 
+import Student from "../../students/Student/Student";
 import Spinner from "../../shared/Spinner/Spinner";
+import NotStudents from "../NotStudents";
 
 import styles from "./Clss.module.css";
-import NotStudents from "../NotStudents";
-import Student from "../../students/Student/Student";
 
 export default function Clss() {
     const { clssId } = useParams();
     const { setError } = useError();
+    const { user } = useAuth();
 
     const [clss, setClss] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
     const [teacher, setTeacher] = useState({});
     const [students, setStudents] = useState([]);
-    const [isDirector, setIsDirector] = useState(true);
+    const [isEditor, setIsEditor] = useState(false);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -33,6 +35,13 @@ export default function Clss() {
                 setClss(clss);
                 setTeacher(clss.teacher);
                 setStudents(clss.students);
+
+                if (user && clss.teacher && clss.teacher._ownerId) {
+                    setIsEditor(user._id === clss.teacher._ownerId.toString());
+                } else {
+                    setIsEditor(false);
+                }
+
                 setIsLoading(false);
             } catch (error) {
                 if (!signal.aborted) {
@@ -45,7 +54,7 @@ export default function Clss() {
         return () => {
             abortController.abort();
         };
-    }, [clssId, setError]);
+    }, [clssId, setError, user]);
 
     return (
         <>
@@ -76,8 +85,9 @@ export default function Clss() {
                             {students.map((student) => (
                                 <Student
                                     key={student._id}
+                                    clssId={clssId}
                                     // onDel={showDeleteClass}
-                                    isDirector={isDirector}
+                                    isEditor={isEditor}
                                     // pending={pending}
                                     student={student}
                                 />
@@ -85,24 +95,6 @@ export default function Clss() {
                         </tbody>
                     </table>
                 </div>
-
-                {/* {isDirector && (
-                    <>
-                        <Link
-                            className={`${styles.add_btn} btn-add btn`}
-                            to={"/classes/create"}
-                        >
-                            Add new class
-                        </Link>
-
-                        <Link
-                            className={`${styles.add_btn} btn-add btn`}
-                            to={"/students/create"}
-                        >
-                            Add new student
-                        </Link>
-                    </>
-                )} */}
             </section>
         </>
     );

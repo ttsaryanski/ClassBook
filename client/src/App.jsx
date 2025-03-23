@@ -61,7 +61,7 @@ function App() {
                                 />
 
                                 <Route
-                                    path="/student/:studentId/edit"
+                                    path="/student/:studentId/edit/:clssId"
                                     element={<EditStudent />}
                                 />
 
