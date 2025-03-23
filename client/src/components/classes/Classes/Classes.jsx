@@ -137,12 +137,21 @@ export default function Classes() {
                 </div>
 
                 {isDirector && (
-                    <Link
-                        className={`${styles.add_btn} btn-add btn`}
-                        to={"/classes/create"}
-                    >
-                        Add new class
-                    </Link>
+                    <>
+                        <Link
+                            className={`${styles.add_btn} btn-add btn`}
+                            to={"/classes/create"}
+                        >
+                            Add new class
+                        </Link>
+
+                        <Link
+                            className={`${styles.add_btn} btn-add btn`}
+                            to={"/students/create"}
+                        >
+                            Add new student
+                        </Link>
+                    </>
                 )}
             </section>
         </>

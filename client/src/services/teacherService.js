@@ -4,7 +4,7 @@ const endPoints = {
     getAll: "/teacher",
     // createNew: '/data/cars',
     // apiById: "/item",
-    search: (query) => `/teacher?where=email%3D${query}`,
+    search: (query) => `/teacher?email=${query}`,
     // getMyCar: (userId) => `/data/cars?where=_ownerId%3D%22${userId}%22&sortBy=_createdOn%20desc`
 };
 

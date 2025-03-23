@@ -21,6 +21,31 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.post("/", async (req, res) => {
+    const userId = await req.cookies?.auth?.user?._id;
+    const data = req.body;
+
+    try {
+        const item = await studentService.create(data, userId);
+
+        res.status(201).json(item).end();
+    } catch (error) {
+        if (error.message.includes("validation")) {
+            res.status(400)
+                .json({ message: createErrorMsg(error) })
+                .end();
+        } else if (error.message === "Missing or invalid data!") {
+            res.status(400)
+                .json({ message: createErrorMsg(error) })
+                .end();
+        } else {
+            res.status(500)
+                .json({ message: createErrorMsg(error) })
+                .end();
+        }
+    }
+});
+
 router.get("/:studentId", async (req, res) => {
     const studentId = req.params.studentId;
 

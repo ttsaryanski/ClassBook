@@ -33,14 +33,44 @@ export default function Register() {
         rePassword: "",
     });
 
-    const clearForm = () => {
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setSecretKey("");
-        setIdentifier("");
-        setPassword("");
-        setRePassword("");
+    const submitHandler = async (e) => {
+        e.preventDefault();
+
+        if (registerAbortControllerRef.current) {
+            registerAbortControllerRef.current.abort();
+        }
+        registerAbortControllerRef.current = new AbortController();
+        const signal = registerAbortControllerRef.current.signal;
+
+        setPending(true);
+
+        setError(null);
+        try {
+            await authService.register(
+                {
+                    firstName,
+                    lastName,
+                    email,
+                    identifier: identifier.trim() || null,
+                    secretKey: secretKey.trim() || null,
+                    password,
+                },
+                signal
+            );
+
+            await login(email, password, signal);
+            clearForm();
+        } catch (error) {
+            if (error.name === "AbortError") {
+                console.log("Request was aborted: ", error.message);
+            } else {
+                setError("Registration failed.", error.message);
+            }
+            setPassword("");
+            setRePassword("");
+        } finally {
+            setPending(false);
+        }
     };
 
     const validateFirstName = (value) => {
@@ -100,46 +130,6 @@ export default function Register() {
         return "";
     };
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-
-        if (registerAbortControllerRef.current) {
-            registerAbortControllerRef.current.abort();
-        }
-        registerAbortControllerRef.current = new AbortController();
-        const signal = registerAbortControllerRef.current.signal;
-
-        setPending(true);
-
-        setError(null);
-        try {
-            await authService.register(
-                {
-                    firstName,
-                    lastName,
-                    email,
-                    identifier: identifier.trim() || null,
-                    secretKey: secretKey.trim() || null,
-                    password,
-                },
-                signal
-            );
-
-            await login(email, password, signal);
-            clearForm();
-        } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted: ", error.message);
-            } else {
-                setError("Registration failed.", error.message);
-            }
-            setPassword("");
-            setRePassword("");
-        } finally {
-            setPending(false);
-        }
-    };
-
     const firstNameChangeHandler = (e) => {
         const value = e.target.value;
         setFirstName(value);
@@ -186,6 +176,16 @@ export default function Register() {
             ...prev,
             rePassword: validateRePassword(value, password),
         }));
+    };
+
+    const clearForm = () => {
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setSecretKey("");
+        setIdentifier("");
+        setPassword("");
+        setRePassword("");
     };
 
     const isFormValid =
@@ -359,7 +359,7 @@ export default function Register() {
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        type="password"
+                                        type="text"
                                         id="identifier"
                                         name="identifier"
                                         value={identifier}

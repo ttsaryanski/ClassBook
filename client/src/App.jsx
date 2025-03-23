@@ -23,6 +23,7 @@ import CreateClass from "./components/classes/CreateClass/CreateClass";
 import EditClass from "./components/classes/EditClass/EditClass";
 import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
 import EditProfile from "./components/auth/EditProfile/EditProfile";
+import CreateStudents from "./components/students/CreateStudent/CreateStudent";
 import Spinner from "./components/shared/Spinner/Spinner";
 
 import "./App.css";
@@ -46,6 +47,11 @@ function App() {
                                 <Route
                                     path="/classes/create"
                                     element={<CreateClass />}
+                                />
+
+                                <Route
+                                    path="/students/create"
+                                    element={<CreateStudents />}
                                 />
 
                                 <Route

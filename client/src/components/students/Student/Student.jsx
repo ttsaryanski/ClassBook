@@ -5,7 +5,7 @@ import { useError } from "../../../contexts/ErrorContext";
 
 import { teacherService } from "../../../services/teacherService";
 
-export default function Student({
+export default function OneClass({
     _id,
     title,
     teacher,
