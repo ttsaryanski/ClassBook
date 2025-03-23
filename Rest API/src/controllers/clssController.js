@@ -66,6 +66,24 @@ router.get("/:clssId", async (req, res) => {
     }
 });
 
+router.get("/:clssId/populate", async (req, res) => {
+    const clssId = req.params.clssId;
+
+    try {
+        const clss = await clssService.getByIdPopulate(clssId);
+
+        if (clss !== null) {
+            res.status(200).json(clss).end();
+        } else {
+            res.status(404)
+                .json({ message: "There is no item with this id." })
+                .end();
+        }
+    } catch (error) {
+        res.status(500).json({ message: createErrorMsg(error) });
+    }
+});
+
 router.put("/:clssId", async (req, res) => {
     const clssId = req.params.clssId;
     const data = req.body;

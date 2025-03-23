@@ -27,6 +27,7 @@ import CreateStudents from "./components/students/CreateStudent/CreateStudent";
 import Spinner from "./components/shared/Spinner/Spinner";
 
 import "./App.css";
+import EditStudent from "./components/students/EditStudent/EditStudent";
 
 function App() {
     return (
@@ -57,6 +58,11 @@ function App() {
                                 <Route
                                     path="/classes/:classId/edit"
                                     element={<EditClass />}
+                                />
+
+                                <Route
+                                    path="/student/:studentId/edit"
+                                    element={<EditStudent />}
                                 />
 
                                 <Route

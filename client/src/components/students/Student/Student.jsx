@@ -5,61 +5,61 @@ import { useError } from "../../../contexts/ErrorContext";
 
 import { teacherService } from "../../../services/teacherService";
 
-export default function OneClass({
+export default function Student({
     _id,
-    title,
-    teacher,
-    students,
-    onDel,
+    //title,
+    //teacher,
+    student,
+    // onDel,
     isDirector,
-    pending,
+    // pending,
 }) {
     const { setError } = useError();
     const [teacherData, setTeacherData] = useState({});
 
-    useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
+    // useEffect(() => {
+    //     const abortController = new AbortController();
+    //     const signal = abortController.signal;
 
-        if (!teacher) {
-            return;
-        }
+    //     if (!teacher) {
+    //         return;
+    //     }
 
-        setError(null);
-        const fetchTeacher = async () => {
-            try {
-                const dataTeacher = await teacherService.getById(
-                    teacher,
-                    signal
-                );
-                setTeacherData(dataTeacher);
-            } catch (error) {
-                if (!signal.aborted) {
-                    setError(
-                        "Error fetching teacher:",
-                        error.message || "Unknown error"
-                    );
-                }
-            }
-        };
-        fetchTeacher();
+    //     setError(null);
+    //     const fetchTeacher = async () => {
+    //         try {
+    //             const dataTeacher = await teacherService.getById(
+    //                 teacher,
+    //                 signal
+    //             );
+    //             setTeacherData(dataTeacher);
+    //         } catch (error) {
+    //             if (!signal.aborted) {
+    //                 setError(
+    //                     "Error fetching teacher:",
+    //                     error.message || "Unknown error"
+    //                 );
+    //             }
+    //         }
+    //     };
+    //     fetchTeacher();
 
-        return () => {
-            abortController.abort();
-        };
-    }, [teacher, setError]);
+    //     return () => {
+    //         abortController.abort();
+    //     };
+    // }, [teacher, setError]);
 
     return (
         <tr>
-            <td>{title}</td>
-            <td>{`${teacherData.firstName} ${teacherData.lastName}`}</td>
-            <td>{students.length}</td>
+            <td>{student.firstName}</td>
+            <td>{student.lastName}</td>
+            <td>xxx</td>
 
             <td className="actions">
                 {isDirector && (
                     <>
                         <Link
-                            to={`/classes/${_id}/edit`}
+                            to={`/student/${_id}/edit`}
                             className="btn edit-btn"
                             title="Edit"
                         >
@@ -79,51 +79,8 @@ export default function OneClass({
                                 ></path>
                             </svg>
                         </Link>
-                        <button
-                            className="btn delete-btn"
-                            title="Delete"
-                            disabled={pending}
-                            onClick={() => onDel(_id)}
-                        >
-                            <svg
-                                aria-hidden="true"
-                                focusable="false"
-                                data-prefix="fas"
-                                data-icon="trash"
-                                className="svg-inline--fa fa-trash"
-                                role="img"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 498 512"
-                            >
-                                <path
-                                    fill="currentColor"
-                                    d="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM394.8 466.1C393.2 492.3 372.3 512 346.9 512H101.1C75.75 512 54.77 492.3 53.19 466.1L31.1 128H416L394.8 466.1z"
-                                ></path>
-                            </svg>
-                        </button>
                     </>
                 )}
-                <Link
-                    to={`/classes/${_id}/details`}
-                    className="btn info-btn"
-                    title="Info"
-                >
-                    <svg
-                        aria-hidden="true"
-                        focusable="false"
-                        data-prefix="fas"
-                        data-icon="info"
-                        className="svg-inline--fa fa-info"
-                        role="img"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="-150 0 512 612"
-                    >
-                        <path
-                            fill="currentColor"
-                            d="M160 448h-32V224c0-17.69-14.33-32-32-32L32 192c-17.67 0-32 14.31-32 32s14.33 31.1 32 31.1h32v192H32c-17.67 0-32 14.31-32 32s14.33 32 32 32h128c17.67 0 32-14.31 32-32S177.7 448 160 448zM96 128c26.51 0 48-21.49 48-48S122.5 32.01 96 32.01s-48 21.49-48 48S69.49 128 96 128z"
-                        ></path>
-                    </svg>
-                </Link>
             </td>
         </tr>
     );

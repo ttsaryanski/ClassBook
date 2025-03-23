@@ -33,6 +33,9 @@ const create = (data, userId) => Clss.create({ ...data, _createdBy: userId });
 
 const getById = (itemId) => Clss.findById(itemId);
 
+const getByIdPopulate = (itemId) =>
+    Clss.findById(itemId).populate("teacher").populate("students");
+
 const remove = (itemId) => Clss.findByIdAndDelete(itemId);
 
 const edit = (itemId, data) => {
@@ -113,6 +116,7 @@ export default {
     getAllPaginated,
     create,
     getById,
+    getByIdPopulate,
     remove,
     edit,
     like,

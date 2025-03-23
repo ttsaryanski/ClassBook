@@ -20,6 +20,10 @@ async function getById(id, signal) {
     return await api.get(endPoints.getAll + `/${id}`, signal);
 }
 
+async function getByIdPopulate(id, signal) {
+    return await api.get(endPoints.getAll + `/${id}/populate`, signal);
+}
+
 async function editById(id, data, signal) {
     return await api.put(endPoints.getAll + `/${id}`, data, signal);
 }
@@ -40,6 +44,7 @@ export const clssService = {
     getAll,
     createNew,
     getById,
+    getByIdPopulate,
     editById,
     delById,
     // searchItem,
