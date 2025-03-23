@@ -5,7 +5,6 @@ const endPoints = {
     // createNew: '/data/cars',
     // apiById: "/item",
     search: (query) => `/teacher?email=${query}`,
-    // getMyCar: (userId) => `/data/cars?where=_ownerId%3D%22${userId}%22&sortBy=_createdOn%20desc`
 };
 
 async function getAll(signal) {
@@ -45,14 +44,3 @@ export const teacherService = {
     searchTeacher,
     // getMyCar
 };
-
-function transformUserData(userData) {
-    const { country, city, street, streetNumber, ...transformedData } =
-        userData;
-
-    transformedData.address = { country, city, street, streetNumber };
-    transformedData.createdAt = new Date().toISOString();
-    transformedData.updatedAt = new Date().toISOString();
-
-    return transformedData;
-}

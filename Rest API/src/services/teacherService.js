@@ -39,7 +39,13 @@ const getById = (teacherId) => Teacher.findById(teacherId);
 const remove = (teacherId) => Teacher.findByIdAndDelete(teacherId);
 
 const edit = async (teacherId, data) => {
-    return Teacher.findByIdAndUpdate(teacherId, data, {
+    const updateQuery = { ...data };
+    if (data.clss) {
+        updateQuery.$push = { clss: data.clss };
+        delete updateQuery.clss;
+    }
+
+    return Teacher.findByIdAndUpdate(teacherId, updateQuery, {
         runValidators: true,
         new: true,
     });

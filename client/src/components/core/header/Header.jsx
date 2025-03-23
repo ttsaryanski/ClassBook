@@ -1,16 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
 import { useClass } from "../../../contexts/ClassContext";
+import { useError } from "../../../contexts/ErrorContext";
+
+import { teacherService } from "../../../services/teacherService";
 
 import styles from "./Header.module.css";
 
 export default function Header() {
     const { user, logout } = useAuth();
     const { clss } = useClass();
+    const { setError } = useError();
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isTeacher, setIsTeacher] = useState(false);
+    const [myClasses, setMyClasses] = useState([]);
+
+    useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
+        const fetchTeacherData = async () => {
+            if (user?.role === "teacher") {
+                try {
+                    const teachers = await teacherService.getAll(signal);
+                    const currentTeacher = teachers.find(
+                        (teacher) => teacher._ownerId?.toString() === user._id
+                    );
+
+                    if (currentTeacher) {
+                        setIsTeacher(true);
+
+                        const teacherClasses = clss.filter((clss) =>
+                            currentTeacher.clss?.includes(clss._id.toString())
+                        );
+                        setMyClasses(teacherClasses);
+                    } else {
+                        setIsTeacher(false);
+                        setMyClasses([]);
+                    }
+                } catch (error) {
+                    if (!signal.aborted) {
+                        setError("Error fetching teacher data:", error.message);
+                    }
+                    setIsTeacher(false);
+                    setMyClasses([]);
+                }
+            } else {
+                setIsTeacher(false);
+                setMyClasses([]);
+            }
+        };
+        fetchTeacherData();
+
+        return () => {
+            abortController.abort();
+        };
+    }, [user, clss, setError]);
 
     return (
         <div className={styles.header}>
@@ -102,32 +150,30 @@ export default function Header() {
                             )}
                         </li>
 
-                        <li className={styles.list}>
-                            <Link className={styles.link}>Teachers</Link>
-                            <ul className={styles.ul}>
-                                <li className={styles.list}>
-                                    <Link className={styles.link} to="/class_1">
-                                        Class Room 1
-                                    </Link>
-                                </li>
-                                <li className={styles.list}>
-                                    <Link
-                                        className={styles.link}
-                                        to="/archive/feb-2024"
-                                    >
-                                        Class Room 2
-                                    </Link>
-                                </li>
-                                <li className={styles.list}>
-                                    <Link
-                                        className={styles.link}
-                                        to="/archive/mar-2024"
-                                    >
-                                        Class Room 3
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
+                        {isTeacher && (
+                            <li className={styles.list}>
+                                <Link className={styles.link}>
+                                    Teacher classes
+                                </Link>
+                                {myClasses.length > 0 && (
+                                    <ul className={styles.ul}>
+                                        {myClasses.map((clss) => (
+                                            <li
+                                                key={clss._id}
+                                                className={styles.list}
+                                            >
+                                                <Link
+                                                    className={styles.link}
+                                                    to={`/class/${clss._id}`}
+                                                >
+                                                    {clss.title}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
+                        )}
 
                         <li className={styles.list}>
                             <Link className={styles.link}>Students</Link>

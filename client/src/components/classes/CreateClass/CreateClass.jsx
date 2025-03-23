@@ -160,7 +160,12 @@ export default function CreateClass() {
 
         setError(null);
         try {
-            await clssService.createNew(classData, signal);
+            const newClass = await clssService.createNew(classData, signal);
+            await teacherService.editById(
+                selectedTeacherId,
+                { clss: newClass._id },
+                signal
+            );
             refreshClasses();
             navigate("/classes");
         } catch (error) {
