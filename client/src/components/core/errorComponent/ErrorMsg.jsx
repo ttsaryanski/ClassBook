@@ -41,7 +41,15 @@ export default function ErrorMsg() {
                     tabIndex={-1}
                     role="alert"
                 >
-                    {error}
+                    {Array.isArray(error) ? (
+                        error.map((errMsg, index) => (
+                            <p key={index} className={styles.errorItem}>
+                                {errMsg}
+                            </p>
+                        ))
+                    ) : (
+                        <p>{error}</p>
+                    )}
                     <button
                         onClick={() => setError(null)}
                         className={styles.button}

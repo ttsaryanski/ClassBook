@@ -10,12 +10,12 @@ const clssSchema = new Schema({
     teacher: {
         type: Types.ObjectId,
         required: [true, "Teacher is required!"],
-        ref: "User",
+        ref: "Teacher",
     },
     students: [
         {
             type: Types.ObjectId,
-            ref: "User",
+            ref: "Student",
         },
     ],
     _createdBy: {

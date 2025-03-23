@@ -2,18 +2,26 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
+import { useError } from "../../../contexts/ErrorContext";
 
 import { fromIsoToString } from "../../../utils/setDateString";
 
 import styles from "./Profile.module.css";
+import { teacherService } from "../../../services/teacherService";
 
 export default function Profile() {
     const { user } = useAuth();
+    const { setError } = useError();
 
     const [picture, setPicture] = useState({});
     const [isTeacher, setIsTeacher] = useState(false);
+    const [speciality, setSpeciality] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         if (user?.profilePicture?.fileUrl) {
             setPicture(user.profilePicture);
         } else {
@@ -22,8 +30,34 @@ export default function Profile() {
 
         if (user?.role === "teacher") {
             setIsTeacher(true);
+            setIsLoading(true);
+
+            setError(null);
+            const fetchTeacher = async () => {
+                try {
+                    const result = await teacherService.searchTeacher(
+                        user.email,
+                        signal
+                    );
+                    const [teacher] = result;
+                    setSpeciality(teacher.speciality);
+                } catch (error) {
+                    if (!signal.aborted) {
+                        setError(
+                            "Failed to load teacher data: ",
+                            error.message
+                        );
+                    }
+                }
+            };
+            fetchTeacher();
         }
-    }, [user]);
+
+        setIsLoading(false);
+        return () => {
+            abortController.abort();
+        };
+    }, [user, setError]);
 
     return (
         <>
@@ -59,7 +93,12 @@ export default function Profile() {
 
                         {isTeacher && (
                             <p>
-                                Speciality: <strong>{user?.speciality}</strong>
+                                Speciality:{" "}
+                                {isLoading ? (
+                                    <div>Loading...</div>
+                                ) : (
+                                    <strong>{speciality}</strong>
+                                )}
                             </p>
                         )}
 

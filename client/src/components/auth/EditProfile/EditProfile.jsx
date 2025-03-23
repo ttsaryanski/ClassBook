@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams, Link } from "react-router";
+import { useNavigate, Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
 
 import { authService } from "../../../services/authService";
 import { teacherService } from "../../../services/teacherService";
+
+import Spinner from "../../shared/Spinner/Spinner";
 
 import styles from "./EditProfile.module.css";
 
@@ -17,26 +19,63 @@ export default function EditProfile() {
 
     const [picture, setPicture] = useState({});
     const [isTeacher, setIsTeacher] = useState(false);
+    const [teacherId, setTeacherId] = useState("");
 
     const [pending, setPending] = useState(false);
-    const [firstName, setFirstName] = useState(user.firstName);
-    const [lastName, setLastName] = useState(user.lastName);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [speciality, setSpeciality] = useState("");
     const [errors, setErrors] = useState({
         firstName: "",
         lastName: "",
+        speciality: "",
     });
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (user?.profilePicture?.fileUrl) {
-            setPicture(user.profilePicture);
-        } else {
-            setPicture(null);
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
+        if (!user) {
+            setIsLoading(true);
+            return;
         }
+
+        setFirstName(user.firstName || "");
+        setLastName(user.lastName || "");
+        setPicture(user.profilePicture?.fileUrl ? user.profilePicture : null);
 
         if (user?.role === "teacher") {
             setIsTeacher(true);
+
+            setError(null);
+            const fetchTeacher = async () => {
+                try {
+                    const result = await teacherService.searchTeacher(
+                        user.email,
+                        signal
+                    );
+                    const [teacher] = result;
+
+                    setTeacherId(teacher._id);
+                    setSpeciality(teacher.speciality || "");
+                } catch (error) {
+                    if (!signal.aborted) {
+                        setError(
+                            "Failed to load teacher data: ",
+                            error.message
+                        );
+                    }
+                }
+            };
+            fetchTeacher();
         }
-    }, [user]);
+
+        setIsLoading(false);
+        return () => {
+            abortController.abort();
+        };
+    }, [user, setError]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -48,7 +87,6 @@ export default function EditProfile() {
         editAbortControllerRef.current = new AbortController();
         const signal = editAbortControllerRef.current.signal;
 
-        //const formData = new FormData(e.target);
         const userData = { firstName, lastName };
 
         // if (userData.imageUrl === "") {
@@ -57,24 +95,41 @@ export default function EditProfile() {
 
         setPending(true);
 
+        setError(null);
         try {
-            setError(null);
             const editedUser = await authService.editUser(
                 user._id,
                 userData,
                 signal
             );
             if (isTeacher) {
-                await teacherService.editById(user._id, userData, signal);
+                try {
+                    userData.speciality = speciality;
+                    await teacherService.editById(teacherId, userData, signal);
+                } catch (error) {
+                    if (error.name === "AbortError") {
+                        console.log("Request was aborted:", error.message);
+                    } else {
+                        setError((prev) => [
+                            ...(prev || []),
+                            `Error editing teacher data.,
+                            ${error.message || "Unknown error"}`,
+                        ]);
+                    }
+                }
             }
             updateUser(editedUser);
             navigate("/auth/profile");
             clearForm();
         } catch (error) {
             if (error.name === "AbortError") {
-                setError("Request was aborted:", error.message);
+                console.log("Request was aborted:", error.message);
             } else {
-                setError("Error editing data:", error.message);
+                setError((prev) => [
+                    ...(prev || []),
+                    `Error editing data.,
+                    ${error.message || "Unknown error"}`,
+                ]);
             }
         } finally {
             setPending(false);
@@ -95,6 +150,13 @@ export default function EditProfile() {
         return "";
     };
 
+    const validateSpeciality = (value) => {
+        if (value.length < 3) {
+            return "Speciality must be at least 3 characters long.";
+        }
+        return "";
+    };
+
     const firstNameChangeHandler = (e) => {
         const value = e.target.value;
         setFirstName(value);
@@ -107,13 +169,31 @@ export default function EditProfile() {
         setErrors((prev) => ({ ...prev, lastName: validateLastName(value) }));
     };
 
+    const specialityChangeHandler = (e) => {
+        const value = e.target.value;
+        setSpeciality(value);
+        setErrors((prev) => ({
+            ...prev,
+            speciality: validateSpeciality(value),
+        }));
+    };
+
     const isFormValid =
-        !errors.firstName && !errors.lastName && firstName && lastName;
+        !errors.firstName &&
+        !errors.lastName &&
+        !errors.speciality &&
+        firstName &&
+        lastName;
 
     const clearForm = () => {
         setFirstName("");
         setLastName("");
+        setSpeciality("");
     };
+
+    if (isLoading) {
+        return <Spinner />;
+    }
 
     return (
         <div className={styles.edit}>
@@ -209,17 +289,31 @@ export default function EditProfile() {
                             <div className={`${styles.form_group} form-group`}>
                                 <label htmlFor="speciality">Speciality</label>
                                 <div className="input-wrapper">
-                                    <span>
-                                        <i
-                                            className={`${styles.icon} fa-solid fa-graduation-cap`}
-                                        ></i>
-                                    </span>
-                                    <input
-                                        id="speciality"
-                                        name="speciality"
-                                        type="text"
-                                        defaultValue={user?.speciality}
-                                    />
+                                    <div
+                                        className={`${styles.form_group} mt-2`}
+                                    >
+                                        <div className="flex">
+                                            <span>
+                                                <i
+                                                    className={`${styles.icon} fa-solid fa-graduation-cap`}
+                                                ></i>
+                                            </span>
+                                            <input
+                                                type="text"
+                                                id="speciality"
+                                                name="speciality"
+                                                value={speciality}
+                                                onChange={
+                                                    specialityChangeHandler
+                                                }
+                                            />
+                                        </div>
+                                        {errors.speciality && (
+                                            <p className="text-danger midlle mt-1">
+                                                {errors.speciality}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )}

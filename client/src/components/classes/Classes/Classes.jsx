@@ -3,6 +3,7 @@ import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
+import { useClass } from "../../../contexts/ClassContext";
 
 import { clssService } from "../../../services/clssService";
 
@@ -10,7 +11,7 @@ import OneClass from "../OneClass/OneClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
 import NotClasses from "../NotClasses";
 
-import Spinner from "../../shared/Spinner";
+import Spinner from "../../shared/Spinner/Spinner";
 
 import styles from "./Classes.module.css";
 
@@ -18,6 +19,7 @@ export default function Classes() {
     const delAbortControllerRef = useRef(null);
     const { isDirector } = useAuth();
     const { setError } = useError();
+    const { refreshClasses } = useClass();
 
     const [classes, setClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -29,24 +31,25 @@ export default function Classes() {
         const abortController = new AbortController();
         const signal = abortController.signal;
 
-        const fetchData = async () => {
+        setError(null);
+        const fetchClasses = async () => {
             try {
                 const result = await clssService.getAll(signal);
                 setClasses(result);
                 setIsLoading(false);
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", err.message);
+                    setError("Error fetching classes.", error.message);
                 }
             }
         };
 
-        fetchData();
+        fetchClasses();
 
         return () => {
             abortController.abort();
         };
-    }, []);
+    }, [setError]);
 
     const showDeleteClass = (clssId) => {
         setShowDelClassById(clssId);
@@ -70,18 +73,20 @@ export default function Classes() {
 
         setPending(true);
 
+        setError(null);
         try {
             await clssService.delById(showDelClassById, signal);
             setClasses((state) =>
                 state.filter((clss) => clss._id !== showDelClassById)
             );
 
+            refreshClasses();
             setShowDelClassById(null);
-        } catch (err) {
-            if (err.name === "AbortError") {
-                setError("Request was aborted:", err.message);
+        } catch (error) {
+            if (error.name === "AbortError") {
+                console.log("Request was aborted:", error.message);
             } else {
-                setError("Error fetching data:", err.message);
+                setError("Error deleting class.", error.message);
             }
         } finally {
             setPending(false);

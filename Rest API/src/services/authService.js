@@ -8,24 +8,30 @@ import Teacher from "../models/Teacher.js";
 
 import jwt from "../lib/jwt.js";
 import InvalidToken from "../models/InvalidToken.js";
+import studentService from "./studentService.js";
+import teacherService from "./teacherService.js";
 
 const register = async (
     firstName,
     lastName,
     email,
+    identifier,
     secretKey,
     password,
     profilePicture
 ) => {
-    const user = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
-    if (user) {
+    if (existingUser) {
         throw new Error("This email already registered!");
     }
 
     let role = "";
 
     const settings = await Setting.findOne();
+    if (!settings) {
+        throw new Error("Settings not found!");
+    }
 
     if (secretKey === settings.teacherKey) {
         role = "teacher";
@@ -45,20 +51,32 @@ const register = async (
     });
 
     if (role === "student") {
-        await Student.create({
-            firstName,
-            lastName,
-            clss: [],
-        });
-    }
+        let student = await Student.findOne({ identifier });
 
-    if (role === "teacher") {
-        await Teacher.create({
-            firstName,
-            lastName,
-            email,
-            clss: [],
-        });
+        if (student) {
+            student._ownerId = createdUser._id;
+            student.email = email;
+            await student.save();
+        } else {
+            await Student.create({
+                firstName,
+                lastName,
+                identifier,
+                email,
+                _ownerId: createdUser._id,
+                clss: [],
+            });
+        }
+    } else if (role === "teacher") {
+        await teacherService.create(
+            {
+                firstName,
+                lastName,
+                email,
+                clss: [],
+            },
+            createdUser._id
+        );
     }
 
     return createAccessToken(createdUser);

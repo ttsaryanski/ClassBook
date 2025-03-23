@@ -2,17 +2,19 @@ import { useRef, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
+import { useError } from "../../../contexts/ErrorContext";
 
 import styles from "./Login.module.css";
 
 export default function Login() {
     const loginAbortControllerRef = useRef(null);
     const { login } = useAuth();
+    const { setError } = useError();
 
     const [pending, setPending] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errs, setErrs] = useState({
+    const [errors, setErrors] = useState({
         email: "",
         password: "",
     });
@@ -46,14 +48,15 @@ export default function Login() {
 
         setPending(true);
 
+        setError(null);
         try {
             await login(email, password, signal);
             clearForm();
         } catch (error) {
             if (error.name === "AbortError") {
-                console.log("Login request was aborted:", error.message);
+                console.log("Login request was aborted: ", error.message);
             } else {
-                console.log("Error during login:", error.message);
+                setError("Error during login.", error.message);
             }
             setPassword("");
         } finally {
@@ -64,16 +67,16 @@ export default function Login() {
     const emailChangeHandler = (e) => {
         const value = e.target.value;
         setEmail(value);
-        setErrs((prev) => ({ ...prev, email: validateEmail(value) }));
+        setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
     };
 
     const passwordChangeHandler = (e) => {
         const value = e.target.value;
         setPassword(value);
-        setErrs((prev) => ({ ...prev, password: validatePassword(value) }));
+        setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
     };
 
-    const isFormValid = !errs.email && !errs.password && email && password;
+    const isFormValid = !errors.email && !errors.password && email && password;
 
     return (
         <div className={styles.login}>
@@ -118,9 +121,9 @@ export default function Login() {
                                     onChange={emailChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
-                                {errs.email && (
+                                {errors.email && (
                                     <p className="text-red-500 text-base mt-1">
-                                        {errs.email}
+                                        {errors.email}
                                     </p>
                                 )}
                             </div>
@@ -146,9 +149,9 @@ export default function Login() {
                                     onChange={passwordChangeHandler}
                                     className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
                                 />
-                                {errs.password && (
+                                {errors.password && (
                                     <p className="text-red-500 text-base mt-1">
-                                        {errs.password}
+                                        {errors.password}
                                     </p>
                                 )}
                             </div>

@@ -9,6 +9,9 @@ const getAll = (query = {}) => {
     if (query.limit) {
         teachers.find().limit(query.limit).sort({ dateUpdate: -1 });
     }
+    if (query.email) {
+        teachers.find({ email: query.email });
+    }
 
     return teachers;
 };
@@ -36,10 +39,7 @@ const getById = (teacherId) => Teacher.findById(teacherId);
 const remove = (teacherId) => Teacher.findByIdAndDelete(teacherId);
 
 const edit = async (teacherId, data) => {
-    const editedUser = await Teacher.findOne({ email: data.email });
-    const editedTeacherId = editedUser._id;
-
-    return Teacher.findByIdAndUpdate(editedTeacherId, data, {
+    return Teacher.findByIdAndUpdate(teacherId, data, {
         runValidators: true,
         new: true,
     });

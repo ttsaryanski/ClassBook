@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";
+import { useClass } from "../../../contexts/ClassContext";
 
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
@@ -13,6 +14,7 @@ export default function CreateClass() {
     const registerAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
+    const { refreshClasses } = useClass();
 
     const [pending, setPending] = useState(false);
 
@@ -33,13 +35,18 @@ export default function CreateClass() {
         const abortController = new AbortController();
         const signal = abortController.signal;
 
+        setError(null);
         const fetchTeachers = async () => {
             try {
                 const dataTeachers = await teacherService.getAll(signal);
                 setTeachers(dataTeachers);
             } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", error.message);
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching teacher:,
+                        ${error.message || "Unknown error"}`,
+                    ]);
                 }
             }
         };
@@ -50,7 +57,11 @@ export default function CreateClass() {
                 setStudents(dataSudents);
             } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", error.message);
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching students:,
+                        ${error.message || "Unknown error"}`,
+                    ]);
                 }
             }
         };
@@ -61,7 +72,7 @@ export default function CreateClass() {
         return () => {
             abortController.abort();
         };
-    }, []);
+    }, [setError]);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -72,6 +83,7 @@ export default function CreateClass() {
             return;
         }
 
+        setError(null);
         const fetchTeacher = async () => {
             try {
                 const dataTeacher = await teacherService.getById(
@@ -82,7 +94,7 @@ export default function CreateClass() {
             } catch (error) {
                 if (!signal.aborted) {
                     setError(
-                        "Error fetching teachers:",
+                        "Error fetching teacher:",
                         error.message || "Unknown error"
                     );
                 }
@@ -93,7 +105,7 @@ export default function CreateClass() {
         return () => {
             abortController.abort();
         };
-    }, [selectedTeacherId]);
+    }, [selectedTeacherId, setError]);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -104,6 +116,7 @@ export default function CreateClass() {
             return;
         }
 
+        setError(null);
         const fetchStudents = async () => {
             try {
                 const studentsData = await Promise.all(
@@ -126,7 +139,7 @@ export default function CreateClass() {
         return () => {
             abortController.abort();
         };
-    }, [selectedStudentsIds]);
+    }, [selectedStudentsIds, setError]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -145,15 +158,16 @@ export default function CreateClass() {
 
         setPending(true);
 
+        setError(null);
         try {
-            setError(null);
             await clssService.createNew(classData, signal);
+            refreshClasses();
             navigate("/classes");
         } catch (error) {
             if (error.name === "AbortError") {
-                setError("Request was aborted:", error.message);
+                console.log("Request was aborted:", error.message);
             } else {
-                setError(error.message || "Create class failed.");
+                setError("Create class failed.", error.message);
             }
         } finally {
             setPending(false);
@@ -255,7 +269,9 @@ export default function CreateClass() {
                                         value={selectedTeacherId}
                                         onChange={teacherChangeHandler}
                                     >
-                                        <option value="">Select teacher</option>
+                                        <option value="" disabled>
+                                            Select teacher
+                                        </option>
                                         {teachers.map((teacher) => (
                                             <option
                                                 key={teacher._id}

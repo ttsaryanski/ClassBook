@@ -13,7 +13,8 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 const router = Router();
 
 router.post("/register", upload.single("profilePicture"), async (req, res) => {
-    const { firstName, lastName, email, secretKey, password } = req.body;
+    const { firstName, lastName, email, identifier, secretKey, password } =
+        req.body;
     let profilePicture = null;
 
     if (req.file) {
@@ -42,6 +43,7 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
             firstName,
             lastName,
             email,
+            identifier,
             secretKey,
             password,
             profilePicture
@@ -52,7 +54,10 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
             .send(accessToken.user)
             .end();
     } catch (error) {
-        if (error.message === "This email already registered!") {
+        if (
+            error.message ===
+            "A user with this email or identifier is already registered!"
+        ) {
             res.status(409)
                 .json({ message: createErrorMsg(error) })
                 .end();

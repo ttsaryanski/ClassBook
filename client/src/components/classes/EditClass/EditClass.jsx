@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";
+import { useClass } from "../../../contexts/ClassContext";
 
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
@@ -13,6 +14,7 @@ export default function EditClass() {
     const editAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
+    const { refreshClasses } = useClass();
     const { classId } = useParams();
 
     const [pending, setPending] = useState(false);
@@ -39,6 +41,7 @@ export default function EditClass() {
             return;
         }
 
+        setError(null);
         const fetchClss = async () => {
             try {
                 const clssResult = await clssService.getById(classId, signal);
@@ -48,10 +51,11 @@ export default function EditClass() {
                 setSelectedStudentsIds(clssResult.students || []);
             } catch (error) {
                 if (!signal.aborted) {
-                    setError(
-                        "Error fetching classes:",
-                        error.message || "Unknown error"
-                    );
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching classes: ,
+                        ${error.message || "Unknown error"}`,
+                    ]);
                 }
             }
         };
@@ -62,7 +66,11 @@ export default function EditClass() {
                 setTeachers(dataTeachers);
             } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching teachers:", error.message);
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching teachers:,
+                        ${error.message || "Unknown error"}`,
+                    ]);
                 }
             }
         };
@@ -73,7 +81,11 @@ export default function EditClass() {
                 setStudents(dataSudents);
             } catch (error) {
                 if (!signal.aborted) {
-                    setError("Error fetching students:", error.message);
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching students:,
+                        ${error.message || "Unknown error"}`,
+                    ]);
                 }
             }
         };
@@ -85,7 +97,7 @@ export default function EditClass() {
         return () => {
             abortController.abort();
         };
-    }, [classId]);
+    }, [classId, setError]);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -96,6 +108,7 @@ export default function EditClass() {
             return;
         }
 
+        setError(null);
         const fetchTeacher = async () => {
             try {
                 const dataTeacher = await teacherService.getById(
@@ -117,7 +130,7 @@ export default function EditClass() {
         return () => {
             abortController.abort();
         };
-    }, [selectedTeacherId]);
+    }, [selectedTeacherId, setError]);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -128,6 +141,7 @@ export default function EditClass() {
             return;
         }
 
+        setError(null);
         const fetchStudents = async () => {
             try {
                 const studentsData = await Promise.all(
@@ -150,7 +164,7 @@ export default function EditClass() {
         return () => {
             abortController.abort();
         };
-    }, [selectedStudentsIds]);
+    }, [selectedStudentsIds, setError]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -169,15 +183,16 @@ export default function EditClass() {
 
         setPending(true);
 
+        setError(null);
         try {
-            setError(null);
             await clssService.editById(classId, classData, signal);
+            refreshClasses();
             navigate("/classes");
         } catch (error) {
             if (error.name === "AbortError") {
-                setError("Request was aborted:", error.message);
+                console.log("Request was aborted:", error.message);
             } else {
-                setError(error.message || "Create class failed.");
+                setError("Create class failed.", error.message);
             }
         } finally {
             setPending(false);
@@ -280,7 +295,9 @@ export default function EditClass() {
                                         value={selectedTeacherId}
                                         onChange={teacherChangeHandler}
                                     >
-                                        <option value="">Select teacher</option>
+                                        <option value="" disabled>
+                                            Select teacher
+                                        </option>
                                         {teachers.map((teacher) => (
                                             <option
                                                 key={teacher._id}
@@ -333,7 +350,7 @@ export default function EditClass() {
                                         value={selectedStudentsIds}
                                         onChange={studentChangeHandler}
                                     >
-                                        <option value="">
+                                        <option value="" disabled>
                                             Select students
                                         </option>
                                         {students.map((student) => (

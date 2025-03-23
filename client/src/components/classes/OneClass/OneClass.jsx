@@ -25,6 +25,7 @@ export default function OneClass({
             return;
         }
 
+        setError(null);
         const fetchTeacher = async () => {
             try {
                 const dataTeacher = await teacherService.getById(
@@ -46,7 +47,7 @@ export default function OneClass({
         return () => {
             abortController.abort();
         };
-    }, [teacher]);
+    }, [teacher, setError]);
 
     return (
         <tr>

@@ -14,11 +14,13 @@ export default function Register() {
     const { setError } = useError();
 
     const [pending, setPending] = useState(false);
+    const [isStudent, setIsStudent] = useState(true);
     const [isTeacher, setIsTeacher] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [secretKey, setSecretKey] = useState(null);
+    const [secretKey, setSecretKey] = useState("");
+    const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
     const [errors, setErrors] = useState({
@@ -26,6 +28,7 @@ export default function Register() {
         lastName: "",
         email: "",
         secretKey: "",
+        identifier: "",
         password: "",
         rePassword: "",
     });
@@ -34,7 +37,8 @@ export default function Register() {
         setFirstName("");
         setLastName("");
         setEmail("");
-        setSecretKey(null);
+        setSecretKey("");
+        setIdentifier("");
         setPassword("");
         setRePassword("");
     };
@@ -61,12 +65,24 @@ export default function Register() {
 
     const validateSecretKey = (value) => {
         const validKeys = ["director_secret_key", "teacher_secret_key"];
-        if (value.trim() === "") {
-            return "";
+        if (isTeacher && !value.trim()) {
+            return "Secret key is required for teachers.";
         }
-        return validKeys.includes(value)
-            ? ""
-            : "Invalid secret key. Please enter a valid key.";
+        if (value.trim() && !validKeys.includes(value)) {
+            return "Invalid secret key.";
+        }
+        return "";
+    };
+
+    const validateIdentifier = (value) => {
+        const identifierRegex = /^\d{10}$/;
+        if (isStudent && !value.trim()) {
+            return "Identifier is required for students.";
+        }
+        if (value.trim() && !identifierRegex.test(value)) {
+            return "Identifier must be exactly 10 digits.";
+        }
+        return "";
     };
 
     const validatePassword = (value) => {
@@ -95,15 +111,15 @@ export default function Register() {
 
         setPending(true);
 
+        setError(null);
         try {
-            setError(null);
             await authService.register(
                 {
                     firstName,
                     lastName,
                     email,
-                    secretKey:
-                        secretKey && secretKey.trim() !== "" ? secretKey : null,
+                    identifier: identifier.trim() || null,
+                    secretKey: secretKey.trim() || null,
                     password,
                 },
                 signal
@@ -113,9 +129,9 @@ export default function Register() {
             clearForm();
         } catch (error) {
             if (error.name === "AbortError") {
-                setError("Request was aborted:", error.message);
+                console.log("Request was aborted: ", error.message);
             } else {
-                setError(error.message || "Registration failed.");
+                setError("Registration failed.", error.message);
             }
             setPassword("");
             setRePassword("");
@@ -148,6 +164,15 @@ export default function Register() {
         setErrors((prev) => ({ ...prev, secretKey: validateSecretKey(value) }));
     };
 
+    const identifierChangeHandler = (e) => {
+        const value = e.target.value;
+        setIdentifier(value);
+        setErrors((prev) => ({
+            ...prev,
+            identifier: validateIdentifier(value),
+        }));
+    };
+
     const passwordChangeHandler = (e) => {
         const value = e.target.value;
         setPassword(value);
@@ -167,14 +192,16 @@ export default function Register() {
         !errors.firstName &&
         !errors.lastName &&
         !errors.email &&
-        !errors.secretKey &&
         !errors.password &&
         !errors.rePassword &&
+        !errors.secretKey &&
+        !errors.identifier &&
         firstName &&
         lastName &&
         email &&
         password &&
-        rePassword;
+        rePassword &&
+        ((isStudent && identifier) || (isTeacher && secretKey));
 
     return (
         <div className={styles.register}>
@@ -284,18 +311,21 @@ export default function Register() {
                                 <input
                                     type="checkbox"
                                     checked={isTeacher}
-                                    onChange={() => setIsTeacher(!isTeacher)}
+                                    onChange={() => {
+                                        setIsTeacher(!isTeacher);
+                                        setIsStudent(!isStudent);
+                                    }}
                                     className="w-4 h-4"
                                 />
                                 Register as a teacher
                             </label>
                         </div>
 
-                        {isTeacher && (
+                        {isTeacher ? (
                             <div className={styles.form_row}>
                                 <label
                                     htmlFor="sicret"
-                                    className={`${styles.label} block text-sm/6 font-medium text-gray-900`}
+                                    className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
                                 >
                                     Sicret key
                                 </label>
@@ -304,7 +334,7 @@ export default function Register() {
                                         type="password"
                                         id="sicret"
                                         name="sicret"
-                                        value={secretKey ?? ""}
+                                        value={secretKey}
                                         placeholder="secretKey"
                                         onChange={secretKeyChangeHandler}
                                         className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
@@ -315,10 +345,37 @@ export default function Register() {
                                         </p>
                                     )}
                                 </div>
-                                <span
-                                    className={`${styles.span} ${styles.red}`}
-                                >
+                                <span className={`${styles.span}`}>
                                     If you are a teacher please enter your key!
+                                </span>
+                            </div>
+                        ) : (
+                            <div className={styles.form_row}>
+                                <label
+                                    htmlFor="identifier"
+                                    className={`${styles.label} ${styles.required} block text-sm/6 font-medium text-gray-900`}
+                                >
+                                    Identifier (ЕГН)
+                                </label>
+                                <div className="mt-2">
+                                    <input
+                                        type="password"
+                                        id="identifier"
+                                        name="identifier"
+                                        value={identifier}
+                                        placeholder="identifier"
+                                        onChange={identifierChangeHandler}
+                                        className={`${styles.input} block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6`}
+                                    />
+                                    {errors.identifier && (
+                                        <p className="text-red-500 text-base mt-1">
+                                            {errors.identifier}
+                                        </p>
+                                    )}
+                                </div>
+                                <span className={`${styles.span}`}>
+                                    If you are a student please enter your
+                                    identifier!
                                 </span>
                             </div>
                         )}

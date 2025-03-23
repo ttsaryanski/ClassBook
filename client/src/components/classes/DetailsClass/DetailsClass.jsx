@@ -23,40 +23,60 @@ export default function DetailsClass() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
 
+        setError(null);
         const fetchClss = async () => {
             try {
                 const result = await clssService.getById(classId, signal);
                 setClss(result);
 
                 if (result.teacher) {
-                    const teacherData = await teacherService.getById(
-                        result.teacher,
-                        signal
-                    );
-                    setTeacher(teacherData);
+                    try {
+                        const teacherData = await teacherService.getById(
+                            result.teacher,
+                            signal
+                        );
+                        setTeacher(teacherData);
+                    } catch (error) {
+                        if (!signal.aborted) {
+                            setError((prev) => [
+                                ...(prev || []),
+                                `Error fetching teacher:,
+                                ${error.message || "Unknown error"}`,
+                            ]);
+                        }
+                    }
                 } else {
                     setTeacher(null);
                 }
 
                 if (result.students && result.students.length > 0) {
-                    const studentsData = await Promise.all(
-                        result.students.map((studentId) =>
-                            studentService.getById(studentId, signal)
-                        )
-                    );
-                    setStudents(studentsData);
+                    try {
+                        const studentsData = await Promise.all(
+                            result.students.map((studentId) =>
+                                studentService.getById(studentId, signal)
+                            )
+                        );
+                        setStudents(studentsData);
+                    } catch (error) {
+                        if (!signal.aborted) {
+                            setError((prev) => [
+                                ...(prev || []),
+                                `Error fetching students:,
+                                ${error.message || "Unknown error"}`,
+                            ]);
+                        }
+                    }
                 } else {
                     setStudents([]);
                 }
-            } catch (err) {
+            } catch (error) {
                 if (!signal.aborted) {
-                    setError(
-                        "Error fetching class:",
-                        err.message || "Unknown error"
-                    );
-                    onClose();
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error fetching class:,
+                        ${error.message || "Unknown error"}`,
+                    ]);
                 }
             }
         };
@@ -65,7 +85,7 @@ export default function DetailsClass() {
         return () => {
             abortController.abort();
         };
-    }, []);
+    }, [setError]);
 
     return (
         <div className={styles.details}>

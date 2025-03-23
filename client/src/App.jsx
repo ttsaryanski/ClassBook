@@ -2,11 +2,12 @@ import { Routes, Route } from "react-router";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { ErrorProvider } from "./contexts/ErrorContext";
+import { ClassProvider } from "./contexts/ClassContext";
 
-import "./App.css";
+import AuthGuard from "./components/guards/AuthGuard";
+import GuestGuard from "./components/guards/GuestGuard";
 
 import Header from "./components/core/header/Header";
-//import UserList from "./components/UserList";
 import Footer from "./components/core/footer/Footer";
 import Contacts from "./components/contacts/Contacts";
 import Home from "./components/home/Home";
@@ -22,68 +23,88 @@ import CreateClass from "./components/classes/CreateClass/CreateClass";
 import EditClass from "./components/classes/EditClass/EditClass";
 import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
 import EditProfile from "./components/auth/EditProfile/EditProfile";
+import Spinner from "./components/shared/Spinner/Spinner";
+
+import "./App.css";
 
 function App() {
     return (
         <ErrorProvider>
             <AuthProvider>
-                <div className="app-container">
-                    <Header />
+                <ClassProvider>
+                    <div className="app-container">
+                        <Header />
 
-                    <ErrorMsg />
+                        <ErrorMsg />
 
-                    <main className="main">
-                        <Routes>
-                            <Route path="/" element={<Home />} />
+                        <main className="main">
+                            <Routes>
+                                <Route path="/" element={<Home />} />
 
-                            <Route path="/classes" element={<Classes />} />
+                                <Route path="/classes" element={<Classes />} />
 
-                            <Route
-                                path="/classes/create"
-                                element={<CreateClass />}
-                            />
+                                <Route
+                                    path="/classes/create"
+                                    element={<CreateClass />}
+                                />
 
-                            <Route
-                                path="/classes/:classId/edit"
-                                element={<EditClass />}
-                            />
+                                <Route
+                                    path="/classes/:classId/edit"
+                                    element={<EditClass />}
+                                />
 
-                            <Route
-                                path="/classes/:classId/details"
-                                element={<DetailsClass />}
-                            />
+                                <Route
+                                    path="/classes/:classId/details"
+                                    element={<DetailsClass />}
+                                />
 
-                            {/* <Route path="/class_1" element={<UserList />} /> */}
+                                <Route path="/class_1" element={<Spinner />} />
 
-                            <Route path="/contacts" element={<Contacts />} />
+                                <Route
+                                    path="/contacts"
+                                    element={<Contacts />}
+                                />
 
-                            <Route path="/auth/login" element={<Login />} />
+                                <Route element={<GuestGuard />}>
+                                    <Route
+                                        path="/auth/login"
+                                        element={<Login />}
+                                    />
+                                    <Route
+                                        path="/auth/register"
+                                        element={<Register />}
+                                    />
+                                </Route>
 
-                            <Route path="/auth/profile" element={<Profile />} />
+                                <Route element={<AuthGuard />}>
+                                    <Route
+                                        path="/auth/profile"
+                                        element={<Profile />}
+                                    />
 
-                            <Route
-                                path="/auth/profile/:userId"
-                                element={<EditProfile />}
-                            />
+                                    <Route
+                                        path="/auth/profile/:userId"
+                                        element={<EditProfile />}
+                                    />
+                                </Route>
 
-                            <Route path="/class/:clssId" element={<Clss />} />
+                                <Route
+                                    path="/class/:clssId"
+                                    element={<Clss />}
+                                />
 
-                            <Route
-                                path="/auth/register"
-                                element={<Register />}
-                            />
+                                <Route
+                                    path="/underconstruction"
+                                    element={<UnderConstruction />}
+                                />
 
-                            <Route
-                                path="/underconstruction"
-                                element={<UnderConstruction />}
-                            />
+                                <Route path="*" element={<Page404 />} />
+                            </Routes>
+                        </main>
 
-                            <Route path="*" element={<Page404 />} />
-                        </Routes>
-                    </main>
-
-                    <Footer />
-                </div>
+                        <Footer />
+                    </div>
+                </ClassProvider>
             </AuthProvider>
         </ErrorProvider>
     );

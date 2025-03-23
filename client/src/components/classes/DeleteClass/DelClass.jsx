@@ -18,6 +18,7 @@ export default function ShowDeleteClass({ classId, onDelete, onClose }) {
             return;
         }
 
+        setError(null);
         const fetchClss = async () => {
             try {
                 const clssResult = await clssService.getById(classId, signal);
@@ -25,7 +26,7 @@ export default function ShowDeleteClass({ classId, onDelete, onClose }) {
             } catch (error) {
                 if (!signal.aborted) {
                     setError(
-                        "Error fetching class:",
+                        "Error fetching class: ",
                         error.message || "Unknown error"
                     );
                     onClose();
@@ -37,7 +38,7 @@ export default function ShowDeleteClass({ classId, onDelete, onClose }) {
         return () => {
             abortController.abort();
         };
-    }, [classId]);
+    }, [classId, setError]);
 
     return (
         <div className="overlay">

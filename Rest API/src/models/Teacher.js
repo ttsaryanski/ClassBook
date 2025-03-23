@@ -13,9 +13,11 @@ const teacherSchema = new Schema({
     },
     email: {
         type: String,
+        unique: true,
     },
     speciality: {
         type: String,
+        minLength: [3, "Speciality should be at least 3 characters long!"],
     },
     clss: [
         {
@@ -23,6 +25,10 @@ const teacherSchema = new Schema({
             ref: "Clss",
         },
     ],
+    _ownerId: {
+        type: Types.ObjectId,
+        ref: "User",
+    },
     dateCreated: {
         type: Date,
         default: Date.now,

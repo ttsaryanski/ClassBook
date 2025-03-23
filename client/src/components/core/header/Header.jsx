@@ -1,40 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
-import { useError } from "../../../contexts/ErrorContext";
-
-import { clssService } from "../../../services/clssService";
+import { useClass } from "../../../contexts/ClassContext";
 
 import styles from "./Header.module.css";
 
 export default function Header() {
     const { user, logout } = useAuth();
-    const { setError } = useError();
+    const { clss } = useClass();
 
     const [isOpen, setIsOpen] = useState(false);
-    const [classes, setClasses] = useState([]);
-
-    useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
-
-        const fetchClasses = async () => {
-            try {
-                const dataClass = await clssService.getAll(signal);
-                setClasses(dataClass);
-            } catch (err) {
-                if (!signal.aborted) {
-                    setError("Error fetching classes:", err.message);
-                }
-            }
-        };
-        fetchClasses();
-
-        return () => {
-            abortController.abort();
-        };
-    }, []);
 
     return (
         <div className={styles.header}>
@@ -107,18 +83,18 @@ export default function Header() {
                             <Link className={styles.link} to="/classes">
                                 Classes
                             </Link>
-                            {classes.length > 0 && (
+                            {clss.length > 0 && (
                                 <ul className={styles.ul}>
-                                    {classes.map((clss) => (
+                                    {clss.map((cls) => (
                                         <li
-                                            key={clss._id}
+                                            key={cls._id}
                                             className={styles.list}
                                         >
                                             <Link
                                                 className={styles.link}
-                                                to={`/class/${clss._id}`}
+                                                to={`/class/${cls._id}`}
                                             >
-                                                {clss.title}
+                                                {cls.title}
                                             </Link>
                                         </li>
                                     ))}
