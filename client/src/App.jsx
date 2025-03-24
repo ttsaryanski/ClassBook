@@ -28,95 +28,104 @@ import EditStudent from "./components/students/EditStudent/EditStudent";
 import Spinner from "./components/shared/Spinner/Spinner";
 
 import "./App.css";
+import ErrorBoundary from "./components/boundary/ErrorBoundary";
 
 function App() {
     return (
         <ErrorProvider>
             <AuthProvider>
-                <ClassProvider>
-                    <div className="app-container">
-                        <Header />
+                <ErrorBoundary>
+                    <ClassProvider>
+                        <div className="app-container">
+                            <Header />
 
-                        <ErrorMsg />
+                            <ErrorMsg />
 
-                        <main className="main">
-                            <Routes>
-                                <Route path="/" element={<Home />} />
+                            <main className="main">
+                                <Routes>
+                                    <Route path="/" element={<Home />} />
 
-                                <Route path="/classes" element={<Classes />} />
-
-                                <Route
-                                    path="/classes/:classId/details"
-                                    element={<DetailsClass />}
-                                />
-
-                                <Route path="/class_1" element={<Spinner />} />
-
-                                <Route
-                                    path="/contacts"
-                                    element={<Contacts />}
-                                />
-
-                                <Route element={<GuestGuard />}>
                                     <Route
-                                        path="/auth/login"
-                                        element={<Login />}
-                                    />
-                                    <Route
-                                        path="/auth/register"
-                                        element={<Register />}
-                                    />
-                                </Route>
-
-                                <Route element={<AuthGuard />}>
-                                    <Route
-                                        path="/classes/create"
-                                        element={<CreateClass />}
+                                        path="/classes"
+                                        element={<Classes />}
                                     />
 
                                     <Route
-                                        path="/students/create"
-                                        element={<CreateStudents />}
+                                        path="/classes/:classId/details"
+                                        element={<DetailsClass />}
                                     />
 
                                     <Route
-                                        path="/classes/:classId/edit"
-                                        element={<EditClass />}
+                                        path="/class_1"
+                                        element={<Spinner />}
                                     />
 
                                     <Route
-                                        path="/student/:studentId/edit/:clssId"
-                                        element={<EditStudent />}
+                                        path="/contacts"
+                                        element={<Contacts />}
                                     />
+
+                                    <Route element={<GuestGuard />}>
+                                        <Route
+                                            path="/auth/login"
+                                            element={<Login />}
+                                        />
+                                        <Route
+                                            path="/auth/register"
+                                            element={<Register />}
+                                        />
+                                    </Route>
+
+                                    <Route element={<AuthGuard />}>
+                                        <Route
+                                            path="/classes/create"
+                                            element={<CreateClass />}
+                                        />
+
+                                        <Route
+                                            path="/students/create"
+                                            element={<CreateStudents />}
+                                        />
+
+                                        <Route
+                                            path="/classes/:classId/edit"
+                                            element={<EditClass />}
+                                        />
+
+                                        <Route
+                                            path="/student/:studentId/edit/:clssId"
+                                            element={<EditStudent />}
+                                        />
+
+                                        <Route
+                                            path="/auth/profile"
+                                            element={<Profile />}
+                                        />
+
+                                        <Route
+                                            path="/auth/profile/:userId"
+                                            element={<EditProfile />}
+                                        />
+
+                                        <Route
+                                            path="/class/:clssId"
+                                            element={<Clss />}
+                                        />
+                                    </Route>
 
                                     <Route
-                                        path="/auth/profile"
-                                        element={<Profile />}
+                                        path="/underconstruction"
+                                        element={<UnderConstruction />}
                                     />
 
-                                    <Route
-                                        path="/auth/profile/:userId"
-                                        element={<EditProfile />}
-                                    />
+                                    <Route path="*" element={<Page404 />} />
+                                </Routes>
+                            </main>
 
-                                    <Route
-                                        path="/class/:clssId"
-                                        element={<Clss />}
-                                    />
-                                </Route>
-
-                                <Route
-                                    path="/underconstruction"
-                                    element={<UnderConstruction />}
-                                />
-
-                                <Route path="*" element={<Page404 />} />
-                            </Routes>
-                        </main>
-
-                        <Footer />
-                    </div>
-                </ClassProvider>
+                            <Footer />
+                        </div>
+                    </ClassProvider>
+                </ErrorBoundary>
             </AuthProvider>
         </ErrorProvider>
     );
