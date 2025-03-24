@@ -13,10 +13,10 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [isDirector, setIsDirector] = useState(false);
 
-    const fetchUser = async (signal) => {
+    const fetchUser = async () => {
         try {
             setError(null);
-            const userData = await authService.profile(signal);
+            const userData = await authService.profile();
             setUser(userData);
 
             if (userData && userData.role === "director") {
@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
             setIsDirector(false);
             if (err.message === "Invalid token!") {
                 setError(null);
-            } else if (err.name !== "AbortError") {
+            } else {
                 setError(err.message);
             }
         }
@@ -48,18 +48,16 @@ export function AuthProvider({ children }) {
         setUser(updatedUserData);
     };
 
-    const login = async (email, password, signal) => {
+    const login = async (email, password) => {
         try {
             setError(null);
-            await authService.login({ email, password }, signal);
-            await fetchUser(signal);
+            await authService.login({ email, password });
+            await fetchUser();
             navigate("/");
         } catch (err) {
             setUser(null);
             setIsDirector(false);
-            if (err.name !== "AbortError") {
-                setError(err.message);
-            }
+            setError(err.message);
             throw err;
         }
     };

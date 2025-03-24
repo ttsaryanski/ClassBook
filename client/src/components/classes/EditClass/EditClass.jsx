@@ -11,7 +11,6 @@ import { clssService } from "../../../services/clssService";
 import styles from "./EditClass.module.css";
 
 export default function EditClass() {
-    const editAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
     const { refreshClasses } = useClass();
@@ -169,12 +168,6 @@ export default function EditClass() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (editAbortControllerRef.current) {
-            editAbortControllerRef.current.abort();
-        }
-        editAbortControllerRef.current = new AbortController();
-        const signal = editAbortControllerRef.current.signal;
-
         const classData = {
             title: classTitle,
             teacher: selectedTeacherId,
@@ -185,15 +178,11 @@ export default function EditClass() {
 
         setError(null);
         try {
-            await clssService.editById(classId, classData, signal);
+            await clssService.editById(classId, classData);
             refreshClasses();
             navigate("/classes");
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted:", error.message);
-            } else {
-                setError("Create class failed.", error.message);
-            }
+            setError("Create class failed.", error.message);
         } finally {
             setPending(false);
         }

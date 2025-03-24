@@ -7,7 +7,6 @@ import { useError } from "../../../contexts/ErrorContext";
 import styles from "./Login.module.css";
 
 export default function Login() {
-    const loginAbortControllerRef = useRef(null);
     const { login } = useAuth();
     const { setError } = useError();
 
@@ -40,24 +39,13 @@ export default function Login() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (loginAbortControllerRef.current) {
-            loginAbortControllerRef.current.abort();
-        }
-        loginAbortControllerRef.current = new AbortController();
-        const signal = loginAbortControllerRef.current.signal;
-
         setPending(true);
-
         setError(null);
         try {
-            await login(email, password, signal);
+            await login(email, password);
             clearForm();
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Login request was aborted: ", error.message);
-            } else {
-                setError("Error during login.", error.message);
-            }
+            setError("Error during login.", error.message);
             setPassword("");
         } finally {
             setPending(false);

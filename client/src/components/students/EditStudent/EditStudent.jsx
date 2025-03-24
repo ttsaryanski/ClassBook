@@ -9,7 +9,6 @@ import { clssService } from "../../../services/clssService";
 import styles from "./EditStudent.module.css";
 
 export default function EditStudent() {
-    const addAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
     const { studentId, clssId } = useParams();
@@ -76,12 +75,6 @@ export default function EditStudent() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (addAbortControllerRef.current) {
-            addAbortControllerRef.current.abort();
-        }
-        addAbortControllerRef.current = new AbortController();
-        const signal = addAbortControllerRef.current.signal;
-
         const gradeData = {
             teacher: teacher._id,
             class: clssId,
@@ -98,14 +91,10 @@ export default function EditStudent() {
                 grades: [...(student.grades || []), gradeData],
             };
 
-            await studentService.editById(studentId, updatedStudent, signal);
+            await studentService.editById(studentId, updatedStudent);
             navigate(`/class/${clssId}`);
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted:", error.message);
-            } else {
-                setError("Add grade failed.", error.message);
-            }
+            setError("Add grade failed.", error.message);
         } finally {
             setPending(false);
         }

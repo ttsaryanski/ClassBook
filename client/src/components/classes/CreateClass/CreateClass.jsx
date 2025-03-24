@@ -11,7 +11,6 @@ import { clssService } from "../../../services/clssService";
 import styles from "./CreateClass.module.css";
 
 export default function CreateClass() {
-    const registerAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
     const { refreshClasses } = useClass();
@@ -144,12 +143,6 @@ export default function CreateClass() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (registerAbortControllerRef.current) {
-            registerAbortControllerRef.current.abort();
-        }
-        registerAbortControllerRef.current = new AbortController();
-        const signal = registerAbortControllerRef.current.signal;
-
         const classData = {
             title: classTitle,
             teacher: selectedTeacherId,
@@ -160,20 +153,14 @@ export default function CreateClass() {
 
         setError(null);
         try {
-            const newClass = await clssService.createNew(classData, signal);
-            await teacherService.editById(
-                selectedTeacherId,
-                { clssToAdd: newClass._id },
-                signal
-            );
+            const newClass = await clssService.createNew(classData);
+            await teacherService.editById(selectedTeacherId, {
+                clssToAdd: newClass._id,
+            });
             refreshClasses();
             navigate("/classes");
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted:", error.message);
-            } else {
-                setError("Create class failed.", error.message);
-            }
+            setError("Create class failed.", error.message);
         } finally {
             setPending(false);
         }

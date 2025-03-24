@@ -9,7 +9,6 @@ import { authService } from "../../../services/authService";
 import styles from "./Register.module.css";
 
 export default function Register() {
-    const registerAbortControllerRef = useRef(null);
     const { login } = useAuth();
     const { setError } = useError();
 
@@ -36,36 +35,22 @@ export default function Register() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (registerAbortControllerRef.current) {
-            registerAbortControllerRef.current.abort();
-        }
-        registerAbortControllerRef.current = new AbortController();
-        const signal = registerAbortControllerRef.current.signal;
-
         setPending(true);
-
         setError(null);
         try {
-            await authService.register(
-                {
-                    firstName,
-                    lastName,
-                    email,
-                    identifier: identifier.trim() || null,
-                    secretKey: secretKey.trim() || null,
-                    password,
-                },
-                signal
-            );
+            await authService.register({
+                firstName,
+                lastName,
+                email,
+                identifier: identifier.trim() || null,
+                secretKey: secretKey.trim() || null,
+                password,
+            });
 
-            await login(email, password, signal);
+            await login(email, password);
             clearForm();
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted: ", error.message);
-            } else {
-                setError("Registration failed.", error.message);
-            }
+            setError("Registration failed.", error.message);
             setPassword("");
             setRePassword("");
         } finally {

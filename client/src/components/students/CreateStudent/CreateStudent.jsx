@@ -8,7 +8,6 @@ import { studentService } from "../../../services/studentService";
 import styles from "./CreateStudent.module.css";
 
 export default function CreateStudents() {
-    const createUserAbortControllerRef = useRef(null);
     const navigate = useNavigate();
     const { setError } = useError();
 
@@ -26,27 +25,13 @@ export default function CreateStudents() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (createUserAbortControllerRef.current) {
-            createUserAbortControllerRef.current.abort();
-        }
-        createUserAbortControllerRef.current = new AbortController();
-        const signal = createUserAbortControllerRef.current.signal;
-
         setPending(true);
-
         setError(null);
         try {
-            await studentService.createNew(
-                { firstName, lastName, identifier },
-                signal
-            );
+            await studentService.createNew({ firstName, lastName, identifier });
             navigate("/classes");
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted:", error.message);
-            } else {
-                setError("Create student failed.", error.message);
-            }
+            setError("Create student failed.", error.message);
         } finally {
             setPending(false);
         }

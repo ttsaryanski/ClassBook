@@ -16,7 +16,6 @@ import Spinner from "../../shared/Spinner/Spinner";
 import styles from "./Classes.module.css";
 
 export default function Classes() {
-    const delAbortControllerRef = useRef(null);
     const { isDirector } = useAuth();
     const { setError } = useError();
     const { refreshClasses } = useClass();
@@ -62,13 +61,6 @@ export default function Classes() {
             return;
         }
 
-        if (delAbortControllerRef.current) {
-            delAbortControllerRef.current.abort();
-        }
-
-        delAbortControllerRef.current = new AbortController();
-        const signal = delAbortControllerRef.current.signal;
-
         setPending(true);
         setError(null);
         try {
@@ -76,7 +68,7 @@ export default function Classes() {
                 (clss) => clss._id === showDelClassById
             );
 
-            await clssService.delById(showDelClassById, signal);
+            await clssService.delById(showDelClassById);
 
             if (classToDelete?.teacher) {
                 const teacherId = classToDelete.teacher;
@@ -93,11 +85,7 @@ export default function Classes() {
             refreshClasses();
             setShowDelClassById(null);
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted:", error.message);
-            } else {
-                setError("Error deleting class.", error.message);
-            }
+            setError("Error deleting class.", error.message);
         } finally {
             setPending(false);
         }

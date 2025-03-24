@@ -11,17 +11,12 @@ export function ClassProvider({ children }) {
     const [clss, setClss] = useState([]);
 
     const refreshClasses = async () => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
-
         setError(null);
         try {
-            const dataClass = await clssService.getAll(signal);
+            const dataClass = await clssService.getAll();
             setClss(dataClass);
         } catch (error) {
-            if (!signal.aborted) {
-                setError("Error fetching classes:", error.message);
-            }
+            setError("Error fetching classes:", error.message);
         }
 
         return () => abortController.abort();

@@ -12,7 +12,6 @@ import Spinner from "../../shared/Spinner/Spinner";
 import styles from "./EditProfile.module.css";
 
 export default function EditProfile() {
-    const editAbortControllerRef = useRef();
     const navigate = useNavigate();
     const { user, updateUser } = useAuth();
     const { setError } = useError();
@@ -80,13 +79,6 @@ export default function EditProfile() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (editAbortControllerRef.current) {
-            editAbortControllerRef.current.abort();
-        }
-
-        editAbortControllerRef.current = new AbortController();
-        const signal = editAbortControllerRef.current.signal;
-
         const userData = { firstName, lastName };
 
         // if (userData.imageUrl === "") {
@@ -94,43 +86,30 @@ export default function EditProfile() {
         // }
 
         setPending(true);
-
         setError(null);
         try {
-            const editedUser = await authService.editUser(
-                user._id,
-                userData,
-                signal
-            );
+            const editedUser = await authService.editUser(user._id, userData);
             if (isTeacher) {
                 try {
                     userData.speciality = speciality;
-                    await teacherService.editById(teacherId, userData, signal);
+                    await teacherService.editById(teacherId, userData);
                 } catch (error) {
-                    if (error.name === "AbortError") {
-                        console.log("Request was aborted:", error.message);
-                    } else {
-                        setError((prev) => [
-                            ...(prev || []),
-                            `Error editing teacher data.,
+                    setError((prev) => [
+                        ...(prev || []),
+                        `Error editing teacher data.,
                             ${error.message || "Unknown error"}`,
-                        ]);
-                    }
+                    ]);
                 }
             }
             updateUser(editedUser);
             navigate("/auth/profile");
             clearForm();
         } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Request was aborted:", error.message);
-            } else {
-                setError((prev) => [
-                    ...(prev || []),
-                    `Error editing data.,
+            setError((prev) => [
+                ...(prev || []),
+                `Error editing data.,
                     ${error.message || "Unknown error"}`,
-                ]);
-            }
+            ]);
         } finally {
             setPending(false);
         }
