@@ -6,11 +6,11 @@ import { useError } from "../../../contexts/ErrorContext";
 import { useClass } from "../../../contexts/ClassContext";
 
 import { clssService } from "../../../services/clssService";
+import { teacherService } from "../../../services/teacherService";
 
 import OneClass from "../OneClass/OneClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
 import NotClasses from "../NotClasses";
-
 import Spinner from "../../shared/Spinner/Spinner";
 
 import styles from "./Classes.module.css";
@@ -24,7 +24,6 @@ export default function Classes() {
     const [classes, setClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [pending, setPending] = useState(false);
-
     const [showDelClassById, setShowDelClassById] = useState(null);
 
     useEffect(() => {
@@ -71,10 +70,22 @@ export default function Classes() {
         const signal = delAbortControllerRef.current.signal;
 
         setPending(true);
-
         setError(null);
         try {
+            const classToDelete = classes.find(
+                (clss) => clss._id === showDelClassById
+            );
+
             await clssService.delById(showDelClassById, signal);
+
+            if (classToDelete?.teacher) {
+                const teacherId = classToDelete.teacher;
+
+                await teacherService.editById(teacherId, {
+                    clssToRemove: showDelClassById,
+                });
+            }
+
             setClasses((state) =>
                 state.filter((clss) => clss._id !== showDelClassById)
             );

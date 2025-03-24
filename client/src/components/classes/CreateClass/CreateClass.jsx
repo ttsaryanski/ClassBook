@@ -163,7 +163,7 @@ export default function CreateClass() {
             const newClass = await clssService.createNew(classData, signal);
             await teacherService.editById(
                 selectedTeacherId,
-                { clss: newClass._id },
+                { clssToAdd: newClass._id },
                 signal
             );
             refreshClasses();

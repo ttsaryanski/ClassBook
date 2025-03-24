@@ -40,9 +40,15 @@ const remove = (teacherId) => Teacher.findByIdAndDelete(teacherId);
 
 const edit = async (teacherId, data) => {
     const updateQuery = { ...data };
-    if (data.clss) {
-        updateQuery.$push = { clss: data.clss };
-        delete updateQuery.clss;
+
+    if (data.clssToAdd) {
+        updateQuery.$push = { clss: data.clssToAdd };
+        delete updateQuery.clssToAdd;
+    }
+
+    if (data.clssToRemove) {
+        updateQuery.$pull = { clss: data.clssToRemove };
+        delete updateQuery.clssToRemove;
     }
 
     return Teacher.findByIdAndUpdate(teacherId, updateQuery, {
