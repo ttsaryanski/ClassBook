@@ -64,8 +64,8 @@ export default function Students() {
                                 {/* <th>Image</th> */}
                                 <th>Students last name</th>
                                 <th>Students first name</th>
-                                <th>xxx</th>
-                                {/* <th>Actions</th> */}
+                                {/* <th>xxx</th> */}
+                                <th>Average grade</th>
                             </tr>
                         </thead>
                         <tbody>

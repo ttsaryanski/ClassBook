@@ -52,7 +52,7 @@ export default function OneClass({
     return (
         <tr>
             <td>{title}</td>
-            <td>{`${teacherData.firstName} ${teacherData.lastName}`}</td>
+            <td>{`${teacherData.lastName} ${teacherData.firstName}`}</td>
             <td>{students.length}</td>
 
             <td className="actions">

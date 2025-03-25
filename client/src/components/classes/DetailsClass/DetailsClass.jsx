@@ -112,12 +112,19 @@ export default function DetailsClass() {
                                 <strong>
                                     {students.length > 0 ? (
                                         <ul>
-                                            {students.map((student) => (
-                                                <li key={student._id}>
-                                                    {student.firstName}{" "}
-                                                    {student.lastName}
-                                                </li>
-                                            ))}
+                                            {students
+                                                .slice()
+                                                .sort((a, b) =>
+                                                    a.lastName.localeCompare(
+                                                        b.lastName
+                                                    )
+                                                )
+                                                .map((student) => (
+                                                    <li key={student._id}>
+                                                        {student.lastName}{" "}
+                                                        {student.firstName}
+                                                    </li>
+                                                ))}
                                         </ul>
                                     ) : (
                                         <dir>В този клас няма ученици</dir>

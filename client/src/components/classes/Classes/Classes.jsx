@@ -147,15 +147,18 @@ export default function Classes() {
                             </tr>
                         </thead>
                         <tbody>
-                            {classes.map((clss) => (
-                                <OneClass
-                                    key={clss._id}
-                                    onDel={showDeleteClass}
-                                    isDirector={isDirector}
-                                    pending={pending}
-                                    {...clss}
-                                />
-                            ))}
+                            {classes
+                                .slice()
+                                .sort((a, b) => a.title.localeCompare(b.title))
+                                .map((clss) => (
+                                    <OneClass
+                                        key={clss._id}
+                                        onDel={showDeleteClass}
+                                        isDirector={isDirector}
+                                        pending={pending}
+                                        {...clss}
+                                    />
+                                ))}
                         </tbody>
                     </table>
                 </div>

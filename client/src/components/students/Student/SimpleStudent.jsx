@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router";
-
-import { useError } from "../../../contexts/ErrorContext";
+import { useMemo } from "react";
 
 export default function SimpleStudent({ _id, firstName, lastName, grades }) {
-    console.log(grades);
+    const averageGrade = useMemo(() => {
+        if (!grades || grades.length === 0) return "N/A";
+        const sum = grades.reduce((acc, grade) => acc + grade.value, 0);
+        return (sum / grades.length).toFixed(2);
+    }, [grades]);
 
     return (
         <tr>
             <td>{lastName}</td>
             <td>{firstName}</td>
-            <td>xxx</td>
+            <td>{averageGrade}</td>
         </tr>
     );
 }

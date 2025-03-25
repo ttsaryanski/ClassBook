@@ -10,7 +10,7 @@ import { teacherService } from "../../../services/teacherService";
 import styles from "./Header.module.css";
 
 export default function Header() {
-    const { user, logout } = useAuth();
+    const { user, logout, isDirector } = useAuth();
     const { clss } = useClass();
     const { setError } = useError();
 
@@ -131,7 +131,7 @@ export default function Header() {
                             <Link className={styles.link} to="/classes">
                                 Classes
                             </Link>
-                            {user && clss.length > 0 && (
+                            {user && isDirector && clss.length > 0 && (
                                 <ul className={styles.ul}>
                                     {clss
                                         .slice()
@@ -157,24 +157,27 @@ export default function Header() {
 
                         {isTeacher && (
                             <li className={styles.list}>
-                                <Link className={styles.link}>
-                                    Teacher classes
-                                </Link>
+                                <Link className={styles.link}>My classes</Link>
                                 {myClasses.length > 0 && (
                                     <ul className={styles.ul}>
-                                        {myClasses.map((clss) => (
-                                            <li
-                                                key={clss._id}
-                                                className={styles.list}
-                                            >
-                                                <Link
-                                                    className={styles.link}
-                                                    to={`/class/${clss._id}`}
+                                        {myClasses
+                                            .slice()
+                                            .sort((a, b) =>
+                                                a.title.localeCompare(b.title)
+                                            )
+                                            .map((clss) => (
+                                                <li
+                                                    key={clss._id}
+                                                    className={styles.list}
                                                 >
-                                                    {clss.title}
-                                                </Link>
-                                            </li>
-                                        ))}
+                                                    <Link
+                                                        className={styles.link}
+                                                        to={`/class/${clss._id}`}
+                                                    >
+                                                        {clss.title}
+                                                    </Link>
+                                                </li>
+                                            ))}
                                     </ul>
                                 )}
                             </li>
