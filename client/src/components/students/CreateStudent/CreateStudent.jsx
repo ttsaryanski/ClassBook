@@ -29,7 +29,7 @@ export default function CreateStudents() {
         setError(null);
         try {
             await studentService.createNew({ firstName, lastName, identifier });
-            navigate("/classes");
+            navigate("/students");
         } catch (error) {
             setError("Create student failed.", error.message);
         } finally {
@@ -232,7 +232,7 @@ export default function CreateStudents() {
                             <Link
                                 id="action-cancel"
                                 className={`${styles.cancel_btn} btn`}
-                                to={"/classes"}
+                                to={"/students"}
                             >
                                 Cancel
                             </Link>

@@ -24,11 +24,12 @@ import EditClass from "./components/classes/EditClass/EditClass";
 import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
 import EditProfile from "./components/auth/EditProfile/EditProfile";
 import CreateStudents from "./components/students/CreateStudent/CreateStudent";
+import Students from "./components/students/Students/Students";
 import EditStudent from "./components/students/EditStudent/EditStudent";
 import Spinner from "./components/shared/Spinner/Spinner";
+import ErrorBoundary from "./components/boundary/ErrorBoundary";
 
 import "./App.css";
-import ErrorBoundary from "./components/boundary/ErrorBoundary";
 
 function App() {
     return (
@@ -48,6 +49,11 @@ function App() {
                                     <Route
                                         path="/classes"
                                         element={<Classes />}
+                                    />
+
+                                    <Route
+                                        path="/students"
+                                        element={<Students />}
                                     />
 
                                     <Route

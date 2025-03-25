@@ -133,19 +133,24 @@ export default function Header() {
                             </Link>
                             {user && clss.length > 0 && (
                                 <ul className={styles.ul}>
-                                    {clss.map((cls) => (
-                                        <li
-                                            key={cls._id}
-                                            className={styles.list}
-                                        >
-                                            <Link
-                                                className={styles.link}
-                                                to={`/class/${cls._id}`}
+                                    {clss
+                                        .slice()
+                                        .sort((a, b) =>
+                                            a.title.localeCompare(b.title)
+                                        )
+                                        .map((cls) => (
+                                            <li
+                                                key={cls._id}
+                                                className={styles.list}
                                             >
-                                                {cls.title}
-                                            </Link>
-                                        </li>
-                                    ))}
+                                                <Link
+                                                    className={styles.link}
+                                                    to={`/class/${cls._id}`}
+                                                >
+                                                    {cls.title}
+                                                </Link>
+                                            </li>
+                                        ))}
                                 </ul>
                             )}
                         </li>
@@ -176,8 +181,10 @@ export default function Header() {
                         )}
 
                         <li className={styles.list}>
-                            <Link className={styles.link}>Students</Link>
-                            <ul className={styles.ul}>
+                            <Link className={styles.link} to="/students">
+                                Students
+                            </Link>
+                            {/* <ul className={styles.ul}>
                                 <li className={styles.list}>
                                     <Link
                                         className={styles.link}
@@ -202,7 +209,7 @@ export default function Header() {
                                         Class Room 3
                                     </Link>
                                 </li>
-                            </ul>
+                            </ul> */}
                         </li>
 
                         <li className={styles.list}>
