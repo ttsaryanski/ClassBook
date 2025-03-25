@@ -37,8 +37,19 @@ const remove = (studentId) => Student.findByIdAndDelete(studentId);
 
 const edit = (studentId, data) => {
     data.dateUpdate = Date.now();
+    const updateQuery = { ...data };
 
-    return Student.findByIdAndUpdate(studentId, data, {
+    if (data.clssToAdd) {
+        updateQuery.$push = { clss: data.clssToAdd };
+        delete updateQuery.clssToAdd;
+    }
+
+    if (data.clssToRemove) {
+        updateQuery.$pull = { clss: data.clssToRemove };
+        delete updateQuery.clssToRemove;
+    }
+
+    return Student.findByIdAndUpdate(studentId, updateQuery, {
         runValidators: true,
         new: true,
     });

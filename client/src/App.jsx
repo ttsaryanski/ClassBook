@@ -34,8 +34,8 @@ function App() {
     return (
         <ErrorProvider>
             <AuthProvider>
-                <ErrorBoundary>
-                    <ClassProvider>
+                <ClassProvider>
+                    <ErrorBoundary>
                         <div className="app-container">
                             <Header />
 
@@ -124,8 +124,8 @@ function App() {
 
                             <Footer />
                         </div>
-                    </ClassProvider>
-                </ErrorBoundary>
+                    </ErrorBoundary>
+                </ClassProvider>
             </AuthProvider>
         </ErrorProvider>
     );

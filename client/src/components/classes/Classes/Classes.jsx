@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
@@ -7,6 +7,7 @@ import { useClass } from "../../../contexts/ClassContext";
 
 import { clssService } from "../../../services/clssService";
 import { teacherService } from "../../../services/teacherService";
+import { studentService } from "../../../services/studentService";
 
 import OneClass from "../OneClass/OneClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
@@ -68,14 +69,35 @@ export default function Classes() {
                 (clss) => clss._id === showDelClassById
             );
 
+            if (!classToDelete) {
+                throw new Error("Class not found in local state");
+            }
+
             await clssService.delById(showDelClassById);
 
-            if (classToDelete?.teacher) {
+            if (classToDelete.teacher) {
                 const teacherId = classToDelete.teacher;
 
                 await teacherService.editById(teacherId, {
                     clssToRemove: showDelClassById,
                 });
+            }
+
+            if (classToDelete.students?.length > 0) {
+                const studentUpdates = classToDelete.students.map(
+                    async (id) => {
+                        try {
+                            await studentService.editById(id, {
+                                clssToRemove: showDelClassById,
+                            });
+                        } catch (error) {
+                            throw new Error(
+                                `Failed to remove class from student ${id}: ${error.message}`
+                            );
+                        }
+                    }
+                );
+                await Promise.all(studentUpdates);
             }
 
             setClasses((state) =>
@@ -85,7 +107,11 @@ export default function Classes() {
             refreshClasses();
             setShowDelClassById(null);
         } catch (error) {
-            setError("Error deleting class.", error.message);
+            setError((prev) => [
+                ...(prev || []),
+                `Error deleting class: ,
+                ${error.message || "Unknown error"}`,
+            ]);
         } finally {
             setPending(false);
         }

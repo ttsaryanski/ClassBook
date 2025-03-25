@@ -4,9 +4,9 @@ import { useNavigate, Link } from "react-router";
 import { useError } from "../../../contexts/ErrorContext";
 import { useClass } from "../../../contexts/ClassContext";
 
+import { clssService } from "../../../services/clssService";
 import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
-import { clssService } from "../../../services/clssService";
 
 import styles from "./CreateClass.module.css";
 
@@ -150,17 +150,36 @@ export default function CreateClass() {
         };
 
         setPending(true);
-
         setError(null);
         try {
             const newClass = await clssService.createNew(classData);
+
             await teacherService.editById(selectedTeacherId, {
                 clssToAdd: newClass._id,
             });
+
+            if (selectedStudentsIds.length > 0) {
+                const studentUpdates = selectedStudentsIds.map(async (id) => {
+                    try {
+                        await studentService.editById(id, {
+                            clssToAdd: newClass._id,
+                        });
+                    } catch (error) {
+                        throw new Error(
+                            `Failed to add class to student ${id}: ${error.message}`
+                        );
+                    }
+                });
+                await Promise.all(studentUpdates);
+            }
+
             refreshClasses();
             navigate("/classes");
         } catch (error) {
-            setError("Create class failed.", error.message);
+            setError((prev) => [
+                ...(prev || []),
+                `Create class failed: ${error.message || "Unknown error"}`,
+            ]);
         } finally {
             setPending(false);
         }

@@ -39,6 +39,7 @@ const getById = (teacherId) => Teacher.findById(teacherId);
 const remove = (teacherId) => Teacher.findByIdAndDelete(teacherId);
 
 const edit = async (teacherId, data) => {
+    data.dateUpdate = Date.now();
     const updateQuery = { ...data };
 
     if (data.clssToAdd) {

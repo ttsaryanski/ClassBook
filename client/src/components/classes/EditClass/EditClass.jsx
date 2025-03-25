@@ -175,14 +175,57 @@ export default function EditClass() {
         };
 
         setPending(true);
-
         setError(null);
         try {
             await clssService.editById(classId, classData);
+
+            const originalStudents = clss.students || [];
+
+            const studentsToAdd = selectedStudentsIds.filter(
+                (id) => !originalStudents.includes(id)
+            );
+
+            const studentsToRemove = originalStudents.filter(
+                (id) => !selectedStudentsIds.includes(id)
+            );
+
+            if (studentsToAdd.length > 0) {
+                const addUpdates = studentsToAdd.map(async (id) => {
+                    try {
+                        await studentService.editById(id, {
+                            clssToAdd: classId,
+                        });
+                    } catch (error) {
+                        throw new Error(
+                            `Failed to add class to student ${id}: ${error.message}`
+                        );
+                    }
+                });
+                await Promise.all(addUpdates);
+            }
+
+            if (studentsToRemove.length > 0) {
+                const removeUpdates = studentsToRemove.map(async (id) => {
+                    try {
+                        await studentService.editById(id, {
+                            clssToRemove: classId,
+                        });
+                    } catch (error) {
+                        throw new Error(
+                            `Failed to remove class from student ${id}: ${error.message}`
+                        );
+                    }
+                });
+                await Promise.all(removeUpdates);
+            }
+
             refreshClasses();
             navigate("/classes");
         } catch (error) {
-            setError("Create class failed.", error.message);
+            setError((prev) => [
+                ...(prev || []),
+                `Edit class failed: ${error.message || "Unknown error"}`,
+            ]);
         } finally {
             setPending(false);
         }
