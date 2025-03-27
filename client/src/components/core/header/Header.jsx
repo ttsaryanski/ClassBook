@@ -8,6 +8,7 @@ import { useError } from "../../../contexts/ErrorContext";
 import { teacherService } from "../../../services/teacherService";
 
 import styles from "./Header.module.css";
+import { studentService } from "../../../services/studentService";
 
 export default function Header() {
     const { user, logout, isDirector } = useAuth();
@@ -17,6 +18,8 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [myClasses, setMyClasses] = useState([]);
+    const [isStudent, setIsStudent] = useState(false);
+    const [student, setStudent] = useState({});
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -53,7 +56,39 @@ export default function Header() {
                 setMyClasses([]);
             }
         };
+
+        const fetchStudentData = async () => {
+            if (user?.role === "student") {
+                try {
+                    const students = await studentService.getAll(signal);
+                    const currentStudent = students.find(
+                        (student) => student._ownerId?.toString() === user._id
+                    );
+
+                    if (currentStudent) {
+                        setIsStudent(true);
+                        setStudent(currentStudent);
+                    } else {
+                        setIsStudent(false);
+                        setStudent({});
+                    }
+                } catch (error) {
+                    if (!signal.aborted) {
+                        setError(
+                            "Error fetching students data:",
+                            error.message
+                        );
+                    }
+                    setIsStudent(false);
+                    setStudent({});
+                }
+            } else {
+                setIsStudent(false);
+                setStudent({});
+            }
+        };
         fetchTeacherData();
+        fetchStudentData();
 
         return () => {
             abortController.abort();
@@ -131,28 +166,43 @@ export default function Header() {
                             <Link className={styles.link} to="/classes">
                                 Classes
                             </Link>
-                            {user && isDirector && clss.length > 0 && (
-                                <ul className={styles.ul}>
-                                    {clss
-                                        .slice()
-                                        .sort((a, b) =>
-                                            a.title.localeCompare(b.title)
-                                        )
-                                        .map((cls) => (
-                                            <li
-                                                key={cls._id}
-                                                className={styles.list}
-                                            >
-                                                <Link
-                                                    className={styles.link}
-                                                    to={`/class/${cls._id}`}
+                            {user &&
+                                isDirector &&
+                                clss.length &&
+                                !isTeacher > 0 && (
+                                    <ul className={styles.ul}>
+                                        {clss
+                                            .slice()
+                                            .sort((a, b) =>
+                                                a.title.localeCompare(b.title)
+                                            )
+                                            .map((cls) => (
+                                                <li
+                                                    key={cls._id}
+                                                    className={styles.list}
                                                 >
-                                                    {cls.title}
-                                                </Link>
-                                            </li>
-                                        ))}
-                                </ul>
-                            )}
+                                                    <Link
+                                                        className={styles.link}
+                                                        to={`/class/${cls._id}`}
+                                                    >
+                                                        {cls.title}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                    </ul>
+                                )}
+                        </li>
+
+                        <li className={styles.list}>
+                            <Link className={styles.link} to="/students">
+                                Students
+                            </Link>
+                        </li>
+
+                        <li className={styles.list}>
+                            <Link className={styles.link} to="/contacts">
+                                Contacts
+                            </Link>
                         </li>
 
                         {isTeacher && (
@@ -183,43 +233,16 @@ export default function Header() {
                             </li>
                         )}
 
-                        <li className={styles.list}>
-                            <Link className={styles.link} to="/students">
-                                Students
-                            </Link>
-                            {/* <ul className={styles.ul}>
-                                <li className={styles.list}>
-                                    <Link
-                                        className={styles.link}
-                                        to="/archive/jan-2024"
-                                    >
-                                        Class Room 1
-                                    </Link>
-                                </li>
-                                <li className={styles.list}>
-                                    <Link
-                                        className={styles.link}
-                                        to="/archive/feb-2024"
-                                    >
-                                        Class Room 2
-                                    </Link>
-                                </li>
-                                <li className={styles.list}>
-                                    <Link
-                                        className={styles.link}
-                                        to="/archive/mar-2024"
-                                    >
-                                        Class Room 3
-                                    </Link>
-                                </li>
-                            </ul> */}
-                        </li>
-
-                        <li className={styles.list}>
-                            <Link className={styles.link} to="/contacts">
-                                Contacts
-                            </Link>
-                        </li>
+                        {isStudent && (
+                            <li className={styles.list}>
+                                <Link
+                                    className={styles.link}
+                                    to={`/student/${student._id}`}
+                                >
+                                    My grades
+                                </Link>
+                            </li>
+                        )}
 
                         <li className={`${styles.list} ${styles.last}`}>
                             <Link className={styles.link}>

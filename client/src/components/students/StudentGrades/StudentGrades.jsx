@@ -1,0 +1,68 @@
+// import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router";
+
+// import { useAuth } from "../../../contexts/AuthContext";
+// import { useError } from "../../../contexts/ErrorContext";
+
+// import { clssService } from "../../../services/clssService";
+
+// import Student from "../../students/Student/Student";
+// import Spinner from "../../shared/Spinner/Spinner";
+// import NotStudents from "../NotStudents";
+
+import styles from "./StudentGrades.module.css";
+
+export default function StudentGrades() {
+    const { studentId } = useParams();
+    // const { setError } = useError();
+    // const { user } = useAuth();
+
+    // const [clss, setClss] = useState({});
+    // const [isLoading, setIsLoading] = useState(true);
+
+    // const [teacher, setTeacher] = useState({});
+    // const [students, setStudents] = useState([]);
+    // const [isEditor, setIsEditor] = useState(false);
+
+    // useEffect(() => {
+    //     const abortController = new AbortController();
+    //     const signal = abortController.signal;
+
+    //     setError(null);
+    //     const fetchClass = async () => {
+    //         try {
+    //             const clss = await clssService.getByIdPopulate(clssId, signal);
+    //             setClss(clss);
+    //             setTeacher(clss.teacher);
+    //             setStudents(clss.students);
+
+    //             if (user && clss.teacher && clss.teacher._ownerId) {
+    //                 setIsEditor(user._id === clss.teacher._ownerId.toString());
+    //             } else {
+    //                 setIsEditor(false);
+    //             }
+
+    //             setIsLoading(false);
+    //         } catch (error) {
+    //             if (!signal.aborted) {
+    //                 setError("Error fetching classes.", error.message);
+    //             }
+    //         }
+    //     };
+    //     fetchClass();
+
+    //     return () => {
+    //         abortController.abort();
+    //     };
+    // }, [clssId, setError, user]);
+
+    return (
+        <>
+            {/* {isLoading && <Spinner />} */}
+            <h1 className={styles.h1}>Student Grades {studentId}</h1>
+            {/* <h3 className={styles.h1}>
+                Teacher: {teacher.firstName} {teacher.lastName}
+            </h3> */}
+        </>
+    );
+}

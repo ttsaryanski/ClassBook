@@ -30,6 +30,7 @@ import Spinner from "./components/shared/Spinner/Spinner";
 import ErrorBoundary from "./components/boundary/ErrorBoundary";
 
 import "./App.css";
+import StudentGrades from "./components/students/StudentGrades/StudentGrades";
 
 function App() {
     return (
@@ -59,11 +60,6 @@ function App() {
                                     <Route
                                         path="/classes/:classId/details"
                                         element={<DetailsClass />}
-                                    />
-
-                                    <Route
-                                        path="/class_1"
-                                        element={<Spinner />}
                                     />
 
                                     <Route
@@ -101,6 +97,11 @@ function App() {
                                         <Route
                                             path="/student/:studentId/edit/:clssId"
                                             element={<EditStudent />}
+                                        />
+
+                                        <Route
+                                            path="/student/:studentId"
+                                            element={<StudentGrades />}
                                         />
 
                                         <Route
