@@ -1,68 +1,103 @@
-// import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
-// import { useAuth } from "../../../contexts/AuthContext";
-// import { useError } from "../../../contexts/ErrorContext";
+import { useError } from "../../../contexts/ErrorContext";
 
-// import { clssService } from "../../../services/clssService";
+import { studentService } from "../../../services/studentService";
 
-// import Student from "../../students/Student/Student";
-// import Spinner from "../../shared/Spinner/Spinner";
-// import NotStudents from "../NotStudents";
+import Grade from "../Grade/Grade";
+import Spinner from "../../shared/Spinner/Spinner";
+import NothingYet from "../../shared/NothingYet/NothingYet";
 
 import styles from "./StudentGrades.module.css";
 
 export default function StudentGrades() {
     const { studentId } = useParams();
-    // const { setError } = useError();
-    // const { user } = useAuth();
+    const { setError } = useError();
 
-    // const [clss, setClss] = useState({});
-    // const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+    const [student, setStudent] = useState({});
+    const [groupedGrades, setGroupedGrades] = useState({});
 
-    // const [teacher, setTeacher] = useState({});
-    // const [students, setStudents] = useState([]);
-    // const [isEditor, setIsEditor] = useState(false);
+    useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
 
-    // useEffect(() => {
-    //     const abortController = new AbortController();
-    //     const signal = abortController.signal;
+        setError(null);
+        const fetchStudent = async () => {
+            try {
+                const studentData = await studentService.getByIdPopulate(
+                    studentId,
+                    signal
+                );
+                setStudent(studentData);
 
-    //     setError(null);
-    //     const fetchClass = async () => {
-    //         try {
-    //             const clss = await clssService.getByIdPopulate(clssId, signal);
-    //             setClss(clss);
-    //             setTeacher(clss.teacher);
-    //             setStudents(clss.students);
+                const gradesByClass = studentData.grades.reduce(
+                    (acc, grade) => {
+                        const classTitle = grade.class.title;
+                        if (!acc[classTitle]) {
+                            acc[classTitle] = [];
+                        }
+                        acc[classTitle].push(grade);
+                        return acc;
+                    },
+                    {}
+                );
 
-    //             if (user && clss.teacher && clss.teacher._ownerId) {
-    //                 setIsEditor(user._id === clss.teacher._ownerId.toString());
-    //             } else {
-    //                 setIsEditor(false);
-    //             }
+                Object.keys(gradesByClass).forEach((classTitle) => {
+                    gradesByClass[classTitle].sort(
+                        (a, b) => new Date(b.date) - new Date(a.date) // Най-новите първи
+                    );
+                });
 
-    //             setIsLoading(false);
-    //         } catch (error) {
-    //             if (!signal.aborted) {
-    //                 setError("Error fetching classes.", error.message);
-    //             }
-    //         }
-    //     };
-    //     fetchClass();
+                setGroupedGrades(gradesByClass);
+                setIsLoading(false);
+            } catch (error) {
+                if (!signal.aborted) {
+                    setError("Error fetching student.", error.message);
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchStudent();
 
-    //     return () => {
-    //         abortController.abort();
-    //     };
-    // }, [clssId, setError, user]);
+        return () => {
+            abortController.abort();
+        };
+    }, [studentId, setError]);
+
+    const hasGrades = Object.keys(groupedGrades).length > 0;
+    console.log(Object.entries(groupedGrades));
 
     return (
         <>
-            {/* {isLoading && <Spinner />} */}
-            <h1 className={styles.h1}>Student Grades {studentId}</h1>
-            {/* <h3 className={styles.h1}>
-                Teacher: {teacher.firstName} {teacher.lastName}
-            </h3> */}
+            {isLoading && <Spinner />}
+            <h1 className={styles.h1}>
+                {student.firstName} {student.lastName} grades:
+            </h1>
+            {!isLoading && !hasGrades === 0 && <NothingYet />}
+
+            <div className={styles.gradesContainer}>
+                {Object.entries(groupedGrades).map(([classTitle, grades]) => (
+                    <div key={classTitle} className={styles.classSection}>
+                        <h2 className={styles.h2}>Class: {classTitle}</h2>
+                        <ul className={styles.gradeList}>
+                            {grades.map((grade) => (
+                                <Grade
+                                    key={grade._id}
+                                    value={grade.value}
+                                    date={new Date(
+                                        grade.date
+                                    ).toLocaleDateString()}
+                                    teacher={grade.teacher}
+                                    comment={grade.comment}
+                                />
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
         </>
     );
 }

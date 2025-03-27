@@ -33,6 +33,12 @@ const create = (data, userId) => Student.create({ ...data, _ownerId: userId });
 
 const getById = (studentId) => Student.findById(studentId);
 
+const getByIdPopulate = (studentId) =>
+    Student.findById(studentId)
+        .populate("grades")
+        .populate("grades.class")
+        .populate("grades.teacher");
+
 const remove = (studentId) => Student.findByIdAndDelete(studentId);
 
 const edit = (studentId, data) => {
@@ -124,6 +130,7 @@ export default {
     getAllPaginated,
     create,
     getById,
+    getByIdPopulate,
     remove,
     edit,
     like,

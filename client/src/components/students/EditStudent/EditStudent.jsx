@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router";
 
 import { useError } from "../../../contexts/ErrorContext";

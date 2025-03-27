@@ -20,6 +20,10 @@ async function getById(id, signal) {
     return await api.get(endPoints.getAll + `/${id}`, signal);
 }
 
+async function getByIdPopulate(id, signal) {
+    return await api.get(endPoints.getAll + `/${id}/populate`, signal);
+}
+
 async function editById(id, data) {
     return await api.put(endPoints.getAll + `/${id}`, data);
 }
@@ -42,17 +46,7 @@ export const studentService = {
     getById,
     editById,
     delById,
+    getByIdPopulate,
     // searchItem,
     // getMyCar
 };
-
-function transformUserData(userData) {
-    const { country, city, street, streetNumber, ...transformedData } =
-        userData;
-
-    transformedData.address = { country, city, street, streetNumber };
-    transformedData.createdAt = new Date().toISOString();
-    transformedData.updatedAt = new Date().toISOString();
-
-    return transformedData;
-}

@@ -3,16 +3,11 @@ import { Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
-import { useClass } from "../../../contexts/ClassContext";
 
-import { clssService } from "../../../services/clssService";
-import { teacherService } from "../../../services/teacherService";
 import { studentService } from "../../../services/studentService";
 
-//import OneClass from "../OneClass/OneClass";
-//import ShowDeleteClass from "../DeleteClass/DelClass";
 import SimpleStudent from "../Student/SimpleStudent";
-import NotClasses from "../../classes/NotClasses";
+import NothingYet from "../../shared/NothingYet/NothingYet";
 import Spinner from "../../shared/Spinner/Spinner";
 
 import styles from "./Students.module.css";
@@ -56,7 +51,7 @@ export default function Students() {
                 <div className="table-wrapper">
                     {isLoading && <Spinner />}
 
-                    {!isLoading && students.length === 0 && <NotClasses />}
+                    {!isLoading && students.length === 0 && <NothingYet />}
 
                     <table className="table">
                         <thead>

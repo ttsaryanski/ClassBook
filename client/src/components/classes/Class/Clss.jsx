@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router";
+import { useParams } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
@@ -8,7 +8,7 @@ import { clssService } from "../../../services/clssService";
 
 import Student from "../../students/Student/Student";
 import Spinner from "../../shared/Spinner/Spinner";
-import NotStudents from "../NotStudents";
+import NothingYet from "../../shared/NothingYet/NothingYet";
 
 import styles from "./Clss.module.css";
 
@@ -79,16 +79,14 @@ export default function Clss() {
                         </thead>
                         <tbody className={styles.tbody}>
                             {!isLoading && students.length === 0 && (
-                                <NotStudents />
+                                <NothingYet />
                             )}
 
                             {students.map((student) => (
                                 <Student
                                     key={student._id}
                                     clssId={clssId}
-                                    // onDel={showDeleteClass}
                                     isEditor={isEditor}
-                                    // pending={pending}
                                     student={student}
                                 />
                             ))}

@@ -11,7 +11,7 @@ import { studentService } from "../../../services/studentService";
 
 import OneClass from "../OneClass/OneClass";
 import ShowDeleteClass from "../DeleteClass/DelClass";
-import NotClasses from "../NotClasses";
+import NothingYet from "../../shared/NothingYet/NothingYet";
 import Spinner from "../../shared/Spinner/Spinner";
 
 import styles from "./Classes.module.css";
@@ -134,7 +134,7 @@ export default function Classes() {
                 <div className="table-wrapper">
                     {isLoading && <Spinner />}
 
-                    {!isLoading && classes.length === 0 && <NotClasses />}
+                    {!isLoading && classes.length === 0 && <NothingYet />}
 
                     <table className="table">
                         <thead>

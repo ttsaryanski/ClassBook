@@ -1,22 +1,6 @@
-.gradesContainer {
-    display: flex;
-    gap: 4em;
-    flex-wrap: wrap;
-}
-
-.classSection {
-    border: 1px solid rgba(51, 102, 153, 0.479);
-    padding: 1em;
-    border-radius: 0.5em;
-}
-
 .h1 {
     color: #369;
     margin-bottom: 2rem;
-}
-
-.h2 {
-    color: #369;
 }
 
 .card_container {

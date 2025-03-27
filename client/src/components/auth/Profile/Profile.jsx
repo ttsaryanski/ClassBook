@@ -4,10 +4,11 @@ import { Link } from "react-router";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useError } from "../../../contexts/ErrorContext";
 
+import { teacherService } from "../../../services/teacherService";
+
 import { fromIsoToString } from "../../../utils/setDateString";
 
 import styles from "./Profile.module.css";
-import { teacherService } from "../../../services/teacherService";
 
 export default function Profile() {
     const { user } = useAuth();

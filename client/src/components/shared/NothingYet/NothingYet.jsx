@@ -1,6 +1,6 @@
-import styles from "./NotClasses.module.css";
+import styles from "./NothingYet.module.css";
 
-export default function NotClasses() {
+export default function NothingYet() {
     return (
         <div className="loading-shade">
             <div className={`${styles.table} table-overlap`}>

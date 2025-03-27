@@ -18,19 +18,18 @@ import UnderConstruction from "./components/underConstruction/UnderConstruction"
 import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
 import Classes from "./components/classes/Classes/Classes";
 import Profile from "./components/auth/Profile/Profile";
-import Clss from "./components/class/Class/Clss";
+import Clss from "./components/classes/Class/Clss";
 import CreateClass from "./components/classes/CreateClass/CreateClass";
 import EditClass from "./components/classes/EditClass/EditClass";
 import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
 import EditProfile from "./components/auth/EditProfile/EditProfile";
 import CreateStudents from "./components/students/CreateStudent/CreateStudent";
 import Students from "./components/students/Students/Students";
+import StudentGrades from "./components/students/StudentGrades/StudentGrades";
 import EditStudent from "./components/students/EditStudent/EditStudent";
-import Spinner from "./components/shared/Spinner/Spinner";
 import ErrorBoundary from "./components/boundary/ErrorBoundary";
 
 import "./App.css";
-import StudentGrades from "./components/students/StudentGrades/StudentGrades";
 
 function App() {
     return (

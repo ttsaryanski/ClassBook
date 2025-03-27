@@ -6,9 +6,9 @@ import { useClass } from "../../../contexts/ClassContext";
 import { useError } from "../../../contexts/ErrorContext";
 
 import { teacherService } from "../../../services/teacherService";
+import { studentService } from "../../../services/studentService";
 
 import styles from "./Header.module.css";
-import { studentService } from "../../../services/studentService";
 
 export default function Header() {
     const { user, logout, isDirector } = useAuth();

@@ -21,24 +21,17 @@ export default function Boundary() {
                         className={`${styles.p} mt-6 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8`}
                     >
                         The author will do everything possible to fix the
-                        problem.
+                        problem. Press button "Go back home" and reload page!
                     </p>
                     <div
                         className={`${styles.button} mt-10 flex items-center justify-center gap-x-6`}
                     >
-                        <Link
-                            to="/"
-                            className={`${styles.link} rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                        <a
+                            href="/"
+                            className={`${styles.link} text-sm font-semibold text-gray-900`}
                         >
                             Go back home
-                        </Link>
-                        {/* <a
-                            href="#"
-                            className="text-sm font-semibold text-gray-900"
-                        >
-                            Contact support{" "}
-                            <span aria-hidden="true">&rarr;</span>
-                        </a> */}
+                        </a>
                     </div>
                 </div>
             </main>
