@@ -22,6 +22,11 @@ export default function Profile() {
         const abortController = new AbortController();
         const signal = abortController.signal;
 
+        if (!user) {
+            setIsLoading(true);
+            return;
+        }
+
         if (user?.profilePicture?.fileUrl) {
             setPicture(user.profilePicture);
         } else {

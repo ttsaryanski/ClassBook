@@ -12,11 +12,12 @@ export function AuthProvider({ children }) {
 
     const [user, setUser] = useState(null);
     const [isDirector, setIsDirector] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const fetchUser = async () => {
+    const fetchUser = async (signal) => {
+        setError(null);
         try {
-            setError(null);
-            const userData = await authService.profile();
+            const userData = await authService.profile(signal);
             setUser(userData);
 
             if (userData && userData.role === "director") {
@@ -29,6 +30,10 @@ export function AuthProvider({ children }) {
                 setError(null);
             } else {
                 setError(err.message);
+            }
+        } finally {
+            if (!signal?.aborted) {
+                setIsLoading(false);
             }
         }
     };
@@ -52,6 +57,7 @@ export function AuthProvider({ children }) {
         try {
             setError(null);
             await authService.login({ email, password });
+            setIsLoading(true);
             await fetchUser();
             navigate("/");
         } catch (err) {
@@ -59,6 +65,8 @@ export function AuthProvider({ children }) {
             setIsDirector(false);
             setError(err.message);
             throw err;
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -83,6 +91,7 @@ export function AuthProvider({ children }) {
                 user,
                 isAuthenticated: !!user,
                 isDirector,
+                isLoading,
                 login,
                 logout,
                 updateUser,

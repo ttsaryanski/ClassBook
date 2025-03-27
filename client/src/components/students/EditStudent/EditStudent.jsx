@@ -105,6 +105,9 @@ export default function EditStudent() {
         if (isNaN(numValue)) {
             return "Grade must be a number";
         }
+        if (!Number.isInteger(numValue)) {
+            return "Grade must be an integer";
+        }
         if (numValue < 2 || numValue > 6) {
             return "Grade must be between 2 and 6";
         }
