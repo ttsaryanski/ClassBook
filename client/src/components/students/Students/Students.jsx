@@ -57,9 +57,9 @@ export default function Students() {
                         <thead>
                             <tr>
                                 {/* <th>Image</th> */}
-                                <th>Students last name</th>
-                                <th>Students first name</th>
-                                {/* <th>xxx</th> */}
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Email</th>
                                 <th>Average grade</th>
                             </tr>
                         </thead>

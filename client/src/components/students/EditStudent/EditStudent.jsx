@@ -17,9 +17,11 @@ export default function EditStudent() {
     const [student, setStudent] = useState({});
     const [teacher, setTeacher] = useState({});
     const [grade, setGrade] = useState("");
+    const [comment, setComment] = useState("");
 
     const [errors, setErrors] = useState({
         grade: "",
+        comment: "",
     });
 
     useEffect(() => {
@@ -79,7 +81,7 @@ export default function EditStudent() {
             teacher: teacher._id,
             class: clssId,
             value: Number(grade),
-            comment: "",
+            comment,
         };
 
         setPending(true);
@@ -114,13 +116,26 @@ export default function EditStudent() {
         return "";
     };
 
+    const validateComment = (value) => {
+        if (value.length < 3) {
+            return "Comment must be at least 3 characters long.";
+        }
+        return "";
+    };
+
     const gradeChangeHandler = (e) => {
         const value = e.target.value;
         setGrade(value);
         setErrors((prev) => ({ ...prev, grade: validateGrade(value) }));
     };
 
-    const isFormValid = !errors.grade && grade;
+    const commentChangeHandler = (e) => {
+        const value = e.target.value;
+        setComment(value);
+        setErrors((prev) => ({ ...prev, comment: validateComment(value) }));
+    };
+
+    const isFormValid = !errors.grade && !errors.comment && grade;
 
     return (
         <div className={styles.edit}>
@@ -153,6 +168,7 @@ export default function EditStudent() {
                                                 id="grade"
                                                 name="grade"
                                                 value={grade}
+                                                placeholder="6"
                                                 onChange={gradeChangeHandler}
                                                 min="2"
                                                 max="6"
@@ -161,6 +177,41 @@ export default function EditStudent() {
                                         {errors.grade && (
                                             <p className="text-danger midlle mt-1">
                                                 {errors.grade}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label
+                                    htmlFor="comment"
+                                    className={styles.required}
+                                >
+                                    Comment
+                                </label>
+                                <div className="input-wrapper">
+                                    <div className="mt-2">
+                                        <div className="flex">
+                                            <span>
+                                                <i
+                                                    className={`${styles.icon} fa-solid fa-chart-line`}
+                                                ></i>
+                                            </span>
+                                            <input
+                                                type="text"
+                                                id="comment"
+                                                name="comment"
+                                                value={comment}
+                                                placeholder="Excellent"
+                                                onChange={commentChangeHandler}
+                                            />
+                                        </div>
+                                        {errors.comment && (
+                                            <p className="text-danger midlle mt-1">
+                                                {errors.comment}
                                             </p>
                                         )}
                                     </div>
