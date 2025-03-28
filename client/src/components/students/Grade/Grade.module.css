@@ -16,3 +16,9 @@
 .card_container .tbody {
     position: initial;
 }
+
+@media (max-width: 768px) {
+    .grade .grade_table {
+        width: 100%;
+    }
+}

@@ -115,6 +115,10 @@
     border-radius: 0.3em;
 }
 
+.link {
+    white-space: nowrap;
+}
+
 .nav .ul .list .link.button_link {
     width: 100%;
 }
@@ -230,6 +234,6 @@
     .nav .ul .list:hover > .ul {
         right: auto;
         top: -8px;
-        left:-212%;
+        left:-194%;
     }
 }

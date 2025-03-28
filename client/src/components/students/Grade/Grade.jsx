@@ -2,8 +2,8 @@ import styles from "./Grade.module.css";
 
 export default function Grade({ value, date, comment }) {
     return (
-        <>
-            <table className="table">
+        <div className={styles.grade}>
+            <table className={`${styles.grade_table} table`}>
                 <thead>
                     <tr>
                         <th>Grade</th>
@@ -19,6 +19,6 @@ export default function Grade({ value, date, comment }) {
                     </tr>
                 </tbody>
             </table>
-        </>
+        </div>
     );
 }
