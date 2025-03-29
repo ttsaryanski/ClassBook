@@ -7,27 +7,27 @@ import { ClassProvider } from "./contexts/ClassContext";
 import AuthGuard from "./components/guards/AuthGuard";
 import GuestGuard from "./components/guards/GuestGuard";
 
+import ErrorBoundary from "./components/boundary/ErrorBoundary";
 import Header from "./components/core/header/Header";
 import Footer from "./components/core/footer/Footer";
-import Contacts from "./components/contacts/Contacts";
 import Home from "./components/home/Home";
-import Login from "./components/auth/Login/Login";
-import Register from "./components/auth/Register/Register";
-import Page404 from "./components/page 404/Page404";
-import UnderConstruction from "./components/underConstruction/UnderConstruction";
-import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
+import Login from "./components/user/Login/Login";
+import Register from "./components/user/Register/Register";
+import Profile from "./components/user/Profile/Profile";
+import EditProfile from "./components/user/EditProfile/EditProfile";
 import Classes from "./components/classes/Classes/Classes";
-import Profile from "./components/auth/Profile/Profile";
 import Clss from "./components/classes/Class/Clss";
 import CreateClass from "./components/classes/CreateClass/CreateClass";
 import EditClass from "./components/classes/EditClass/EditClass";
 import DetailsClass from "./components/classes/DetailsClass/DetailsClass";
-import EditProfile from "./components/auth/EditProfile/EditProfile";
-import CreateStudents from "./components/students/CreateStudent/CreateStudent";
 import Students from "./components/students/Students/Students";
-import StudentGrades from "./components/students/StudentGrades/StudentGrades";
 import EditStudent from "./components/students/EditStudent/EditStudent";
-import ErrorBoundary from "./components/boundary/ErrorBoundary";
+import CreateStudents from "./components/students/CreateStudent/CreateStudent";
+import StudentGrades from "./components/students/StudentGrades/StudentGrades";
+import Contacts from "./components/contacts/Contacts";
+import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
+import Page404 from "./components/page 404/Page404";
+import UnderConstruction from "./components/underConstruction/UnderConstruction";
 
 import "./App.css";
 

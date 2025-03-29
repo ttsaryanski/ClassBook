@@ -28,7 +28,7 @@ export default function Profile() {
             return;
         }
 
-        if (user?.profilePicture?.fileUrl) {
+        if (user.profilePicture?.fileUrl) {
             setPicture(user.profilePicture);
         } else {
             setPicture(null);

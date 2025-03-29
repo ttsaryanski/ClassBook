@@ -131,9 +131,30 @@ router.get("/profile", authMiddleware, async (req, res) => {
     }
 });
 
-router.put("/:userId", async (req, res) => {
+router.put("/:userId", upload.single("profilePicture"), async (req, res) => {
     const userId = req.params.userId;
-    const data = req.body;
+    let data = req.body;
+
+    if (req.file) {
+        const filePath = req.file.path;
+
+        const uploadParams = {
+            Bucket: "class-book",
+            Key: path.basename(filePath),
+            Body: fs.createReadStream(filePath),
+        };
+
+        const command = new PutObjectCommand(uploadParams);
+        const s3Response = await s3.send(command);
+
+        const fileName = req.file.originalname;
+        const fileUrl = `https://${uploadParams.Bucket}.s3.amazonaws.com/${uploadParams.Key}`;
+        data.profilePicture = { fileName, fileUrl };
+
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+    }
 
     try {
         const user = await authService.editUser(userId, data);

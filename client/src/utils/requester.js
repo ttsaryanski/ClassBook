@@ -9,8 +9,12 @@ async function requester(method, url, data, signal) {
     };
 
     if (data != undefined) {
-        option.headers["Content-Type"] = "application/json";
-        option.body = JSON.stringify(data);
+        if (data instanceof FormData) {
+            option.body = data;
+        } else {
+            option.headers["Content-Type"] = "application/json";
+            option.body = JSON.stringify(data);
+        }
     }
 
     try {

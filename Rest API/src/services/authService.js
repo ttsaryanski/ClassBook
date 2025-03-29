@@ -4,11 +4,9 @@ import User from "../models/User.js";
 import File from "../models/File.js";
 import Setting from "../models/Setting.js";
 import Student from "../models/Student.js";
-import Teacher from "../models/Teacher.js";
 
 import jwt from "../lib/jwt.js";
 import InvalidToken from "../models/InvalidToken.js";
-import studentService from "./studentService.js";
 import teacherService from "./teacherService.js";
 
 const register = async (

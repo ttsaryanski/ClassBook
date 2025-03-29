@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
 
 import { useAuth } from "../../../contexts/AuthContext";
@@ -16,7 +16,6 @@ export default function EditProfile() {
     const { user, updateUser } = useAuth();
     const { setError } = useError();
 
-    const [picture, setPicture] = useState({});
     const [isTeacher, setIsTeacher] = useState(false);
     const [teacherId, setTeacherId] = useState("");
 
@@ -24,10 +23,12 @@ export default function EditProfile() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [speciality, setSpeciality] = useState("");
+    const [file, setFile] = useState(null);
     const [errors, setErrors] = useState({
         firstName: "",
         lastName: "",
         speciality: "",
+        file: "",
     });
     const [isLoading, setIsLoading] = useState(true);
 
@@ -42,7 +43,7 @@ export default function EditProfile() {
 
         setFirstName(user.firstName || "");
         setLastName(user.lastName || "");
-        setPicture(user.profilePicture?.fileUrl ? user.profilePicture : null);
+        //setPicture(user.profilePicture?.fileUrl ? user.profilePicture : null);
 
         if (user?.role === "teacher") {
             setIsTeacher(true);
@@ -79,20 +80,24 @@ export default function EditProfile() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        const userData = { firstName, lastName };
-
-        // if (userData.imageUrl === "") {
-        //     userData.imageUrl = null;
-        // }
+        const formData = new FormData();
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        if (file) {
+            formData.append("profilePicture", file[0]);
+        }
 
         setPending(true);
         setError(null);
         try {
-            const editedUser = await authService.editUser(user._id, userData);
+            const editedUser = await authService.editUser(user._id, formData);
             if (isTeacher) {
                 try {
-                    userData.speciality = speciality;
-                    await teacherService.editById(teacherId, userData);
+                    await teacherService.editById(teacherId, {
+                        firstName,
+                        lastName,
+                        speciality,
+                    });
                 } catch (error) {
                     setError((prev) => [
                         ...(prev || []),
@@ -136,6 +141,14 @@ export default function EditProfile() {
         return "";
     };
 
+    const validateFile = (file) => {
+        const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+        if (!allowedTypes.includes(file.type)) {
+            return "Only jpg, jpeg, and png formats are allowed.";
+        }
+        return "";
+    };
+
     const firstNameChangeHandler = (e) => {
         const value = e.target.value;
         setFirstName(value);
@@ -157,10 +170,20 @@ export default function EditProfile() {
         }));
     };
 
+    const fileChangeHandler = (e) => {
+        const files = e.target.files;
+        setFile(files && files.length > 0 ? files : null);
+        setErrors((prev) => ({
+            ...prev,
+            file: files && files.length > 0 ? validateFile(files[0]) : "",
+        }));
+    };
+
     const isFormValid =
         !errors.firstName &&
         !errors.lastName &&
         !errors.speciality &&
+        !errors.file &&
         firstName &&
         lastName;
 
@@ -297,20 +320,34 @@ export default function EditProfile() {
                             </div>
                         )}
 
-                        {/* <div className={`${styles.form_group} form-group`}>
-                            <label htmlFor="imageUrl">Image Url</label>
+                        <div className={`${styles.form_group} form-group`}>
+                            <label htmlFor="file">
+                                Peacture - Only jpg, jpeg and png!
+                            </label>
                             <div className="input-wrapper">
-                                <span>
-                                    <i className={`${styles.icon} fa-solid fa-image`}></i>
-                                </span>
-                                <input
-                                    id="imageUrl"
-                                    name="imageUrl"
-                                    type="text"
-                                    defaultValue={user.imageUrl}
-                                />
+                                <div className={`${styles.form_group} mt-2`}>
+                                    <div className="flex">
+                                        <span>
+                                            <i
+                                                className={`${styles.icon} fa-solid fa-camera`}
+                                            ></i>
+                                        </span>
+                                        <input
+                                            type="file"
+                                            id="file"
+                                            name="file"
+                                            accept=".png, .jpg, .jpeg"
+                                            onChange={fileChangeHandler}
+                                        />
+                                    </div>
+                                    {errors.file && (
+                                        <p className="text-danger midlle mt-1">
+                                            {errors.file}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div> */}
+                        </div>
 
                         <div id="form-actions">
                             <button
