@@ -68,7 +68,6 @@ export default function StudentGrades() {
     }, [studentId, setError]);
 
     const hasGrades = Object.keys(groupedGrades).length > 0;
-    console.log(Object.entries(groupedGrades));
 
     return (
         <>

@@ -43,7 +43,6 @@ export default function EditProfile() {
 
         setFirstName(user.firstName || "");
         setLastName(user.lastName || "");
-        //setPicture(user.profilePicture?.fileUrl ? user.profilePicture : null);
 
         if (user?.role === "teacher") {
             setIsTeacher(true);
@@ -172,6 +171,8 @@ export default function EditProfile() {
 
     const fileChangeHandler = (e) => {
         const files = e.target.files;
+        const fileName = files[0]?.name || "Choose file";
+        document.querySelector(".custom-file-label").textContent = fileName;
         setFile(files && files.length > 0 ? files : null);
         setErrors((prev) => ({
             ...prev,
@@ -229,7 +230,7 @@ export default function EditProfile() {
                                         />
                                     </div>
                                     {errors.firstName && (
-                                        <p className="text-danger midlle mt-1">
+                                        <p className="text-danger mt-1">
                                             {errors.firstName}
                                         </p>
                                     )}
@@ -261,7 +262,7 @@ export default function EditProfile() {
                                         />
                                     </div>
                                     {errors.lastName && (
-                                        <p className="text-danger midlle mt-1">
+                                        <p className="text-danger mt-1">
                                             {errors.lastName}
                                         </p>
                                     )}
@@ -300,6 +301,7 @@ export default function EditProfile() {
                                                     className={`${styles.icon} fa-solid fa-graduation-cap`}
                                                 ></i>
                                             </span>
+
                                             <input
                                                 type="text"
                                                 id="speciality"
@@ -311,7 +313,7 @@ export default function EditProfile() {
                                             />
                                         </div>
                                         {errors.speciality && (
-                                            <p className="text-danger midlle mt-1">
+                                            <p className="text-danger mt-1">
                                                 {errors.speciality}
                                             </p>
                                         )}
@@ -325,23 +327,38 @@ export default function EditProfile() {
                                 Peacture - Only jpg, jpeg and png!
                             </label>
                             <div className="input-wrapper">
-                                <div className={`${styles.form_group} mt-2`}>
-                                    <div className="flex">
-                                        <span>
-                                            <i
-                                                className={`${styles.icon} fa-solid fa-camera`}
-                                            ></i>
-                                        </span>
-                                        <input
-                                            type="file"
-                                            id="file"
-                                            name="file"
-                                            accept=".png, .jpg, .jpeg"
-                                            onChange={fileChangeHandler}
-                                        />
+                                <div
+                                    className={`${styles.form_group} ${styles.file} mt-2`}
+                                >
+                                    <div className="input-group">
+                                        <div className="input-group-prepend">
+                                            <span className="input-group-text">
+                                                <i
+                                                    className={`${styles.icon} fa-solid fa-camera`}
+                                                ></i>
+                                            </span>
+                                        </div>
+                                        <div
+                                            className={`${styles.custom_file} custom-file`}
+                                        >
+                                            <label
+                                                className={`${styles.custom_file_label} custom-file-label`}
+                                                htmlFor="file"
+                                            >
+                                                Choose file
+                                            </label>
+                                            <input
+                                                type="file"
+                                                id="file"
+                                                name="file"
+                                                accept=".png, .jpg, .jpeg"
+                                                onChange={fileChangeHandler}
+                                                className="custom-file-input"
+                                            />
+                                        </div>
                                     </div>
                                     {errors.file && (
-                                        <p className="text-danger midlle mt-1">
+                                        <p className="text-danger mt-1">
                                             {errors.file}
                                         </p>
                                     )}

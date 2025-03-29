@@ -36,3 +36,15 @@
 .form .span {
     color: #369;
 }
+
+.custom_file label {
+    color: #369;
+}
+
+.form_group.file input:hover {
+    cursor: pointer;
+}
+
+.custom_file_label::after {
+    color: #369;
+}
