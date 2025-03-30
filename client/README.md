@@ -35,10 +35,12 @@ This guide explains how to install dependencies and start both the server and th
     -   Create a file named `.env` in the root directory of the server.
     -   Add the required environment variables in the following format:
 
-        -   JWT_SECRET = <your-jwt-secret>
-        -   CLOUD_DB_URL = <your-cloud-database-url>
-        -   AWS_ACCESS_KEY = <your-aws-access-key>
-        -   AWS_SECRET_ACCESS_KEY = <your-aws-secret-access-key>
+        ```sh
+        JWT_SECRET=<your-jwt-secret>
+        CLOUD_DB_URL=<your-cloud-database-url>
+        AWS_ACCESS_KEY=<your-aws-access-key>
+        AWS_SECRET_ACCESS_KEY=<your-aws-secret-access-key>
+        ```
 
     -   Save the file.
 
@@ -70,7 +72,7 @@ Ensure the Rets API server is running before starting the SPA to enable proper i
 
 <!------------------------------------------------------------------------------------------------------------------------------------------------------------------>
 
-# Cooking Together - [към приложението](https://test-client-hgl0.onrender.com)
+# ClassBook - [към приложението](https://classbook-client-for-render.onrender.com)
 
 ## Project Overview
 
