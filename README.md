@@ -4,6 +4,8 @@ ClassBook is a web application that consists of a **React SPA client** and a **R
 
 📌 **Live Demo:** [ClassBook (Live App)](https://classbook-client-for-render.onrender.com)
 
+⚠️ **Note:** The server is hosted on a free-tier service and may take up to **50 seconds to wake up** after a period of inactivity. Please be patient when making the first request.
+
 ## 📂 Project Structure
 
 -   `Rest API/` - Backend (Node.js, Express, MongoDB)
@@ -13,8 +15,8 @@ ClassBook is a web application that consists of a **React SPA client** and a **R
 
 For detailed installation and setup instructions, refer to the respective `README.md` files:
 
--   📌 **[REST API Setup](Rest API/README.md)**
 -   📌 **[Client (SPA) Setup](client/README.md)**
+-   📌 **[REST API Setup](Rest API/README.md)**
 
 ---
 
