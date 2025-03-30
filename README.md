@@ -1,26 +1,26 @@
 # ClassBook - Exam Project for React February 2025 Course in SoftUni
 
-ClassBook е уеб приложение, което включва REST API и SPA клиент.
+ClassBook is a web application that consists of a **React SPA client** and a **REST API**.
 
-📌 **Линк към приложението:** [ClassBook (Live Demo)](https://classbook-client-for-render.onrender.com)
+📌 **Live Demo:** [ClassBook (Live App)](https://classbook-client-for-render.onrender.com)
 
-## 📂 Проектова структура
+## 📂 Project Structure
 
--   `Rest API/` - Сървърна част (Node.js, Express, MongoDB)
--   `client/` - Клиентска част (React, Vite)
+-   `Rest API/` - Backend (Node.js, Express, MongoDB)
+-   `client/` - Frontend (React, Vite)
 
-## 📖 Инструкции за настройка
+## 📖 Setup Instructions
 
-За подробни инструкции относно инсталирането и стартирането на всяка част, виж съответните `README.md` файлове:
+For detailed installation and setup instructions, refer to the respective `README.md` files:
 
--   📌 **[Настройка на REST API](Rest API/README.md)**
--   📌 **[Настройка на клиента (SPA)](client/README.md)**
+-   📌 **[REST API Setup](Rest API/README.md)**
+-   📌 **[Client (SPA) Setup](client/README.md)**
 
 ---
 
-### **Как да клонираш и стартираш проекта**
+### **How to Clone and Start the Project**
 
 ```sh
-git clone https://github.com/твоя-гит-потребител/classbook.git
+git clone https://github.com/your-git-username/classbook.git
 cd classbook
 ```
