@@ -1,4 +1,4 @@
-# ClassBook - [към приложението](https://classbook-client-for-render.onrender.com)
+# ClassBook - [Live App](https://classbook-client-for-render.onrender.com)
 
 ## Project Overview
 
