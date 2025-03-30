@@ -25,8 +25,8 @@ import EditStudent from "./components/students/EditStudent/EditStudent";
 import CreateStudents from "./components/students/CreateStudent/CreateStudent";
 import StudentGrades from "./components/students/StudentGrades/StudentGrades";
 import Contacts from "./components/contacts/Contacts";
-import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
 import Help from "./components/Help/Help";
+import ErrorMsg from "./components/core/errorComponent/ErrorMsg";
 import Page404 from "./components/page 404/Page404";
 import UnderConstruction from "./components/underConstruction/UnderConstruction";
 
