@@ -2,16 +2,16 @@
 
 ## 1. Install Dependencies
 
-To install the necessary dependencies for the REST API server, open a terminal and run:
+⚠️ **Note:** To install the necessary dependencies for the REST API server, open a terminal and run:
 
 ```sh
-cd Rest API
+cd RestAPI
 npm install
 ```
 
 ## 2. Environment Variables Configuration
 
-To run this server, create a `.env` file in the root directory and configure the following environment variables:
+⚠️ **Note:** To run this server, create a `.env` file in the root directory and configure the following environment variables:
 
 ### Required Variables:
 
@@ -41,7 +41,7 @@ To run this server, create a `.env` file in the root directory and configure the
 
 ## 3. Start the REST API Server
 
-Run the following command to start the server:
+⚠️ **Note:** Run the following command to start the server:
 
 ```sh
 npm start
