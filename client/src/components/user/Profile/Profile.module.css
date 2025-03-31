@@ -1,8 +1,8 @@
-.details {
+.profile .details {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 60%;
+    width: auto;
     color: #369;
 }
 
@@ -12,6 +12,7 @@
 
 .content {
     gap: 4em;
+    margin-bottom: 20px;
 }
 
 .btn_edit {

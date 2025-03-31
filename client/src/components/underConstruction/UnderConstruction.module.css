@@ -1,31 +1,53 @@
-.under_construction .page404_main {
-    background-color: transparent !important;
+.page404 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
     color: #369;
+}
+
+.page404_main {
+    text-align: center;
+}
+
+.textCenter {
+    text-align: center;
 }
 
 .logo404 {
     color: #369;
-    font-size: 6em;
-    align-self: center;
+    font-size: 5em;
+    font-weight: bold;
 }
 
-.p {
-    color: #369;
+.title {
+    margin-top: 16px;
+    font-size: 3rem;
+    font-weight: 600;
 }
 
-.button {
-    background-color: #369;
-    color: #fff;
+.description {
+    margin-top: 16px;
+    font-size: 1.2rem;
+}
+
+.buttonContainer {
+    margin-top: 24px;
+}
+
+.link {
     display: inline-block;
-    padding: 0.2rem 1.4rem;
-    border-radius: 0.3rem;
-    font-size: 1.5em;
-}
-
-.page404 .link {
+    background-color: #369;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
     text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.button:hover {
+.link:hover {
     transform: scale(1.1);
+    color: #fff;
 }
