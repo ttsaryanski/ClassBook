@@ -1,4 +1,10 @@
-# ClassBook - [Live App](https://classbook-client-for-render.onrender.com)
+# ClassBook - [Live App](https://classbook-react-project.web.app/classes) - Firebase
+
+⚠️ **Note:** The Rest API is hosted on a free-tier service and may take some time to wake up after a period of inactivity. Please be patient when making the first request.
+
+# ClassBook - [Live App](https://classbook-client-for-render.onrender.com) - Render
+
+⚠️ **Note:** The Rest API is hosted on a free-tier service and may take up to **50 seconds to wake up** after a period of inactivity. Please be patient when making the first request.
 
 ## Project Overview
 
@@ -14,19 +20,19 @@ This is a Single Page Application (SPA) designed to serve as a school diary. The
 
     -   During registration, students must enter their 10-digit ID (personal identification number) to link their account to an existing student record. They can then access their personal gradebook.
 
-    -   You can log in as a student using "`student@gmail.com`" with the password "`student`".
+    -   You can log in as a student using "`student@gmail.com`" with the password "`student`". ⚠️Only Live App!
 
 -   📌Teachers
 
     -   Teachers register using a "`teacher_secret_key`". After registration, they should update their profile with their subject specialty. They can view their assigned classes and manage student grades with comments.
 
-    -   You can log in as a teacher using "`teacher@gmail.com`" with the password "`teacher`".
+    -   You can log in as a teacher using "`teacher@gmail.com`" with the password "`teacher`". ⚠️Only Live App!
 
 -   📌Director
 
     -   The director registers using a "`director_secret_key`". They can add students, create and manage classes, assign teachers, and modify student enrollment.
 
-    -   You can log in as a director using "`director@gmail.com`" with the password "`director`".
+    -   You can log in as a director using "`director@gmail.com`" with the password "`director`". ⚠️Only Live App!
 
 ---
 
@@ -92,4 +98,4 @@ Public Section is accessible to all users and includes:
 
 -   📌**Using a Cloud File Storage API**: Use AWS for uploading files, such as profile pictures.
 -   📌**Connecting to an External API**: The contact page integrates a map with location using Google Maps.
--   📌**Deploying the application in the cloud**: The application is deployed on Render.
+-   📌**Deploying the application in the cloud**: The application is deployed on Firebase and Render.

@@ -321,7 +321,7 @@ export default function EditProfile() {
 
                         <div className={`${styles.form_group} form-group`}>
                             <label htmlFor="file">
-                                Peacture - Only jpg, jpeg and png!
+                                Picture - Only jpg, jpeg and png!
                             </label>
                             <div className="input-wrapper">
                                 <div

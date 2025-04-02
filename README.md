@@ -2,9 +2,10 @@
 
 ClassBook is a web application that consists of a **React SPA client** and a **REST API**.
 
-📌 **Live Demo:** [ClassBook (Live App)](https://classbook-client-for-render.onrender.com)
-
-⚠️ **Note:** The Rest API is hosted on a free-tier service and may take up to **50 seconds to wake up** after a period of inactivity. Please be patient when making the first request.
+📌 **Live Demo:** [ClassBook (Live App)](https://classbook-react-project.web.app/classes) - Firebase  
+ ⚠️ **Note:** The Rest API is hosted on a free-tier service and may take some time to wake up after a period of inactivity. Please be patient when making the first request.  
+📌 **Live Demo:** [ClassBook (Live App)](https://classbook-client-for-render.onrender.com) - Render  
+ ⚠️ **Note:** The Rest API is hosted on a free-tier service and may take up to **50 seconds to wake up** after a period of inactivity. Please be patient when making the first request.
 
 ## 📂 Project Structure
 

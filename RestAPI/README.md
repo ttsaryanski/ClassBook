@@ -11,7 +11,7 @@ npm install
 
 ## 2. Environment Variables Configuration
 
-⚠️ **Note:** To run this server, create a `.env` file in the root directory and configure the following environment variables:
+⚠️ **Note:** Before starting this server, create a `.env` file in the server's root directory and configure the following environment variables:
 
 ### Required Variables:
 
@@ -19,7 +19,8 @@ npm install
     _Example:_ `your_super_secret_key`
 
 -   **CLOUD_DB_URL**: The connection string for a cloud database (e.g., MongoDB Atlas).  
-    _Example:_ `mongodb+srv://username:password@cluster0.mongodb.net/dbname`
+     _Example:_ `mongodb+srv://username:password@cluster0.mongodb.net/dbname`  
+    ⚠️ **Note**: If you have MongoDB Compass installed, you do not need to set CLOUD_DB_URL. Just ensure that Compass is running on port 27017.
 
 ### Optional Variables:
 
@@ -27,8 +28,8 @@ npm install
 
 ### Steps to Set Up `.env`:
 
-1. Create a file named `.env` in the root directory.
-2. Add the required environment variables in the following format:
+1. Create a file named `.env` in the server's root directory.
+2. Add the environment variables in the following format:
 
     ```sh
     JWT_SECRET=<your-jwt-secret>
