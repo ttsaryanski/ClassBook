@@ -45,6 +45,7 @@
     margin-bottom: 1.5rem;
 }
 
+.form .required::after,
 .form_p .required::after {
     content: '*';
     color: red;
