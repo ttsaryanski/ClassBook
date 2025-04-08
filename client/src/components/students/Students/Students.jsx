@@ -11,6 +11,7 @@ import NothingYet from "../../shared/NothingYet/NothingYet";
 import Spinner from "../../shared/Spinner/Spinner";
 
 import styles from "./Students.module.css";
+import Pagination from "../../shared/Pagination";
 
 export default function Students() {
     const { isDirector } = useAuth();
@@ -19,6 +20,11 @@ export default function Students() {
     const [students, setStudents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [curPage, setCurPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalStudents, setTotalStudents] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
@@ -26,8 +32,15 @@ export default function Students() {
         setError(null);
         const fetchStudents = async () => {
             try {
-                const result = await studentService.getAll(signal);
-                setStudents(result);
+                //const result = await studentService.getAll(signal);
+                const paginatedResult = await studentService.getAllPaginated(
+                    { page: curPage, limit: pageSize },
+                    signal
+                );
+                //setStudents(result);
+                setStudents(paginatedResult.students);
+                setTotalStudents(paginatedResult.totalCount);
+                setTotalPages(paginatedResult.totalPages);
                 setIsLoading(false);
             } catch (error) {
                 if (!signal.aborted) {
@@ -40,7 +53,16 @@ export default function Students() {
         return () => {
             abortController.abort();
         };
-    }, [setError]);
+    }, [setError, curPage, pageSize]);
+
+    const pageChangeHandler = (newPage) => {
+        setCurPage(newPage);
+    };
+
+    const pageSizeChangeHandler = (newSize) => {
+        setPageSize(newSize);
+        setCurPage(1);
+    };
 
     return (
         <>
@@ -48,7 +70,7 @@ export default function Students() {
             <section
                 className={`${styles.card_container} card users-container`}
             >
-                <div className="table-wrapper">
+                <div className={`${styles.wrapper} table-wrapper`}>
                     {isLoading && <Spinner />}
 
                     {!isLoading && students.length === 0 && <NothingYet />}
@@ -86,6 +108,15 @@ export default function Students() {
                         Add new student
                     </Link>
                 )}
+
+                <Pagination
+                    curPage={curPage}
+                    totalPages={totalPages}
+                    pageSize={pageSize}
+                    totalStudents={totalStudents}
+                    onPageChange={pageChangeHandler}
+                    onPageSizeChange={pageSizeChangeHandler}
+                />
             </section>
         </>
     );

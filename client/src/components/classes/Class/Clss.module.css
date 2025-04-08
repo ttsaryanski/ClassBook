@@ -16,3 +16,7 @@
 .card_container .tbody {
     position: initial;
 }
+
+.card_container .wrapper {
+    height: 100%;
+}

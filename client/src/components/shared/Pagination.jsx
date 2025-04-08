@@ -1,18 +1,55 @@
-export default function Pagination() {
+export default function Pagination({
+    curPage,
+    totalPages,
+    pageSize,
+    totalStudents,
+    onPageChange,
+    onPageSizeChange,
+}) {
+    const firstPageHandler = () => onPageChange(1);
+    const prevPageHandler = () => {
+        if (curPage > 1) onPageChange(curPage - 1);
+    };
+    const nextPageHandler = () => {
+        if (curPage < totalPages) onPageChange(curPage + 1);
+    };
+    const lastPageHandler = () => onPageChange(totalPages);
+    const pageSizeChangeHandler = (e) => {
+        const newSize = Number(e.target.value);
+        onPageSizeChange(newSize);
+    };
+
+    const startStudent = (curPage - 1) * pageSize + 1;
+    const endStudent = Math.min(curPage * pageSize, totalStudents);
+
     return (
         <div className="pagination position">
             <div className="limits">
                 <span>Items per page:</span>
-                <select name="limit" className="limit" defaultValue="5">
+                <select
+                    name="limit"
+                    className="limit"
+                    value={pageSize}
+                    onChange={pageSizeChangeHandler}
+                >
                     <option defaultValue="5">5</option>
                     <option defaultValue="5">10</option>
                     <option defaultValue="5">15</option>
                     <option defaultValue="5">20</option>
                 </select>
             </div>
-            <p className="pages">1 - 1 of 1</p>
+            <p className="pages">
+                {totalStudents > 0
+                    ? `${startStudent} - ${endStudent} of ${totalStudents}`
+                    : "0 - 0 of 0"}
+            </p>
             <div className="actions">
-                <button className="btn" title="First Page">
+                <button
+                    className="btn"
+                    title="First Page"
+                    onClick={firstPageHandler}
+                    disabled={curPage === 1}
+                >
                     <svg
                         aria-hidden="true"
                         focusable="false"
@@ -30,7 +67,12 @@ export default function Pagination() {
                     </svg>
                 </button>
 
-                <button className="btn" title="Previous Page">
+                <button
+                    className="btn"
+                    title="Previous Page"
+                    onClick={prevPageHandler}
+                    disabled={curPage === 1}
+                >
                     <svg
                         aria-hidden="true"
                         focusable="false"
@@ -47,7 +89,12 @@ export default function Pagination() {
                         ></path>
                     </svg>
                 </button>
-                <button className="btn" title="Next Page">
+                <button
+                    className="btn"
+                    title="Next Page"
+                    onClick={nextPageHandler}
+                    disabled={curPage === totalPages || totalPages === 0}
+                >
                     <svg
                         aria-hidden="true"
                         focusable="false"
@@ -65,7 +112,12 @@ export default function Pagination() {
                     </svg>
                 </button>
 
-                <button className="btn" title="Last Page">
+                <button
+                    className="btn"
+                    title="Last Page"
+                    onClick={lastPageHandler}
+                    disabled={curPage === totalPages || totalPages === 0}
+                >
                     <svg
                         aria-hidden="true"
                         focusable="false"

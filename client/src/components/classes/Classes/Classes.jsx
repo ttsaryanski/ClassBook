@@ -130,7 +130,7 @@ export default function Classes() {
                     />
                 )}
 
-                <div className="table-wrapper">
+                <div className={`${styles.wrapper} table-wrapper`}>
                     {isLoading && <Spinner />}
 
                     {!isLoading && classes.length === 0 && <NothingYet />}

@@ -8,6 +8,10 @@
     font-size: 18px;
 }
 
+.card_container .wrapper {
+    height: 100%;
+}
+
 .add_btn {
     margin-bottom: 1em;
     margin-left: 1em;

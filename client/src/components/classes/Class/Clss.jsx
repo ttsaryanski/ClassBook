@@ -66,7 +66,7 @@ export default function Clss() {
             <section
                 className={`${styles.card_container} card users-container`}
             >
-                <div className="table-wrapper">
+                <div className={`${styles.wrapper} table-wrapper`}>
                     <table className="table">
                         <thead>
                             <tr>

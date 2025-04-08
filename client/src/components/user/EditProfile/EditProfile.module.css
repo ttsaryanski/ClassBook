@@ -5,6 +5,7 @@
     width: auto;
     left: auto;
     padding: 2em;
+    max-height: 100%;
 }
 
 .edit_user {

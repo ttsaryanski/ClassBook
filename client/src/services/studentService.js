@@ -2,6 +2,7 @@ import { api } from "../utils/requester";
 
 const endPoints = {
     getAll: "/student",
+    getAllPaginated: "/student/paginated",
     // createNew: '/data/cars',
     // apiById: "/item",
     // search: (query) => `/data/cars?where=year%3D${query}`,
@@ -10,6 +11,10 @@ const endPoints = {
 
 async function getAll(signal) {
     return await api.get(endPoints.getAll, signal);
+}
+
+async function getAllPaginated(data, signal) {
+    return await api.post(endPoints.getAllPaginated, data, signal);
 }
 
 async function createNew(data) {
@@ -42,6 +47,7 @@ async function delById(id) {
 
 export const studentService = {
     getAll,
+    getAllPaginated,
     createNew,
     getById,
     editById,
