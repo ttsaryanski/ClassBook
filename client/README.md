@@ -2,7 +2,37 @@
 
 ⚠️ **Note:** The Rest API is hosted on a free-tier service and may take some time to wake up after a period of inactivity. Please be patient when making the first request.
 
-## Project Overview
+# Installation and start the client
+
+## 1. Install Dependencies
+
+⚠️ **Note:** To install the necessary dependencies for the client(SPA), open a terminal and run:
+
+```sh
+cd client
+npm install
+```
+
+## 2. Start the Application:
+
+⚠️ **Note:** Run the following command to start the server:
+
+```sh
+npm run build
+npm run preview
+```
+
+The SPA will typically be available at http://localhost:4173.
+
+```
+➜  Local:   http://localhost:4173/
+➜  Network: use --host to expose
+➜  press h + enter to show help
+```
+
+Ensure the REST API server is running before starting the SPA to enable proper integration.
+
+# Project Overview
 
 This is a Single Page Application (SPA) designed to serve as a school diary. The project includes both public and private sections, following the required specifications. The app demonstrates dynamic functionalities, interaction with the REST API, and the use of core concepts and technologies in React.
 
@@ -95,3 +125,7 @@ Public Section is accessible to all users and includes:
 -   📌**Using a Cloud File Storage API**: Use AWS for uploading files, such as profile pictures.
 -   📌**Connecting to an External API**: The contact page integrates a map with location using Google Maps.
 -   📌**Deploying the application in the cloud**: The application is deployed on Firebase and Render.
+
+```
+
+```
